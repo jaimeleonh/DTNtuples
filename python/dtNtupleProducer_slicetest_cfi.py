@@ -7,6 +7,7 @@ dtNtupleProducer = cms.EDAnalyzer("DTNtupleProducer",
                                   lumiScalerTag = cms.untracked.InputTag("none"),
                                   primaryVerticesTag = cms.untracked.InputTag("none"),
 
+                                  DTAB7_FED_Source = cms.untracked.InputTag("rawDataCollector"),
                                   ph1DtDigiTag = cms.untracked.InputTag("muonDTDigis"),
                                   ph2DtDigiTag = cms.untracked.InputTag("dtAB7unpacker"),
 
@@ -19,7 +20,8 @@ dtNtupleProducer = cms.EDAnalyzer("DTNtupleProducer",
 
                                   ph2TPGPhiHwTag  = cms.untracked.InputTag("dtAB7unpacker"),
                                   ph2TPGPhiEmuHbTag  = cms.untracked.InputTag("none"),
-                                  ph2TPGPhiEmuAmTag  = cms.untracked.InputTag("none"),
+                                  #ph2TPGPhiEmuAmTag  = cms.untracked.InputTag("none"),
+                                  ph2TPGPhiEmuAmTag  = cms.untracked.InputTag("dtTriggerPhase2PrimitiveDigis"),
 
                                   ph1DtSegmentTag = cms.untracked.InputTag("dt4DSegments"),        
                                   ph2DtSegmentTag = cms.untracked.InputTag("none"),

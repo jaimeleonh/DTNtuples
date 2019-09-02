@@ -24,6 +24,8 @@ DTNtupleConfig::DTNtupleConfig(const edm::ParameterSet & config)
 
   edm::InputTag none = edm::InputTag("none");
 
+  m_inputTags["DTAB7_FED_Source"] = config.getUntrackedParameter<edm::InputTag>("DTAB7_FED_Source", none);
+
   m_inputTags["genPartTag"] = config.getUntrackedParameter<edm::InputTag>("genPartTag", none);
 
   m_inputTags["puInfoTag"] = config.getUntrackedParameter<edm::InputTag>("puInfoTag", none);

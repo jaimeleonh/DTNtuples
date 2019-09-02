@@ -15,10 +15,17 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
-DTNtupleEventFiller::DTNtupleEventFiller(const std::shared_ptr<DTNtupleConfig> config, 
+DTNtupleEventFiller::DTNtupleEventFiller(edm::ConsumesCollector && collector, 
+					 const std::shared_ptr<DTNtupleConfig> config, 
 					 std::shared_ptr<TTree> tree, const std::string & label) : 
   DTNtupleBaseFiller(config, tree, label)
 {
+
+  edm::InputTag iTag;
+  iTag = m_config->m_inputTags["DTAB7_FED_Source"];
+  //DTAB7InputTag_ = pset.getParameter<edm::InputTag>(cms.InputTag("rawDataCollector");
+  rawToken_ = collector.consumes<FEDRawDataCollection>(iTag);
+  
 
 }
 
@@ -59,16 +66,38 @@ void DTNtupleEventFiller::fill(const edm::Event & ev)
 {
 
   clear();
-
+  // auto trigColl = conditionalGet<FEDRawDataCollection>(ev, rawToken_,"FEDRawDataCollection");
+  
   m_runNumber   = ev.run();
   m_lumiBlock   = ev.getLuminosityBlock().luminosityBlock();
   m_eventNumber = ev.eventAuxiliary().event();
 
   m_timeStamp = ev.eventAuxiliary().time().value();
 
-  m_bunchCrossing = ev.eventAuxiliary().bunchCrossing();
+//  m_bunchCrossing = ev.eventAuxiliary().bunchCrossing();
   m_orbitNumber   = ev.eventAuxiliary().orbitNumber();
+
+  //edm::EDGetTokenT<FEDRawDataCollection>  rawToken_ = consumes<FEDRawDataCollection>(DTAB7InputTag_);
+  edm::Handle<FEDRawDataCollection> data = conditionalGet<FEDRawDataCollection>(ev, rawToken_,"FEDRawDataCollection"); 
+  // ev.getByToken(rawToken_, data);
+
+  FEDRawData dturosdata = data->FEDData(1368);
+  if ( dturosdata.size() == 0 ) {
+    return;
+  }
+
+  fedLinePointer_=dturosdata.data();
+  long dataWord=0;
+
+
+  // Reading the headers:
   
+  readLine(&dataWord);  // Reading the word
+  // calcCRC(dataWord);
+
+  int bxCounter_=((dataWord>>20)&0xFFF);
+  m_bunchCrossing = bxCounter_;
+
   return;
 
 }

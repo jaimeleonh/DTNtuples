@@ -11,6 +11,16 @@
  */
 
 #include "DTDPGAnalysis/DTNtuples/src/DTNtupleBaseFiller.h"
+#include <DataFormats/FEDRawData/interface/FEDRawData.h>
+#include "FWCore/Framework/interface/ConsumesCollector.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+
+#include <DataFormats/FEDRawData/interface/FEDRawDataCollection.h>
+#include <FWCore/Framework/interface/EDProducer.h>
+#include <FWCore/ParameterSet/interface/ParameterSet.h>
 
 #include <vector>
 #include <cstdint>
@@ -21,8 +31,11 @@ class DTNtupleEventFiller : public DTNtupleBaseFiller
  public:
 
   /// Constructor
-  DTNtupleEventFiller(const std::shared_ptr<DTNtupleConfig> config, 
+  DTNtupleEventFiller(edm::ConsumesCollector && collector,
+		      const std::shared_ptr<DTNtupleConfig> config, 
 		      std::shared_ptr<TTree> tree, const std::string & label);
+  //DTNtupleEventFiller(const std::shared_ptr<DTNtupleConfig> config, 
+		     // std::shared_ptr<TTree> tree, const std::string & label);
 
   ///Destructor
   virtual ~DTNtupleEventFiller();
@@ -38,6 +51,9 @@ class DTNtupleEventFiller : public DTNtupleBaseFiller
 
  private :
 
+//  edm::InputTag DTAB7InputTag_;
+  edm::EDGetTokenT<FEDRawDataCollection>  rawToken_;
+  
   int  m_runNumber;
   int  m_lumiBlock;
   int64_t m_eventNumber;
@@ -46,7 +62,15 @@ class DTNtupleEventFiller : public DTNtupleBaseFiller
   
   int  m_bunchCrossing;
   int64_t m_orbitNumber;
+ 
+  unsigned char* fedLinePointer_;
   
+  inline void readLine (long *dataWord) {
+    (*dataWord)= *((long*)fedLinePointer_);
+    fedLinePointer_+=8;
+  }
+
+ 
 };
   
 #endif
