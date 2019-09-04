@@ -6,7 +6,7 @@ void printPlots () {
   const bool fileOK = false; 
 
   //setTDRStyle(); 
-  gStyle->SetOptStat(0);
+  gStyle->SetOptStat(1111111);
   std::vector<std::string> stuffTags = { "Time", "Pos", "Psi"};
 
   std::string run = "330848";
@@ -22,7 +22,8 @@ void printPlots () {
   std::vector<std::string> chambTags = { "MB2", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+  //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
   
   std::map<std::string, TH1*> m_plots;
@@ -93,6 +94,7 @@ void printPlots () {
       if (labelTag == "All" || labelTag == "Correlated") continue;
       for (auto  slTag : slTags) {
         for (auto & specificPlot : moreSpecific1DPlots) {
+          if (specificPlot == "hPsi_" || specificPlot == "hTime_" || specificPlot == "hPos_") continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
           sprintf(name,"%s",nameHisto.c_str());
           m_plots[name] = (TH1F*) data1.Get(name);
@@ -103,6 +105,7 @@ void printPlots () {
         }
       
         for (auto & specificPlot : moreSpecific2DPlots) {
+          if (specificPlot == "hPsi2D_" || specificPlot == "hTime2D_" || specificPlot == "hPos2D_") continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);

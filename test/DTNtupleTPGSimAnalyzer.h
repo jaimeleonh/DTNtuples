@@ -34,6 +34,7 @@ protected:
 private:
   
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
+  Int_t qualityGroup(Int_t quality);
   
   TFile m_outFile;
   

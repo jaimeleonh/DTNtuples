@@ -66,7 +66,8 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> chambTags = { "MB2", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
+  //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
   
 
@@ -166,7 +167,7 @@ void DTNtupleTPGSimAnalyzer::book()
             m_plots["hChi2" +  chambTag + labelTag + slTag] = new TH1F(("hChi2_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Distribution of #chi^2; #chi^2; Entries",
 					    32,-0.5,31.5); 
-            m_plots2["hPsi2D" + chambTag + labelTag + slTag] = new TH2F(("hPsi2D_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
+       /*     m_plots2["hPsi2D" + chambTag + labelTag + slTag] = new TH2F(("hPsi2D_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Firmware vs Emulator #Psi; Firmware #Psi ( #circ); Emulator #Psi ( #circ)",
 					    120,-60,60,120,-60,60); 
             m_plots2["hTime2D"+ chambTag + labelTag + slTag] = new TH2F(("hTime2D_" + chambTag + "_"+ labelTag + "_" + slTag).c_str(),
@@ -184,7 +185,7 @@ void DTNtupleTPGSimAnalyzer::book()
             m_plots["hPos"+ chambTag + labelTag + slTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
 					    100,-10,10); 
-            m_plots2["hPsi2DSeg" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
+         */   m_plots2["hPsi2DSeg" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Firmware vs Segment #Psi; Firmware #Psi (#circ); Emulator #Psi (#circ)",
 					    120,-60,60,120,-60,60); 
             m_plots2["hTime2DSeg"+ chambTag + labelTag + slTag] = new TH2F(("hTime2DSeg_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
@@ -275,7 +276,8 @@ void DTNtupleTPGSimAnalyzer::fill()
 {
      std::vector<std::string> chambTags = { "MB2", "MB4"};
      std::vector<std::string> slTags = { "SL1", "SL3"};
-     std::vector<std::string> quTags  = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+     //std::vector<std::string> quTags  = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+     std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
      std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
      //int eventoBX; // = ph2TpgPhiHw_bx; //848 
      int eventoBX = event_bunchCrossing; //848
@@ -289,10 +291,10 @@ void DTNtupleTPGSimAnalyzer::fill()
  
      //bool debug = false; 
      if (debug) cout << "####################### HARDWARE PRIMITIVES ############################" << endl;  
-      int bestTrigHW[2][9];  
-      int bestTimeHW[2][9];
+      int bestTrigHW[2][5];  
+      int bestTimeHW[2][5];
 
-      for (int i = 0; i<9; i++){
+      for (int i = 0; i<5; i++){
         bestTrigHW[0][i] = -1; 
         bestTrigHW[1][i] = -1; 
 	bestTimeHW[0][i] = 10000;
@@ -317,9 +319,13 @@ void DTNtupleTPGSimAnalyzer::fill()
 	m_plots["hBXDif"]->Fill(myBXHW - eventoBX);
         if (myStationHW == 4 && myQualityHW == 9){ m_plots["hPrimsSegs" + chambTags.at(myStationHW/2-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
 	
-        if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][myQualityHW-1]){
+        /*if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][myQualityHW-1]){
 	  bestTrigHW[myStationHW/2-1][myQualityHW-1] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][myQualityHW-1] = myt0HW - eventoBX*25;
+	} */
+        if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
+	  bestTrigHW[myStationHW/2-1][qualityGroup(myQualityHW)] = iTrigHW; 
+	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = myt0HW - eventoBX*25;
 	}
 
 	
@@ -357,32 +363,39 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
 	  m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(myChi2HW);
+	  
+	  m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
+	  m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
+	  m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myChi2HW);
 	}
 
-
-	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myBXHW);
+/*	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myBXHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(round(myt0HW/25));
 	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(round(myt0HW/25) - 32*myBXHW/25);
 	m_plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myChi2HW);
- 
-	} // end HW
-     if (debug) cout << "####################### EMULATOR PRIMITIVES ############################" << endl;  
-      int bestTrigAM[2][9];  
-      int bestTimeAM[2][9];
+ */
+	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
+	m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
+	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25) - 32*myBXHW/25);
+	m_plots["hQualityHW"]->Fill(myQualityHW);
+	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW);
+	
 
-      for (int i = 0; i<9; i++){
+     } // end HW
+     
+     if (debug) cout << "####################### EMULATOR PRIMITIVES ############################" << endl;  
+      int bestTrigAM[2][5];  
+      int bestTimeAM[2][5];
+
+      for (int i = 0; i<5; i++){
         bestTrigAM[0][i] = -1; 
         bestTrigAM[1][i] = -1; 
 	bestTimeAM[0][i] = 10000;
 	bestTimeAM[1][i] = 10000;
       }
 
-	for (int i = 0; i<2; i++){
-	  for (int j = 0; j<9; j++){
-	  }
-	} 
-      
+ 
       for (std::size_t iTrigAM = 0; iTrigAM < ph2TpgPhiEmuAm_nTrigs; ++iTrigAM) {
 		
         short myStationAM = ph2TpgPhiEmuAm_station->at(iTrigAM);
@@ -399,9 +412,13 @@ void DTNtupleTPGSimAnalyzer::fill()
 
         if (myStationAM == 4 && myQualityAM == 9){ m_plots["hPrimsSegs" + chambTags.at(myStationAM/2-1)] -> Fill(1); } // cout << "Habemus primitiva" << endl;  }
 	
-	if (myt0AM - eventoBX*25 < bestTimeAM[myStationAM/2-1][myQualityAM-1]){
+	/*if (myt0AM - eventoBX*25 < bestTimeAM[myStationAM/2-1][myQualityAM-1]){
 	  bestTrigAM[myStationAM/2-1][myQualityAM-1] = iTrigAM; 
 	  bestTimeAM[myStationAM/2-1][myQualityAM-1] = myt0AM - eventoBX*25;
+	}*/
+	if (myt0AM - eventoBX*25 < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
+	  bestTrigAM[myStationAM/2-1][qualityGroup(myQualityAM)] = iTrigAM; 
+	  bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)] = myt0AM - eventoBX*25;
 	}
 	
 
@@ -428,7 +445,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       } // end AM
 
       for (int i = 0; i<2; i++){
-        for (int j = 0; j<9; j++){
+        for (int j = 0; j<5; j++){
 //	    cout << "i " << i << " j " << j << " " <<  bestTrigHW[i][j] << " " << bestTrigAM[i][j] << endl; 
           if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
 
@@ -443,7 +460,8 @@ void DTNtupleTPGSimAnalyzer::fill()
 	    m_plots["hTime"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25 - (ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25));
    	    m_plots["hPos"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));   
 
-	    if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
+	    if (j == 2 || j == 3 || j == 4) {
+	    //if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
   	      m_plots2["hPsi2D"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
 	      m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25,ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25);
 	      m_plots2["hPos2D"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));
@@ -492,7 +510,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 	
 	for (int i = 0; i<2; i++){
-          for (int j = 0; j<9; j++){
+          for (int j = 0; j<5; j++){
             if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
 	      
 	      short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
@@ -505,8 +523,8 @@ void DTNtupleTPGSimAnalyzer::fill()
 
   	       
 	      float mySegPos; 
- 	      if ((i+1 != 6 && i+1 !=8 && i+1 != 9 ) && (ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]) == 1)) mySegPos = mySegPosSL1;
- 	      else if ((i+1 != 6 && i+1 !=8 && i+1 != 9 ) && (ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]) == 3)) mySegPos = mySegPosSL3;
+ 	      if ((j != 2 && j !=3 && j != 4 ) && (ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]) == 1)) mySegPos = mySegPosSL1;
+ 	      else if ((j != 2 && j != 3 && j != 4 ) && (ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]) == 3)) mySegPos = mySegPosSL3;
  	      else mySegPos = mySegPosMid; 
   	      
 	      //eventoBX = ph2TpgPhiHw_BX ->at(bestTrigHW[i][j]);              
@@ -522,7 +540,8 @@ void DTNtupleTPGSimAnalyzer::fill()
               m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
               m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
 
-	      if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
+	      if (j == 2 || j == 3 || j == 4) {
+	      //if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
 	        m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
 	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25,mySegt0);
 	        m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
@@ -542,7 +561,8 @@ void DTNtupleTPGSimAnalyzer::fill()
                 m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
 	       
 		short myHWSL = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);	
- 
+
+		 
 		m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
 	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - eventoBX*25,mySegt0);
 	        m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
@@ -603,4 +623,15 @@ Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
   
   return trigPhi / 65536. * 0.8 + TMath::Pi() / 6 * (sector - 1); 
   
+}
+
+Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
+{
+  
+  if (quality == 1 || quality == 2 || quality == 5) return 0; 
+  if (quality == 3 || quality == 4 || quality == 7) return 1; 
+  if (quality == 6) return 2; 
+  if (quality == 8) return 3; 
+  if (quality == 9) return 4; 
+ 
 }

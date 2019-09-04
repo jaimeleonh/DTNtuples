@@ -21,7 +21,8 @@ options.register('nEvents',
                  "Maximum number of processed events")
 
 options.register('runNumber',
-                 '330848', #default value
+                 '331025', #default value
+                 #'330848', #default value
                  #'330792', #default value
                  #'330675', #default value
                   VarParsing.VarParsing.multiplicity.singleton,
@@ -162,7 +163,8 @@ print process.source.fileNames
 
 if options.ntupleName == '' :
     #ntupleName = "/afs/cern.ch/work/j/jleonhol/public/prueba_DTDPGNtuple_run" + str(options.runNumber) + ".root"
-    ntupleName = "./DTDPGNtuple_run" + str(options.runNumber) + ".root"
+    #ntupleName = "./DTDPGNtuple_run" + str(options.runNumber) + ".root"
+    ntupleName = "./DTDPGNtuple.root"
 else :
     ntupleName = options.ntupleName
 
