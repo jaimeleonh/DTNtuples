@@ -10,6 +10,7 @@ void printPlots () {
   std::vector<std::string> stuffTags = { "Time", "Pos", "Psi"};
 
   std::string run = "330848";
+  //std::string run = "330848";
   TString runNumber = run; 
   TString file = "results_run" + runNumber + ".root";
   gSystem->Exec("mkdir run" + runNumber);
@@ -36,7 +37,7 @@ void printPlots () {
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW_", "hSLAM_", "hPrimsSegs_"};
-  std::vector <std::string> moreSpecific1DPlots {"hBX_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
+  std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
 

@@ -89,6 +89,9 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["hBXDif"] = new TH1F("hBXDif",
 					    "BX difference ; BX difference; Entries",
 					    41,-220.5,-179.5); 
+      m_plots["hBXtotal"] = new TH1F("hBXtotal",
+					    "Distribution of BX; BX; Entries",
+					    3564,0,3564); 
 
       
       for (const auto & chambTag : chambTags) {
@@ -96,6 +99,9 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["hSLHW" + chambTag] = new TH1F(("hSLHW_" + chambTag).c_str(),
 					    "Distribution of HW SL; SL; Entries",
 					    4,-0.5,3.5); 
+      m_plots["ht0" + chambTag] = new TH1F(("ht0_" + chambTag).c_str(),
+					    "Distribution of t0; t0 (ns); Entries",
+					    9000,-90000,90000); 
       m_plots["hSLAM" + chambTag] = new TH1F(("hSLAM_" + chambTag).c_str(),
 					    "Distribution of AM SL; SL; Entries",
 					    4,-0.5,3.5); 
@@ -289,6 +295,8 @@ void DTNtupleTPGSimAnalyzer::fill()
      std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
      //int eventoBX; // = ph2TpgPhiHw_bx; //848 
      int eventoBX = event_bunchCrossing; //848
+     int offset = -200; //FIXME
+     m_plots["hBXtotal"]->Fill(eventoBX);
      //int eventoBX = 3365; //848
 
      int bestI[6]; short bestQu[6];
@@ -322,7 +330,14 @@ void DTNtupleTPGSimAnalyzer::fill()
         float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(iTrigHW);
         int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW);
         int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
-        int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW); myt0HW = myt0HW - eventoBX*25 + 3564*25;	
+        int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
+        //m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW);
+        m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - eventoBX*25);
+
+
+        //myt0HW = myt0HW - eventoBX*25 + 3564*25;	
+	myt0HW = myt0HW - eventoBX*25;
+	//if (myt0HW < 0) myt0HW += 3564*25;	
 
 	if (myQualityHW <= 4){
 		if (iTrigHW + 1 <  ph2TpgPhiHw_nTrigs) {
@@ -336,13 +351,14 @@ void DTNtupleTPGSimAnalyzer::fill()
 //	if (myQualityHW <= 4 && ((ph2TpgPhiHw_quality->at(iTrigHW+1)>=6 && ph2TpgPhiHw_quality->at(iTrigHW+1)!=7 ) || (ph2TpgPhiHw_quality->at(iTrigHW+2)>=6 && ph2TpgPhiHw_quality->at(iTrigHW+2)!=7 ) )) continue;
 
 	m_plots["hBXDif"]->Fill(myBXHW - eventoBX);
+//        m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - eventoBX*25);
         if (myStationHW == 4 && myQualityHW == 9){ m_plots["hPrimsSegs" + chambTags.at(myStationHW/2-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
 	
         /*if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][myQualityHW-1]){
 	  bestTrigHW[myStationHW/2-1][myQualityHW-1] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][myQualityHW-1] = myt0HW - eventoBX*25;
 	} */
-        if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
+        if (fabs(myt0HW - offset*25) < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
 	  bestTrigHW[myStationHW/2-1][qualityGroup(myQualityHW)] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = myt0HW - eventoBX*25;
 	}
@@ -431,7 +447,9 @@ void DTNtupleTPGSimAnalyzer::fill()
         float myPosAM =  ph2TpgPhiEmuAm_posLoc_x->at(iTrigAM);
         float myDirAM =  ph2TpgPhiEmuAm_dirLoc_phi->at(iTrigAM);
         int myBXAM = ph2TpgPhiEmuAm_BX->at(iTrigAM);
-        int myt0AM = ph2TpgPhiEmuAm_t0->at(iTrigAM);  myt0AM = myt0AM - eventoBX*25 + 3564*25;	
+        int myt0AM = ph2TpgPhiEmuAm_t0->at(iTrigAM);//  myt0AM = myt0AM - eventoBX*25 + 3564*25;	
+	      myt0AM = myt0AM - eventoBX*25;
+	 //     if (myt0AM < 0) myt0AM += 3564*25;	
 
 
         if (myStationAM == 4 && myQualityAM == 9){ m_plots["hPrimsSegs" + chambTags.at(myStationAM/2-1)] -> Fill(1); } // cout << "Habemus primitiva" << endl;  }
@@ -440,7 +458,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  bestTrigAM[myStationAM/2-1][myQualityAM-1] = iTrigAM; 
 	  bestTimeAM[myStationAM/2-1][myQualityAM-1] = myt0AM - eventoBX*25;
 	}*/
-	if (myt0AM - eventoBX*25 < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
+	if (fabs(myt0AM - offset*25) < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
 	  bestTrigAM[myStationAM/2-1][qualityGroup(myQualityAM)] = iTrigAM; 
 	  bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)] = myt0AM - eventoBX*25;
 	}
@@ -474,47 +492,51 @@ void DTNtupleTPGSimAnalyzer::fill()
           if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
 
 	    //eventoBX = ph2TpgPhiHw_BX ->at(bestTrigHW[i][j]);
-            int myt0HW = ph2TpgPhiHw_t0->at(bestTrigHW[i][j]); myt0HW = myt0HW - eventoBX*25 + 3564*25;	
-            int myt0AM = ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]); myt0AM = myt0AM - eventoBX*25 + 3564*25;	
+            int myt0HW = ph2TpgPhiHw_t0->at(bestTrigHW[i][j]); //myt0HW = myt0HW - eventoBX*25 + 3564*25;	
+	      myt0HW = myt0HW - eventoBX*25;
+	      if (myt0HW < 0) myt0HW += 3564*25;	
+            int myt0AM = ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]); // myt0AM = myt0AM - eventoBX*25 + 3564*25;	
+	      myt0AM = myt0AM - eventoBX*25;
+	      if (myt0AM < 0) myt0AM += 3564*25;	
 	    	 
 
   	    m_plots2["hPsi2D"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	    m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25, myt0AM - eventoBX*25);
+	    m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset*25, myt0AM - offset*25);
 	    //m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25,ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25);
 	    m_plots2["hPos2D"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));
 	    m_plots["hPsi"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	    m_plots["hTime"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25 - myt0AM + eventoBX*25);
+	    m_plots["hTime"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset*25 - myt0AM + offset*25);
 	    //m_plots["hTime"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25 - (ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25));
    	    m_plots["hPos"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));   
 
 	    if (j == 2 || j == 3 || j == 4) {
 	    //if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
   	      m_plots2["hPsi2D"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	      m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25, myt0AM - eventoBX*25);
+	      m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset*25, myt0AM - offset*25);
 	      //m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25,ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25);
 	      m_plots2["hPos2D"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));
 	      m_plots["hPsi"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	      m_plots["hTime"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25 - (myt0AM - eventoBX*25));
+	      m_plots["hTime"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset*25 - (myt0AM - offset*25));
 	      //m_plots["hTime"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25 - (ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25));
    	      m_plots["hPos"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));   
 	    } else {	   
   	      m_plots2["hPsi2D"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	      m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25, myt0AM - eventoBX*25);
+	      m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset*25, myt0AM - offset*25);
 	      //m_plots2["hTime2D"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25,ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25);
 	      m_plots2["hPos2D"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));
 	      m_plots["hPsi"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	      m_plots["hTime"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25 - (myt0AM - eventoBX*25));
+	      m_plots["hTime"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset*25 - (myt0AM - offset*25));
 	      //m_plots["hTime"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25 - (ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25));
    	      m_plots["hPos"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));   
 	    }	   
  
 
   	    m_plots2["hPsi2D"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	    m_plots2["hTime2D"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25, myt0AM - eventoBX*25);
+	    m_plots2["hTime2D"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset*25, myt0AM - offset*25);
 	    //m_plots2["hTime2D"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25,ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25);
 	    m_plots2["hPos2D"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));
 	    m_plots["hPsi"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_dirLoc_phi->at(bestTrigAM[i][j]));
-	    m_plots["hTime"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25 - (myt0AM - eventoBX*25));
+	    m_plots["hTime"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset*25 - (myt0AM - offset*25));
 	    //m_plots["hTime"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25 - (ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]) - eventoBX*25));
    	    m_plots["hPos"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - ph2TpgPhiEmuAm_posLoc_x->at(bestTrigAM[i][j]));   
           }
@@ -562,61 +584,63 @@ void DTNtupleTPGSimAnalyzer::fill()
   	      
 	      //eventoBX = ph2TpgPhiHw_BX ->at(bestTrigHW[i][j]);              
 
-              int myt0HW = ph2TpgPhiHw_t0->at(bestTrigHW[i][j]); myt0HW = myt0HW - eventoBX*25 + 3564*25;	
+              int myt0HW = ph2TpgPhiHw_t0->at(bestTrigHW[i][j]); 
+	      myt0HW = myt0HW - eventoBX*25;
+	      //if (myt0HW < 0) myt0HW += 3564*25;	
 	      	      
 	      m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
-	      m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25,mySegt0);
+	      m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset*25,mySegt0);
 	      m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	      m_plots["hPsiSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
-	      m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - eventoBX*25 - mySegt0);
+	      m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset*25 - mySegt0);
    	      m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-              m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
-              m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
+              m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - offset*25 - mySegt0);
+              m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - offset*25 - mySegt0);
 
 	      if (j == 2 || j == 3 || j == 4) {
 	      //if (j+1 == 6 || j+1 == 8 || j+1 == 9) {
 	        m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
-	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25,mySegt0);
+	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset*25,mySegt0);
 	        m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	        m_plots["hPsiSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
-	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - eventoBX*25 - mySegt0);
+	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset*25 - mySegt0);
    	        m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
-                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
+                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPos,myt0HW - offset*25 - mySegt0);
+                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPsi,myt0HW - offset*25 - mySegt0);
 	      } else {	   
 	        m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
-	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25,mySegt0);
+	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset*25,mySegt0);
 	        m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	        m_plots["hPsiSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
-	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - eventoBX*25 - mySegt0);
+	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset*25 - mySegt0);
    	        m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
-                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
+                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPos,myt0HW - offset*25 - mySegt0);
+                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPsi,myt0HW - offset*25 - mySegt0);
 	       
 		short myHWSL = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);	
 
 		 
 		m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
-	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - eventoBX*25,mySegt0);
+	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - offset*25,mySegt0);
 	        m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	        m_plots["hPsiSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
-	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - eventoBX*25 - mySegt0);
+	        m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - offset*25 - mySegt0);
    	        m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myPosHW,myt0HW - eventoBX*25 - mySegt0);
-                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myDirHW,myt0HW - eventoBX*25 - mySegt0);
+                m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myPosHW,myt0HW - offset*25 - mySegt0);
+                m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myDirHW,myt0HW - offset*25 - mySegt0);
                 //m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
                 //m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
 	      }	   
 
  
 	      m_plots2["hPsi2DSeg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
-	      m_plots2["hTime2DSeg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25,mySegt0);
+	      m_plots2["hTime2DSeg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset,mySegt0);
 	      m_plots2["hPos2DSeg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	      m_plots["hPsiSeg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
-	      m_plots["hTimeSeg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - eventoBX*25 - mySegt0);
+	      m_plots["hTimeSeg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset*25 - mySegt0);
    	      m_plots["hPosSeg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-              m_plots2["hTimeSegvsPos"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
-              m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
+              m_plots2["hTimeSegvsPos"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPos,myt0HW - offset*25 - mySegt0);
+              m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPsi,myt0HW - offset*25 - mySegt0);
             }
            }
 	}		
