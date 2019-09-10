@@ -358,9 +358,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  bestTrigHW[myStationHW/2-1][myQualityHW-1] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][myQualityHW-1] = myt0HW - eventoBX*25;
 	} */
-        if (fabs(myt0HW - offset*25) < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
+        if (abs(myt0HW - offset*25) < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
 	  bestTrigHW[myStationHW/2-1][qualityGroup(myQualityHW)] = iTrigHW; 
-	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = myt0HW - eventoBX*25;
+	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = abs(myt0HW - offset*25);
 	}
 
 	
@@ -458,9 +458,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  bestTrigAM[myStationAM/2-1][myQualityAM-1] = iTrigAM; 
 	  bestTimeAM[myStationAM/2-1][myQualityAM-1] = myt0AM - eventoBX*25;
 	}*/
-	if (fabs(myt0AM - offset*25) < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
+	if (abs(myt0AM - offset*25) < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
 	  bestTrigAM[myStationAM/2-1][qualityGroup(myQualityAM)] = iTrigAM; 
-	  bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)] = myt0AM - eventoBX*25;
+	  bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)] = abs(myt0AM - offset*25);
 	}
 	
 
