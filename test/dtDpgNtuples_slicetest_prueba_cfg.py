@@ -191,8 +191,11 @@ process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
 process.CalibratedDigis.scenario = 2
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.scenario = 2
-process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(410./4096.)
-process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(0.1), #in cm^2
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(620./4096.)
+process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(100000) #in cm^2
+process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = cms.untracked.bool(True)
+process.dtTriggerPhase2PrimitiveDigis.dT0_correlate_TP = cms.untracked.double(25.) 
+process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = cms.untracked.int32(0) 
 #process.dtTriggerPhase2PrimitiveDigis.debug = True
 #process.dtTriggerPhase2PrimitiveDigis.dump = True
 
