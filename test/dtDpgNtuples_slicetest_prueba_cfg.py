@@ -21,7 +21,7 @@ options.register('nEvents',
                  "Maximum number of processed events")
 
 options.register('runNumber',
-                 '331025', #default value
+                 '330998', #default value
                  #'330848', #default value
                  #'330792', #default value
                  #'330675', #default value
@@ -162,9 +162,9 @@ else :
 print process.source.fileNames
 
 if options.ntupleName == '' :
-    #ntupleName = "/afs/cern.ch/work/j/jleonhol/public/prueba_DTDPGNtuple_run" + str(options.runNumber) + ".root"
+    ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + ".root"
     #ntupleName = "./DTDPGNtuple_run" + str(options.runNumber) + ".root"
-    ntupleName = "./DTDPGNtuple.root"
+    #ntupleName = "./DTDPGNtuple.root"
 else :
     ntupleName = options.ntupleName
 
@@ -187,10 +187,11 @@ process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_slicetest_cfi')
 
 process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi")
 process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
-process.CalibratedDigis.timeOffset = 350 # 325+25 is no offset with the SX5/Cosmics runs (BX is -1)
+#process.CalibratedDigis.timeOffset = 350 # 325+25 is no offset with the SX5/Cosmics runs (BX is -1)
 process.CalibratedDigis.scenario = 2
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.scenario = 2
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(410./4096.)
 #process.dtTriggerPhase2PrimitiveDigis.debug = True
 #process.dtTriggerPhase2PrimitiveDigis.dump = True
 
