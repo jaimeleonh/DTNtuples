@@ -102,6 +102,9 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["ht0" + chambTag] = new TH1F(("ht0_" + chambTag).c_str(),
 					    "Distribution of t0; t0 (ns); Entries",
 					    9000,-90000,90000); 
+      m_plots["hdift0" + chambTag] = new TH1F(("hdift0_" + chambTag).c_str(),
+					    "Distribution of #Delta t0; #Delta t0 (ns); Entries",
+					    90000,-90000,90000); 
       m_plots["hSLAM" + chambTag] = new TH1F(("hSLAM_" + chambTag).c_str(),
 					    "Distribution of AM SL; SL; Entries",
 					    4,-0.5,3.5); 
@@ -123,7 +126,8 @@ void DTNtupleTPGSimAnalyzer::book()
 					    41,-220.5,-179.5); 
           m_plots["hBXfromT0" + chambTag + labelTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
-					    201,3199.5,3400.5); 
+					    2000,-3564,3564); 
+					    //201,3199.5,3400.5); 
           m_plots["hChi2" +  chambTag + labelTag] = new TH1F(("hChi2_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of #chi^2; #chi^2; Entries",
 					    32,-0.5,31.5); 
@@ -345,7 +349,11 @@ void DTNtupleTPGSimAnalyzer::fill()
 	}
 
         //myt0HW = myt0HW - eventoBX*25 + 3564*25;	
-	myt0HW = myt0HW - eventoBX*25;
+	myt0HW = myt0HW - eventoBX*25; 
+	while (myt0HW > 0) 
+	{
+	  myt0HW = myt0HW - 3564*25; 
+	}
 	//if (myt0HW < 0) myt0HW += 3564*25;	
 
 	if (myQualityHW <= 4){
@@ -367,6 +375,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  bestTrigHW[myStationHW/2-1][myQualityHW-1] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][myQualityHW-1] = myt0HW - eventoBX*25;
 	} */
+        m_plots["hdift0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - offset*25);
         if (abs(myt0HW - offset*25) < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
 	  bestTrigHW[myStationHW/2-1][qualityGroup(myQualityHW)] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = abs(myt0HW - offset*25);
