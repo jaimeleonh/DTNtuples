@@ -50,23 +50,42 @@ void printPlots_run(std::string run) {
   std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
+  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)", "BX (BX units)", "chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
+
   std::map<std::string, TH1*> m_plots_res;
+  std::map<std::string, TH1*> m_plots_mean;
 
   for (auto & chambTag : chambTags) {
-    for (auto & specific1DPlot : moreSpecific1DPlots) {
-      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)] = new TH1F((specific1DPlot + chambTag + "_" + categories.at(0)).c_str(), 
+    for (int j = 0; j < moreSpecific1DPlots.size(); j++){
+      auto specific1DPlot = moreSpecific1DPlots.at(j);
+   
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)] = new TH1F((specific1DPlot + "res_" + chambTag + "_" + categories.at(0)).c_str(), 
 					    "Resolutions; ; Resolution (a.u.) ",
+					    5,-0.5,4.5); 
+      m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(0)] = new TH1F((specific1DPlot + "mean_" + chambTag + "_" + categories.at(0)).c_str(), 
+					    "Means; ; Mean (a.u.) ",
 					    5,-0.5,4.5); 
       for (int i = 0; i < 5; i++){
         m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)]->GetXaxis()->SetBinLabel(i+1, labelTagsPlots[i].c_str());
+        m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(0)]->GetXaxis()->SetBinLabel(i+1, labelTagsPlots[i].c_str());
       }
       
-      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)] = new TH1F((specific1DPlot + chambTag + "_" + categories.at(1)).c_str(), 
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)] = new TH1F((specific1DPlot + "res_" +  chambTag + "_" + categories.at(1)).c_str(), 
 					    "Resolutions; ; Resolution (a.u.) ",
+					    5,-0.5,4.5); 
+      m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(1)] = new TH1F((specific1DPlot + "mean_" +  chambTag + "_" + categories.at(1)).c_str(), 
+					    "Means; ; Mean (a.u.) ",
 					    5,-0.5,4.5); 
       for (int i = 0; i < 5; i++){
         m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)]->GetXaxis()->SetBinLabel(i+1, quTags[i].c_str());
+        m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(1)]->GetXaxis()->SetBinLabel(i+1, quTags[i].c_str());
       }
+
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)]->GetYaxis()->SetTitle(axisAndUnits.at(j).c_str());
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)]->GetYaxis()->SetTitle(axisAndUnits.at(j).c_str());
+
+      m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(0)]->GetYaxis()->SetTitle(axisAndUnits.at(j).c_str());
+      m_plots_mean[specific1DPlot + "mean_" + chambTag + "_" + categories.at(1)]->GetYaxis()->SetTitle(axisAndUnits.at(j).c_str());
 
     }
   }
@@ -117,6 +136,7 @@ void printPlots_run(std::string run) {
         m_plots[name] = (TH1F*) data1.Get(name);
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
+        m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
          if (fileOK) cout << nameHisto << ".png" << endl;
@@ -142,6 +162,7 @@ void printPlots_run(std::string run) {
           m_plots[name] = (TH1F*) data1.Get(name);
           m_plots[name]->Draw();
           m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetRMS(1));
+          m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetMean(1));
           sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
           gPad->SaveAs(name);
           if (fileOK) cout << nameHisto << ".png" << endl;
@@ -168,7 +189,7 @@ void printPlots_run(std::string run) {
         m_plots[name] = (TH1F*) data1.Get(name);
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
-        //m_plots_res[specificPlot + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->getRMS());
+        m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
@@ -194,6 +215,13 @@ void printPlots_run(std::string run) {
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "res_" + chambTag + "_" + categories.at(i);
         m_plots_res[nameHisto]->Draw();
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
+        gPad->SaveAs(name);
+        if (fileOK) cout << nameHisto << ".png" << endl;
+      }
+      for (int i = 0; i<2; i++){
+        std::string nameHisto = specific1DPlot + "mean_" + chambTag + "_" + categories.at(i);
+        m_plots_mean[nameHisto]->Draw();
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;

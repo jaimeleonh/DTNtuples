@@ -88,7 +88,8 @@ void DTNtupleTPGSimAnalyzer::book()
 					    9,0.5,9.5); 
       m_plots["hBXDif"] = new TH1F("hBXDif",
 					    "BX difference ; BX difference; Entries",
-					    41,-220.5,-179.5); 
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
       m_plots["hBXtotal"] = new TH1F("hBXtotal",
 					    "Distribution of BX; BX; Entries",
 					    3564,0,3564); 
@@ -116,9 +117,9 @@ void DTNtupleTPGSimAnalyzer::book()
 					    4,-0.5,3.5); 
       m_plots["hPrimsSegs" + chambTag] = new TH1F(("hPrimsSegs_" + chambTag).c_str(),
 					    "Number of primitives (Qu>=8) and 8-hit-Phase-1 segments; ; Entries",
-					    3,-0.5,2.5); 
-      std::vector<std::string> tags = {"AM_FW", "AM_Emul", "Phase-1 Segments"};
-      for (int i = 0; i < 3; i++){
+					    4,-0.5,3.5); 
+      std::vector<std::string> tags = {"AM_FW", "AM_Emul","Phase-1 Segments","TwinMux In"};
+      for (unsigned int i = 0; i < tags.size(); i++){
         m_plots["hPrimsSegs" + chambTag]->GetXaxis()->SetBinLabel(i+1, tags[i].c_str());
       }
 
@@ -129,7 +130,8 @@ void DTNtupleTPGSimAnalyzer::book()
 					    //201,3199.5,3400.5); 
           m_plots["hBXDif" + chambTag + labelTag] = new TH1F(("hBXDif_" + chambTag + "_" + labelTag).c_str(),
 					    "BX difference ; BX difference; Entries",
-					    41,-220.5,-179.5); 
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
           m_plots["hBXfromT0" + chambTag + labelTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
 					    2000,-3564,3564); 
@@ -187,7 +189,8 @@ void DTNtupleTPGSimAnalyzer::book()
 					    3564,0,3564); 
             m_plots["hBXDif" + chambTag + labelTag + slTag] = new TH1F(("hBXDif_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "BX difference ; BX difference; Entries",
-					    41,-220.5,-179.5); 
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
             m_plots["hBXfromT0" + chambTag + labelTag + slTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
 					    201,3199.5,3400.5); 
@@ -244,7 +247,8 @@ void DTNtupleTPGSimAnalyzer::book()
 					    3564,0,3564); 
           m_plots["hBXDif" + chambTag + quTag] = new TH1F(("hBXDif_" + chambTag + "_" + quTag).c_str(),
 					    "BX difference ; BX difference; Entries",
-					    41,-220.5,-179.5); 
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
           m_plots["hBXfromT0" + chambTag + quTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + quTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
 					    201,3199.5,3400.5); 
@@ -309,6 +313,7 @@ void DTNtupleTPGSimAnalyzer::fill()
      //int eventoBX; // = ph2TpgPhiHw_bx; //848 
      int eventoBX = event_bunchCrossing; //848
      int offset = -200; //FIXME
+     //int offset = -270; //FIXME
      m_plots["hBXtotal"]->Fill(eventoBX);
      //int eventoBX = 3365; //848
 
@@ -361,8 +366,7 @@ void DTNtupleTPGSimAnalyzer::fill()
           m_plots["hBXNextOrbit" + chambTags.at(myStationHW/2-1)]->Fill(eventoBX);
 	}
 	
-	while (myt0HW > 0) 
-	{
+	while (myt0HW > 0) { 
 	  myt0HW = myt0HW - 3564*25; 
 	}
 	//if (myt0HW < 0) myt0HW += 3564*25;	
@@ -441,7 +445,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 /*	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myBXHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(round(myt0HW/25));
 	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(round(myt0HW/25) - 32*myBXHW/25);
-	m_plots["hQualityHW"]->Fill(myQualityHW);
+_plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myChi2HW);
  */
 	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
@@ -688,6 +692,25 @@ void DTNtupleTPGSimAnalyzer::fill()
            }
 	}		
       } //for segments
+
+      
+      for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
+
+        short myStationTwin = ltTwinMuxIn_station->at(iTwin);
+        short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
+        short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
+        short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
+        int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
+        int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
+        float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
+        float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
+        int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
+
+      }
+
 
       // if (entro) cout << "------------------------------------------------------" << endl; 
 
