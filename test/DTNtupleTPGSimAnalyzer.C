@@ -102,6 +102,12 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["ht0" + chambTag] = new TH1F(("ht0_" + chambTag).c_str(),
 					    "Distribution of t0; t0 (ns); Entries",
 					    9000,-90000,90000); 
+      m_plots["hBXAll" + chambTag] = new TH1F(("hBXAll_" + chambTag).c_str(),
+					    "Distribution of All BXs; BX; Entries",
+					    3564,0,3564); 
+      m_plots["hBXNextOrbit" + chambTag] = new TH1F(("hBXNextOrbit_" + chambTag).c_str(),
+					    "Distribution of BX from Next Orbit Primx; BX; Entries",
+					    3564,0,3564); 
       m_plots["hdift0" + chambTag] = new TH1F(("hdift0_" + chambTag).c_str(),
 					    "Distribution of #Delta t0; #Delta t0 (ns); Entries",
 					    90000,-90000,90000); 
@@ -349,7 +355,12 @@ void DTNtupleTPGSimAnalyzer::fill()
 	}
 
         //myt0HW = myt0HW - eventoBX*25 + 3564*25;	
-	myt0HW = myt0HW - eventoBX*25; 
+	myt0HW = myt0HW - eventoBX*25;
+        m_plots["hBXAll" + chambTags.at(myStationHW/2-1)]->Fill(eventoBX);
+	if (myt0HW > 0) { 
+          m_plots["hBXNextOrbit" + chambTags.at(myStationHW/2-1)]->Fill(eventoBX);
+	}
+	
 	while (myt0HW > 0) 
 	{
 	  myt0HW = myt0HW - 3564*25; 
@@ -469,7 +480,12 @@ void DTNtupleTPGSimAnalyzer::fill()
         float myDirAM =  ph2TpgPhiEmuAm_dirLoc_phi->at(iTrigAM);
         int myBXAM = ph2TpgPhiEmuAm_BX->at(iTrigAM);
         int myt0AM = ph2TpgPhiEmuAm_t0->at(iTrigAM);//  myt0AM = myt0AM - eventoBX*25 + 3564*25;	
-	      myt0AM = myt0AM - eventoBX*25;
+	
+	myt0AM = myt0AM - eventoBX*25;
+	while (myt0AM > 0) 
+	{
+	  myt0AM = myt0AM - 3564*25; 
+	}
 	 //     if (myt0AM < 0) myt0AM += 3564*25;	
 
 	if (myQualityAM >=6 && myQualityAM != 7) {

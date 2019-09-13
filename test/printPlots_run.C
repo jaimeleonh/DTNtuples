@@ -1,5 +1,12 @@
 //#include "tdrstyle.C"
-
+#include "TH1.h"
+#include "TH2.h"
+#include <TStyle.h>
+#include <TCanvas.h>
+#include "TGraph.h"
+#include "TCanvas.h"
+#include "TAxis.h"
+#include "TStyle.h"
 
 void printPlots_run(std::string run) {
 
@@ -26,12 +33,15 @@ void printPlots_run(std::string run) {
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
+  std::vector<std::string> labelTagsPlots = {"All", "Correlated", "Uncorrelated", "UncorrelatedSL1", "UncorrelatedSL3"};
   
   std::map<std::string, TH1*> m_plots;
   std::map<std::string, TH2*> m_plots2;
   std::map<std::string, TEfficiency*> m_effs;
 
   char name [128];
+
+  std::vector <std::string> categories {"perGroup","perQuality"}; 
 
   std::vector <std::string> generalEffPlots {"hEffCorAM", "hEffCor"}; 
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
@@ -40,7 +50,32 @@ void printPlots_run(std::string run) {
   std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
+  std::map<std::string, TH1*> m_plots_res;
 
+  for (auto & chambTag : chambTags) {
+    for (auto & specific1DPlot : moreSpecific1DPlots) {
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)] = new TH1F((specific1DPlot + chambTag + "_" + categories.at(0)).c_str(), 
+					    "Resolutions; ; Resolution (a.u.) ",
+					    5,-0.5,4.5); 
+      for (int i = 0; i < 5; i++){
+        m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(0)]->GetXaxis()->SetBinLabel(i+1, labelTagsPlots[i].c_str());
+      }
+      
+      m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)] = new TH1F((specific1DPlot + chambTag + "_" + categories.at(1)).c_str(), 
+					    "Resolutions; ; Resolution (a.u.) ",
+					    5,-0.5,4.5); 
+      for (int i = 0; i < 5; i++){
+        m_plots_res[specific1DPlot + "res_" + chambTag + "_" + categories.at(1)]->GetXaxis()->SetBinLabel(i+1, quTags[i].c_str());
+      }
+
+    }
+  }
+
+
+
+
+
+/*
   for (auto & generalPlot : generalEffPlots) {
     std::string nameHisto = generalPlot;
     sprintf(name,"%s",nameHisto.c_str());
@@ -49,7 +84,7 @@ void printPlots_run(std::string run) {
     sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
     gPad->SaveAs(name);
     if (fileOK) cout << nameHisto << ".png" << endl;
-  }
+  } */
   for (auto & generalPlot : general1DPlots) {
     std::string nameHisto = generalPlot;
     sprintf(name,"%s",nameHisto.c_str());
@@ -59,8 +94,9 @@ void printPlots_run(std::string run) {
     gPad->SaveAs(name);
     if (fileOK) cout << nameHisto << ".png" << endl;
   }
-  
-  for (const auto & chambTag : chambTags) {
+ 
+  for (int i = 0; i<chambTags.size(); i++) {
+    auto chambTag = chambTags.at(i);
 
     for (auto & specificPlot : specific1DPlots) {
       std::string nameHisto = specificPlot + chambTag;
@@ -71,16 +107,19 @@ void printPlots_run(std::string run) {
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
     }
-    for (const auto & labelTag : labelTags) {
+    for (int j = 0; j<labelTags.size(); j++) {
+      auto labelTag = labelTags.at(j);
+    //for (const auto & labelTag : labelTags) {
 
       for (auto & specificPlot : moreSpecific1DPlots) {
         std::string nameHisto = specificPlot + chambTag + "_" + labelTag;
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
         m_plots[name]->Draw();
+        m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+         if (fileOK) cout << nameHisto << ".png" << endl;
       }
       
       for (auto & specificPlot : moreSpecific2DPlots) {
@@ -93,13 +132,16 @@ void printPlots_run(std::string run) {
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
       if (labelTag == "All" || labelTag == "Correlated") continue;
-      for (auto  slTag : slTags) {
+      for (int k = 0; k<slTags.size(); k++) {
+        auto slTag = slTags.at(k);
+    //  for (auto  slTag : slTags) {
         for (auto & specificPlot : moreSpecific1DPlots) {
           if (specificPlot == "hPsi_" || specificPlot == "hTime_" || specificPlot == "hPos_") continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
           sprintf(name,"%s",nameHisto.c_str());
           m_plots[name] = (TH1F*) data1.Get(name);
           m_plots[name]->Draw();
+          m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetRMS(1));
           sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
           gPad->SaveAs(name);
           if (fileOK) cout << nameHisto << ".png" << endl;
@@ -117,12 +159,16 @@ void printPlots_run(std::string run) {
         }
       } // sl
     } // label
-    for (const auto & quTag : quTags) {
+    //for (const auto & quTag : quTags) {
+    for (int j = 0; j<quTags.size(); j++) {
+      auto quTag = quTags.at(j);
       for (auto & specificPlot : moreSpecific1DPlots) {
         std::string nameHisto = specificPlot + chambTag + "_" + quTag;
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
         m_plots[name]->Draw();
+        m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
+        //m_plots_res[specificPlot + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->getRMS());
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
@@ -139,5 +185,22 @@ void printPlots_run(std::string run) {
       }
     } //qu
   } // chamber
+
+
+  // PLOT RESOLS
+ 
+  for (auto & chambTag : chambTags) {
+    for (auto & specific1DPlot : moreSpecific1DPlots) {
+      for (int i = 0; i<2; i++){
+        std::string nameHisto = specific1DPlot + "res_" + chambTag + "_" + categories.at(i);
+        m_plots_res[nameHisto]->Draw();
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
+        gPad->SaveAs(name);
+        if (fileOK) cout << nameHisto << ".png" << endl;
+      }
+    }
+  }
+
+
 
 } // end macro
