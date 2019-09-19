@@ -25,16 +25,5 @@ cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000
 
 ### Analysis:
 ```
-root -b
-root [0] .x loadExampleAnalysis.C
-
-root [1] DTNtupleExampleAnalyzer analysis("DTDPGNtuple_10_6_0_SX5.root","results.root")
-// or
-root [1] DTNtupleExampleAnalyzer analysis("DTDPGNtuple_10_6_0_Phase2_Simulation.root","results.root")
-
-root [2] analysis.Loop()
-
-#or 
-
 ./plotPrintAndMove.sh runNumber
 ```
