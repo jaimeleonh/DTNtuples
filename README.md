@@ -26,4 +26,3 @@ cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000
 ### Analysis:
 ```
 ./plotPrintAndMove.sh runNumber
-```
