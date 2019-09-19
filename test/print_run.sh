@@ -3,4 +3,5 @@ mkdir /eos/home-j/jleonhol/www/run$1/plots
 rm /eos/home-j/jleonhol/www/run$1/plots/*
 cp ./run$1/* /eos/home-j/jleonhol/www/run$1/plots/
 cp results_run$1.root /eos/home-j/jleonhol/www/run$1/
+rm -rf ./run$1
 cp /eos/home-j/jleonhol/www/index_php /eos/home-j/jleonhol/www/run$1/index.php 
