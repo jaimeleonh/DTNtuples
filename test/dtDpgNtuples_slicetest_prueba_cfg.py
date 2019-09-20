@@ -14,6 +14,12 @@ options.register('globalTag',
                  VarParsing.VarParsing.varType.string,
                  "Global Tag")
 
+options.register('correctL1A',
+                 False, #default value
+                 VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.bool,
+                 "Correct L1A")
+
 options.register('nEvents',
                  -1, #default value
                  VarParsing.VarParsing.multiplicity.singleton,
@@ -162,7 +168,10 @@ else :
 print process.source.fileNames
 
 if options.ntupleName == '' :
-    ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + ".root"
+    if options.correctL1A == False :
+      ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + ".root"
+    else :
+      ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + "_corrected.root"
     #ntupleName = "./DTDPGNtuple_run" + str(options.runNumber) + ".root"
     #ntupleName = "./DTDPGNtuple.root"
 else :
@@ -179,6 +188,7 @@ process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('EventFilter.DTRawToDigi.dtab7unpacker_cfi')
 
 process.dtAB7unpacker.channelMapping = cms.untracked.string("july2019")
+process.dtAB7unpacker.correctTPTimeToL1A = options.correctL1A;
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuonCosmics_cff')
 

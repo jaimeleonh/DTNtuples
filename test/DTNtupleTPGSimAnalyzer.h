@@ -21,6 +21,9 @@ public:
   
   DTNtupleTPGSimAnalyzer(const TString & inFileName,
 			 const TString & outFileName);
+  DTNtupleTPGSimAnalyzer(const TString & inFileName,
+			 const TString & outFileName,
+			 const bool & correctL1A);
   ~DTNtupleTPGSimAnalyzer();
 
   void virtual Loop() override;
@@ -53,6 +56,7 @@ private:
   Double_t m_maxMuTrigDPhi;
  
   bool debug;  
+  bool correctL1A;  
 };
 
 #endif
