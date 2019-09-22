@@ -83,7 +83,7 @@ void DTNtupleTPGSimAnalyzer::book()
 
   m_outFile.cd();
 
-  std::vector<std::string> chambTags = { "MB2", "MB4"};
+  std::vector<std::string> chambTags = {"MB1","MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
@@ -325,7 +325,7 @@ void DTNtupleTPGSimAnalyzer::book()
 
 void DTNtupleTPGSimAnalyzer::fill()
 {
-     std::vector<std::string> chambTags = { "MB2", "MB4"};
+     std::vector<std::string> chambTags = {"MB1", "MB2", "MB3","MB4"};
      std::vector<std::string> slTags = { "SL1", "SL3"};
      //std::vector<std::string> quTags  = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
      std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
@@ -345,16 +345,16 @@ void DTNtupleTPGSimAnalyzer::fill()
  
      //bool debug = false; 
      if (debug && ph2TpgPhiHw_nTrigs!=0) cout << "####################### HARDWARE PRIMITIVES ############################" << endl;  
-      int bestTrigHW[2][5];  
-      int bestTimeHW[2][5];
+      int bestTrigHW[chambTags.size()][quTags.size()];  
+      int bestTimeHW[chambTags.size()][quTags.size()];
 
-      for (int i = 0; i<5; i++){
-        bestTrigHW[0][i] = -1; 
-        bestTrigHW[1][i] = -1; 
-	bestTimeHW[0][i] = 100000;
-	bestTimeHW[1][i] = 100000;
-      } 
-  
+      for (int i = 0; i<chambTags.size(); i++){
+        for (int j = 0; j<quTags.size(); j++){
+          bestTrigHW[i][j] = -1; 
+	  bestTimeHW[i][j] = 999999;
+        }
+      }
+      
       for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
         {
 		
@@ -372,7 +372,7 @@ void DTNtupleTPGSimAnalyzer::fill()
         int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
         int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
         //m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW);
-        m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - eventoBX*25);
+        m_plots["ht0" + chambTags.at(myStationHW-1)]->Fill(myt0HW - eventoBX*25);
 
 	if (myQualityHW >=6 && myQualityHW != 7) {
 	//  if (!printeado && debug) {cout << "----------------------------------------" << endl; printeado = true;}
@@ -384,9 +384,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  myt0HW = myt0HW - eventoBX*25;
 	  myBXHW = myBXHW - eventoBX;
 	}
-        m_plots["hBXAll" + chambTags.at(myStationHW/2-1)]->Fill(eventoBX);
+        m_plots["hBXAll" + chambTags.at(myStationHW-1)]->Fill(eventoBX);
 	if (myt0HW > 0) { 
-          m_plots["hBXNextOrbit" + chambTags.at(myStationHW/2-1)]->Fill(eventoBX);
+          m_plots["hBXNextOrbit" + chambTags.at(myStationHW-1)]->Fill(eventoBX);
 	}
 	
 	while (myt0HW > 0) { 
@@ -408,16 +408,16 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 	m_plots["hBXDif"]->Fill(myBXHW);
 //        m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - eventoBX*25);
-        if (myQualityHW >= 9){ m_plots["hPrimsSegs" + chambTags.at(myStationHW/2-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
+        if (myQualityHW >= 9){ m_plots["hPrimsSegs" + chambTags.at(myStationHW-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
 	
         /*if (myt0HW - eventoBX*25 < bestTimeHW[myStationHW/2-1][myQualityHW-1]){
 	  bestTrigHW[myStationHW/2-1][myQualityHW-1] = iTrigHW; 
 	  bestTimeHW[myStationHW/2-1][myQualityHW-1] = myt0HW - eventoBX*25;
 	} */
-        m_plots["hdift0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW - offset*25);
-        if (abs(myt0HW - offset*25) < bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)]){
-	  bestTrigHW[myStationHW/2-1][qualityGroup(myQualityHW)] = iTrigHW; 
-	  bestTimeHW[myStationHW/2-1][qualityGroup(myQualityHW)] = abs(myt0HW - offset*25);
+        m_plots["hdift0" + chambTags.at(myStationHW-1)]->Fill(myt0HW - offset*25);
+        if (abs(myt0HW - offset*25) < bestTimeHW[myStationHW-1][qualityGroup(myQualityHW)]){
+	  bestTrigHW[myStationHW-1][qualityGroup(myQualityHW)] = iTrigHW; 
+	  bestTimeHW[myStationHW-1][qualityGroup(myQualityHW)] = abs(myt0HW - offset*25);
 	}
 
 	
@@ -443,27 +443,27 @@ void DTNtupleTPGSimAnalyzer::fill()
           cout << "-------------------------------------------------------------------------" << endl;
         }
 	
-        m_plots["hSLHW" + chambTags.at(myStationHW/2-1)]->Fill(mySLHW);
-	m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(0)]->Fill(myBXHW);
-	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+labelTags.at(0)]->Fill(myBXHW);
-	m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(0)]->Fill(round(myt0HW/25));
-	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(0)]->Fill(myChi2HW);
+        m_plots["hSLHW" + chambTags.at(myStationHW-1)]->Fill(mySLHW);
+	m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
+	m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
+	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(round(myt0HW/25));
+	m_plots["hChi2"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myChi2HW);
 
 	if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
-	  m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(1)]->Fill(myBXHW);
-	  m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+labelTags.at(1)]->Fill(myBXHW);
-	  m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(1)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(1)]->Fill(myChi2HW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
+	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
+	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(round(myt0HW/25));
+	  m_plots["hChi2"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myChi2HW);
 	} else {
-	  m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(myBXHW);
-	  m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(myBXHW);
-	  m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(2)]->Fill(myChi2HW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
+	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
+	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
+	  m_plots["hChi2"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myChi2HW);
 	  
-	  m_plots["hBX"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
-	  m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
-	  m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2"+chambTags.at(myStationHW/2-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myChi2HW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
+	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
+	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
+	  m_plots["hChi2"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myChi2HW);
 	}
 
 /*	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myBXHW);
@@ -472,25 +472,25 @@ void DTNtupleTPGSimAnalyzer::fill()
 _plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myChi2HW);
  */
-	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
-	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
-	m_plots["hBXfromT0"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
+	m_plots["hBX"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
+	m_plots["hBXDif"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
+	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
 //	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25) - 32*myBXHW/25);
 	m_plots["hQualityHW"]->Fill(myQualityHW);
-	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW);
+	m_plots["hChi2"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW);
 	
 
      } // end HW
      
      if (debug && ph2TpgPhiEmuAm_nTrigs!=0) cout << "####################### EMULATOR PRIMITIVES ############################" << endl;  
-      int bestTrigAM[2][5];  
-      int bestTimeAM[2][5];
+      int bestTrigAM[chambTags.size()][quTags.size()];  
+      int bestTimeAM[chambTags.size()][quTags.size()];  
 
-      for (int i = 0; i<5; i++){
-        bestTrigAM[0][i] = -1; 
-        bestTrigAM[1][i] = -1; 
-	bestTimeAM[0][i] = 10000;
-	bestTimeAM[1][i] = 10000;
+      for (int i = 0; i<chambTags.size(); i++){
+        for (int j = 0; j<quTags.size(); j++){
+          bestTrigAM[i][j] = -1; 
+ 	  bestTimeAM[i][j] = 999999;
+	}
       }
 
  
@@ -525,15 +525,15 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  if (debug) cout << "Correlated AM con quality " << myQualityAM << endl;
 	}
 
-        if (myQualityAM >= 8){ m_plots["hPrimsSegs" + chambTags.at(myStationAM/2-1)] -> Fill(1); } // cout << "Habemus primitiva" << endl;  }
+        if (myQualityAM >= 8){ m_plots["hPrimsSegs" + chambTags.at(myStationAM-1)] -> Fill(1); } // cout << "Habemus primitiva" << endl;  }
 	
 	/*if (myt0AM - eventoBX*25 < bestTimeAM[myStationAM/2-1][myQualityAM-1]){
 	  bestTrigAM[myStationAM/2-1][myQualityAM-1] = iTrigAM; 
 	  bestTimeAM[myStationAM/2-1][myQualityAM-1] = myt0AM - eventoBX*25;
 	}*/
-	if (abs(myt0AM - offset*25) < bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)]){
-	  bestTrigAM[myStationAM/2-1][qualityGroup(myQualityAM)] = iTrigAM; 
-	  bestTimeAM[myStationAM/2-1][qualityGroup(myQualityAM)] = abs(myt0AM - offset*25);
+	if (abs(myt0AM - offset*25) < bestTimeAM[myStationAM-1][qualityGroup(myQualityAM)]){
+	  bestTrigAM[myStationAM-1][qualityGroup(myQualityAM)] = iTrigAM; 
+	  bestTimeAM[myStationAM-1][qualityGroup(myQualityAM)] = abs(myt0AM - offset*25);
 	}
 	
 
@@ -557,11 +557,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
           cout << "-------------------------------------------------------------------------" << endl;
         }	
 	m_plots["hQualityAM"]->Fill(myQualityAM);
-        m_plots["hSLAM" + chambTags.at(myStationAM/2-1)]->Fill(mySLAM);
+        m_plots["hSLAM" + chambTags.at(myStationAM-1)]->Fill(mySLAM);
       } // end AM
 
-      for (int i = 0; i<2; i++){
-        for (int j = 0; j<5; j++){
+      for (int i = 0; i<chambTags.size(); i++){
+        for (int j = 0; j<quTags.size(); j++){
 //	    cout << "i " << i << " j " << j << " " <<  bestTrigHW[i][j] << " " << bestTrigAM[i][j] << endl; 
           if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
 
@@ -639,8 +639,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	}
 
 	
-	for (int i = 0; i<2; i++){
-          for (int j = 0; j<5; j++){
+	for (int i = 0; i<chambTags.size(); i++){
+          for (int j = 0; j<labelTags.size(); j++){
             if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
 	      
 	      short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
