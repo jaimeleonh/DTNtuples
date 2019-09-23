@@ -116,32 +116,44 @@ void DTNtupleTPGSimAnalyzer::book()
 
       
       for (const auto & chambTag : chambTags) {
+	
+        m_effs["hEffHWvsSegX"+ chambTag] = new TEfficiency(("hEffHWvsSegX_"+ chambTag).c_str(),
+					    "HW Eff vs Seg X",
+					    50,-251.5,250.5); 
+	m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
+					    "AM Eff vs Seg X",
+					    50,-251.5,250.5); 
+	m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
+					    "TM Eff vs Seg X",
+					    50,-251.5,250.5); 
 
-      m_plots["hSLHW" + chambTag] = new TH1F(("hSLHW_" + chambTag).c_str(),
+        m_plots["hSLHW" + chambTag] = new TH1F(("hSLHW_" + chambTag).c_str(),
 					    "Distribution of HW SL; SL; Entries",
 					    4,-0.5,3.5); 
-      m_plots["ht0" + chambTag] = new TH1F(("ht0_" + chambTag).c_str(),
+        m_plots["ht0" + chambTag] = new TH1F(("ht0_" + chambTag).c_str(),
 					    "Distribution of t0; t0 (ns); Entries",
 					    9000,-90000,90000); 
-      m_plots["hBXAll" + chambTag] = new TH1F(("hBXAll_" + chambTag).c_str(),
+        m_plots["hBXAll" + chambTag] = new TH1F(("hBXAll_" + chambTag).c_str(),
 					    "Distribution of All BXs; BX; Entries",
 					    3564,0,3564); 
-      m_plots["hBXNextOrbit" + chambTag] = new TH1F(("hBXNextOrbit_" + chambTag).c_str(),
+        m_plots["hBXNextOrbit" + chambTag] = new TH1F(("hBXNextOrbit_" + chambTag).c_str(),
 					    "Distribution of BX from Next Orbit Primx; BX; Entries",
 					    3564,0,3564); 
-      m_plots["hdift0" + chambTag] = new TH1F(("hdift0_" + chambTag).c_str(),
+        m_plots["hdift0" + chambTag] = new TH1F(("hdift0_" + chambTag).c_str(),
 					    "Distribution of #Delta t0; #Delta t0 (ns); Entries",
 					    90000,-90000,90000); 
-      m_plots["hSLAM" + chambTag] = new TH1F(("hSLAM_" + chambTag).c_str(),
+        m_plots["hSLAM" + chambTag] = new TH1F(("hSLAM_" + chambTag).c_str(),
 					    "Distribution of AM SL; SL; Entries",
 					    4,-0.5,3.5); 
-      m_plots["hPrimsSegs" + chambTag] = new TH1F(("hPrimsSegs_" + chambTag).c_str(),
+        m_plots["hPrimsSegs" + chambTag] = new TH1F(("hPrimsSegs_" + chambTag).c_str(),
 					    "Number of primitives (Qu>=8) and 8-hit-Phase-1 segments; ; Entries",
 					    4,-0.5,3.5); 
-      std::vector<std::string> tags = {"AM_FW", "AM_Emul","Phase-1 Segments","TwinMux In"};
-      for (unsigned int i = 0; i < tags.size(); i++){
-        m_plots["hPrimsSegs" + chambTag]->GetXaxis()->SetBinLabel(i+1, tags[i].c_str());
-      }
+        std::vector<std::string> tags = {"AM_FW", "AM_Emul","Phase-1 Segments","TwinMux In"};
+        for (unsigned int i = 0; i < tags.size(); i++){
+          m_plots["hPrimsSegs" + chambTag]->GetXaxis()->SetBinLabel(i+1, tags[i].c_str());
+        }
+        m_plots2["h2DHwQualSegNHits"+chambTag]=new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs HWQual",9,0.5,9.5,9,0.5,9.5);
+        m_plots2["h2DEmuQualSegNHits"+chambTag]=new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs EmuQual",9,0.5,9.5,9,0.5,9.5);
 
         for (const auto & labelTag : labelTags) {
           m_plots["hBX" + chambTag + labelTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag).c_str(),
@@ -348,11 +360,15 @@ void DTNtupleTPGSimAnalyzer::fill()
       int bestTrigHW[chambTags.size()][quTags.size()];  
       int bestTimeHW[chambTags.size()][quTags.size()];
 
-      for (int i = 0; i<chambTags.size(); i++){
-        for (int j = 0; j<quTags.size(); j++){
+      for (unsigned int i = 0; i<chambTags.size(); i++){
+        for (unsigned int j = 0; j<quTags.size(); j++){
           bestTrigHW[i][j] = -1; 
 	  bestTimeHW[i][j] = 999999;
         }
+      }
+      int bestQualTrigHW[4];int IbestQualTrigHW[4] ; // 4 stations MB1 to MB4 
+      for(unsigned indstat=0;indstat<4; indstat++){
+	bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
       }
       
       for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
@@ -373,6 +389,12 @@ void DTNtupleTPGSimAnalyzer::fill()
         int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
         //m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW);
         m_plots["ht0" + chambTags.at(myStationHW-1)]->Fill(myt0HW - eventoBX*25);
+
+ 	int indstat = myQualityHW - 1; 	
+	if(myQualityHW>bestQualTrigHW[indstat]){
+	  bestQualTrigHW[indstat]=myQualityHW;
+	  IbestQualTrigHW[indstat]=iTrigHW ;
+	}
 
 	if (myQualityHW >=6 && myQualityHW != 7) {
 	//  if (!printeado && debug) {cout << "----------------------------------------" << endl; printeado = true;}
@@ -486,11 +508,16 @@ _plots["hQualityHW"]->Fill(myQualityHW);
       int bestTrigAM[chambTags.size()][quTags.size()];  
       int bestTimeAM[chambTags.size()][quTags.size()];  
 
-      for (int i = 0; i<chambTags.size(); i++){
-        for (int j = 0; j<quTags.size(); j++){
+      for (unsigned int i = 0; i<chambTags.size(); i++){
+        for (unsigned int j = 0; j<quTags.size(); j++){
           bestTrigAM[i][j] = -1; 
  	  bestTimeAM[i][j] = 999999;
 	}
+      }
+
+      int bestQualTrigAM[4];int IbestQualTrigAM[4] ; // 4 stations MB1 to MB4 
+      for(unsigned indstat=0;indstat<4; indstat++){
+	bestQualTrigAM[indstat]=-1;IbestQualTrigAM[indstat]=-1;
       }
 
  
@@ -509,6 +536,13 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         int myBXAM = ph2TpgPhiEmuAm_BX->at(iTrigAM);
         int myt0AM = ph2TpgPhiEmuAm_t0->at(iTrigAM);//  myt0AM = myt0AM - eventoBX*25 + 3564*25;	
 	
+        int indstat;
+	indstat=myStationAM-1;
+	if(myQualityAM>bestQualTrigAM[indstat]){
+	  bestQualTrigAM[indstat]=myQualityAM;
+	  IbestQualTrigAM[indstat]=iTrigAM ;
+	}
+
 	if (correctL1A) {
 	  myt0AM = myt0AM - eventoBX*25;
 	  myBXAM = myBXAM - eventoBX   ;
@@ -560,8 +594,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         m_plots["hSLAM" + chambTags.at(myStationAM-1)]->Fill(mySLAM);
       } // end AM
 
-      for (int i = 0; i<chambTags.size(); i++){
-        for (int j = 0; j<quTags.size(); j++){
+      for (unsigned int i = 0; i<chambTags.size(); i++){
+        for (unsigned int j = 0; j<quTags.size(); j++){
 //	    cout << "i " << i << " j " << j << " " <<  bestTrigHW[i][j] << " " << bestTrigAM[i][j] << endl; 
           if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
 
@@ -617,6 +651,36 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         }
       }
 
+     if (debug && ltTwinMuxIn_nTrigs!=0) cout << "####################### TwimMux PRIMITIVES ############################" << endl;  
+        int bestQualTrigTM[4];int IbestQualTrigTM[4] ; // 4 stations MB1 to MB4 
+        for(unsigned indstat=0;indstat<4; indstat++){
+       	  bestQualTrigTM[indstat]=-1;IbestQualTrigTM[indstat]=-1;
+        }
+  
+      for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
+
+        short myStationTwin = ltTwinMuxIn_station->at(iTwin);
+        short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
+        short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
+        short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
+        int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
+        int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
+        float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
+        float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
+        int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
+
+	int indstat = myStationTwin - 1;  
+	if(myQualityTwin>bestQualTrigTM[indstat]){
+	  bestQualTrigTM[indstat]=myQualityTwin;
+	  IbestQualTrigTM[indstat]=iTwin;
+	}
+
+	
+      }
+
       bool entro = false; 
       for (std::size_t iSeg = 0; iSeg <  seg_nSegments; ++iSeg) {
 
@@ -625,6 +689,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	short mySegStation = seg_station->at(iSeg);
    	short mySegWheel = seg_wheel->at(iSeg);
    	short mySegSector = seg_sector->at(iSeg);
+	float mySegPos = seg_posLoc_x->at(iSeg);
    	float mySegPosSL1 = seg_posLoc_x_SL1->at(iSeg);
         float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
         float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
@@ -638,9 +703,24 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 
 	}
 
+	bool IhaveHW=true; 
+	bool IhaveAM=true; 
+	bool IhaveTM=true; 
+	if(mySegWheel==2 && mySegSector==12){
+	  int indstat = mySegStation-1;
+	  m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
+	  m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
+	  if(IbestQualTrigHW[indstat]==-1) IhaveHW=false;
+	  if(IbestQualTrigAM[indstat]==-1) IhaveAM=false;
+	  if(IbestQualTrigTM[indstat]==-1) IhaveTM=false;
+
+	  m_effs["hEffHWvsSegX"+chambTags.at(indstat)]->Fill(IhaveHW,mySegPos);
+	  m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IhaveAM,mySegPos);
+	  m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IhaveTM,mySegPos);
+	}
 	
-	for (int i = 0; i<chambTags.size(); i++){
-          for (int j = 0; j<labelTags.size(); j++){
+	for (unsigned int i = 0; i<chambTags.size(); i++){
+          for (unsigned int j = 0; j<labelTags.size(); j++){
             if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
 	      
 	      short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
@@ -721,23 +801,6 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	}		
       } //for segments
 
-      
-      for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
-
-        short myStationTwin = ltTwinMuxIn_station->at(iTwin);
-        short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
-        short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
-        short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
-        int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
-        int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
-        float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
-        float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
-        int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
-
-        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
-        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
-
-      }
 
 
       // if (entro) cout << "------------------------------------------------------" << endl; 
