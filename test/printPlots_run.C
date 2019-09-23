@@ -43,10 +43,12 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> categories {"perGroup","perQuality"}; 
 
-  std::vector <std::string> generalEffPlots {"hEffCorAM", "hEffCor"}; 
+  std::vector <std::string> generalEffPlots {"hEffHWvsSegX_", "hEffTMvsSegX_", "hEffAMvsSegX_"}; 
+  //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX", "hEffCorAM", "hEffCor"}; 
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW_", "hSLAM_", "hPrimsSegs_"};
+  std::vector <std::string> specific2DPlots {"h2DHwQualSegNHits_","h2DEmuQualSegNHits_","h2DTMQualSegNHits_"};
   std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
@@ -103,7 +105,7 @@ void printPlots_run(std::string run) {
     sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
     gPad->SaveAs(name);
     if (fileOK) cout << nameHisto << ".png" << endl;
-  } */
+  } */ 
   for (auto & generalPlot : general1DPlots) {
     std::string nameHisto = generalPlot;
     sprintf(name,"%s",nameHisto.c_str());
@@ -117,11 +119,29 @@ void printPlots_run(std::string run) {
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
 
+    for (auto & generalPlot : generalEffPlots) {
+      std::string nameHisto = generalPlot + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->Draw();
+      sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
+      gPad->SaveAs(name);
+      if (fileOK) cout << nameHisto << ".png" << endl;
+    } 
     for (auto & specificPlot : specific1DPlots) {
       std::string nameHisto = specificPlot + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       m_plots[name] = (TH1F*) data1.Get(name);
       m_plots[name]->Draw();
+      sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
+      gPad->SaveAs(name);
+      if (fileOK) cout << nameHisto << ".png" << endl;
+    }
+    for (auto & specificPlot : specific2DPlots) {
+      std::string nameHisto = specificPlot + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_plots2[name] = (TH2F*) data1.Get(name);
+      m_plots2[name]->Draw();
       sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;

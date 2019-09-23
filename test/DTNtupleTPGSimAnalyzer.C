@@ -154,6 +154,7 @@ void DTNtupleTPGSimAnalyzer::book()
         }
         m_plots2["h2DHwQualSegNHits"+chambTag]=new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs HWQual",9,0.5,9.5,9,0.5,9.5);
         m_plots2["h2DEmuQualSegNHits"+chambTag]=new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs EmuQual",9,0.5,9.5,9,0.5,9.5);
+        m_plots2["h2DTMQualSegNHits"+chambTag]=new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs TMQual",9,0.5,9.5,9,0.5,9.5);
 
         for (const auto & labelTag : labelTags) {
           m_plots["hBX" + chambTag + labelTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag).c_str(),
@@ -710,6 +711,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  int indstat = mySegStation-1;
 	  m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
 	  m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
+	  m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
 	  if(IbestQualTrigHW[indstat]==-1) IhaveHW=false;
 	  if(IbestQualTrigAM[indstat]==-1) IhaveAM=false;
 	  if(IbestQualTrigTM[indstat]==-1) IhaveTM=false;
