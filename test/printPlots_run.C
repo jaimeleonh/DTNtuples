@@ -27,7 +27,7 @@ void printPlots_run(std::string run) {
   //TFile data1("results_new_index.root");
   int a = 0;
 
-  std::vector<std::string> chambTags = { "MB2", "MB4"};
+  std::vector<std::string> chambTags = { "MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
@@ -141,7 +141,7 @@ void printPlots_run(std::string run) {
       std::string nameHisto = specificPlot + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       m_plots2[name] = (TH2F*) data1.Get(name);
-      m_plots2[name]->Draw();
+      m_plots2[name]->Draw("colz");
       sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
