@@ -55,6 +55,12 @@ options.register('inputFolderDT',
                   VarParsing.VarParsing.varType.string,
                  "Base EOS folder with input files from MiniDAQ runs with DT 'private' tier0 transfer")
 
+options.register('inputGlobal',
+                 '/eos/cms/store/data/Commissioning2019/Cosmics/RAW/v1/', #default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,
+                 "Base EOS folder with input files from MiniDAQ runs with DT 'private' tier0 transfer")
+
 options.register('tTrigFile',
                  '', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
@@ -160,10 +166,18 @@ else :
 
         if len(filesFromRun) == 1 :
             process.source.fileNames.append("file://" + options.inputFolderDT + "/" + filesFromRun[0])
+	else : 
+            runFolderGlobal = options.inputGlobal + "/" + runStr[0:3] + "/" + runStr[3:6] + "/" + runStr[6:] + "/00000"
+	    
+	    print "[dtDpgNtuples_slicetest_cfg.py]: files not found there, looking under:\n\t\t\t" + runFolderGlobal
+            if os.path.exists(runFolderGlobal) :
+               files = subprocess.check_output(["ls", runFolderGlobal])
+	       process.source.fileNames = ["file://" + runFolderGlobal + "/" + f for f in files.split()]
 
-        else :
-            print "[dtDpgNtuples_slicetest_cfg.py]: " + str(len(filesFromRun)) + " files found, can't run!"
-            sys.exit(999)
+
+	    else :
+               print "[dtDpgNtuples_slicetest_cfg.py]: " + str(len(filesFromRun)) + " files found, can't run!"
+               sys.exit(999)
 
 print process.source.fileNames
 
