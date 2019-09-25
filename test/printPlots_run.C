@@ -43,7 +43,7 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> categories {"perGroup","perQuality"}; 
 
-  std::vector <std::string> generalEffPlots {"hEffHWvsSegX_", "hEffTMvsSegX_", "hEffAMvsSegX_"}; 
+  std::vector <std::string> generalEffPlots {"hEffHWvsSegX_", "hEffTMvsSegX_", "hEffAMvsSegX_","hEffHWvsSegXGoodBX_", "hEffTMvsSegXGoodBX_", "hEffAMvsSegXGoodBX_"}; 
   //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX", "hEffCorAM", "hEffCor"}; 
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
