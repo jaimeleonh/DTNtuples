@@ -21,8 +21,7 @@ class DTNtupleTPGSimAnalyzer : public DTNtupleBaseAnalyzer
 public:
   
   DTNtupleTPGSimAnalyzer(const TString & inFileName,
-			 const TString & outFileName,
-			 const TString & quality);
+			 const TString & outFileName);
   ~DTNtupleTPGSimAnalyzer();
 
   void virtual Loop() override;
@@ -32,7 +31,6 @@ protected:
   void book();
   void fill();
   void endJob();
-  const TString quality_;
 
 private:
   
@@ -41,10 +39,12 @@ private:
   TFile m_outFile;
   
   std::map<std::string, TH1*> m_plots;
+  std::map<std::string, TH2*> m_plots2;
   std::map<std::string, TEfficiency*> m_effs;
   
   TH1F* makeHistoPer( std::string, std::string, vector<std::string>, std::string);  
   Double_t m_minMuPt;
+  Double_t m_maxMuPt;
   
   Double_t m_maxMuSegDPhi;
   Double_t m_maxMuSegDEta;
@@ -53,6 +53,7 @@ private:
 
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
+
   
 };
 

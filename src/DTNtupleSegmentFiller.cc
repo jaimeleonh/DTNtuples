@@ -89,6 +89,8 @@ void DTNtupleSegmentFiller::initialize()
   m_tree->Branch((m_label + "_posLoc_x_midPlane").c_str(), &m_seg4D_posLoc_x_midPlane);
 
   m_tree->Branch((m_label + "_posGlb_phi").c_str(), &m_seg4D_posGlb_phi);
+  m_tree->Branch((m_label + "_posGlb_phi_SL1").c_str(), &m_seg4D_posGlb_phi_SL1);
+  m_tree->Branch((m_label + "_posGlb_phi_SL3").c_str(), &m_seg4D_posGlb_phi_SL3);
   m_tree->Branch((m_label + "_posGlb_eta").c_str(), &m_seg4D_posGlb_eta);
 
   m_tree->Branch((m_label + "_dirGlb_phi").c_str(), &m_seg4D_dirGlb_phi);
@@ -155,6 +157,8 @@ void DTNtupleSegmentFiller::clear()
   m_seg4D_posLoc_x_midPlane.clear(); 
 
   m_seg4D_posGlb_phi.clear();
+  m_seg4D_posGlb_phi_SL1.clear();
+  m_seg4D_posGlb_phi_SL3.clear();
   m_seg4D_posGlb_eta.clear();
   m_seg4D_dirGlb_phi.clear();
   m_seg4D_dirGlb_eta.clear();
@@ -361,9 +365,16 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 
 	      const GeomDet * geomDet = m_config->m_trackingGeometry->idToDet(segment4D->geographicalId());
 	      auto posGlb = geomDet->toGlobal(pos);
+
+	       
+	      
+
+
 	      auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
 	      
 	      m_seg4D_posGlb_phi.push_back(posGlb.phi());
+	      m_seg4D_posGlb_phi_SL1.push_back(posSL1->phi());
+	      m_seg4D_posGlb_phi_SL3.push_back(posSL3->phi());
 	      m_seg4D_posGlb_eta.push_back(posGlb.eta());
 
 	      m_seg4D_dirGlb_phi.push_back(dirGlb.phi());
