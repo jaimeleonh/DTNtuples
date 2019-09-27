@@ -132,7 +132,8 @@ if options.t0File != '' :
 process.source = cms.Source("PoolSource",
                             
         fileNames = cms.untracked.vstring(),
-        secondaryFileNames = cms.untracked.vstring()
+        secondaryFileNames = cms.untracked.vstring(),
+	skipEvents=cms.untracked.uint32(8640)
 
 )
 
@@ -218,6 +219,8 @@ process.dtTriggerPhase2PrimitiveDigis.scenario = 2
 process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(620./4096.)
 process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(100000) #in cm^2
 process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = cms.untracked.bool(True)
+process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(True)
+process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(True)
 process.dtTriggerPhase2PrimitiveDigis.dT0_correlate_TP = cms.untracked.double(25.) 
 process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = cms.untracked.int32(0) 
 #process.dtTriggerPhase2PrimitiveDigis.debug = True

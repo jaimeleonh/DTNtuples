@@ -36,7 +36,7 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_maxSegTrigDPhi = 0.1;
   m_maxMuTrigDPhi  = 0.2;
 
-  debug = false;   
+  debug = true;   
   correctL1A = correct; 
 }
 
@@ -324,6 +324,7 @@ void DTNtupleTPGSimAnalyzer::book()
           m_plots2["hPos2DSeg"+ chambTag + quTag] = new TH2F(("hPos2DSeg_"+ chambTag + "_" + quTag).c_str(),
 					    "Firmware vs Segment position; Firmware position (cm); Segment position (cm)",
 					    300,0,300,300,0,300); 
+          //m_plots2["hPos2DSeg"+ chambTag + quTag] -> 
           m_plots["hPsiSeg"+ chambTag + quTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
 					    40,-2,2); 
@@ -342,6 +343,7 @@ void DTNtupleTPGSimAnalyzer::book()
 
         }
       }
+
   
 }
 
@@ -353,14 +355,15 @@ void DTNtupleTPGSimAnalyzer::fill()
      std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
      std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
      //int eventoBX; // = ph2TpgPhiHw_bx; //848 
-     int eventoBX = event_bunchCrossing; //848
+     int eventoBX = event_bunchCrossing; //848 
      int offset[4];
 
      offset[0] = -1; //FIXME
-     offset[1] = -202; //FIXME
-     offset[2] = -197; //FIXME
+     offset[1] = -197; //FIXME
+     offset[2] = -196; //FIXME
      offset[3] = -197; //FIXME
 
+     bool titPrint = false; 
 
      //int offset = -270; //FIXME
      m_plots["hBXtotal"]->Fill(eventoBX);
@@ -373,6 +376,10 @@ void DTNtupleTPGSimAnalyzer::fill()
      }   
  
      //bool debug = false; 
+     if (debug && ph2TpgPhiHw_nTrigs!=0 && !titPrint) { 
+       cout << "####################### L1A BX = " << eventoBX << " ############################" << endl;  
+       titPrint = true; 
+     }
      if (debug && ph2TpgPhiHw_nTrigs!=0) cout << "####################### HARDWARE PRIMITIVES ############################" << endl;  
       int bestTrigHW[chambTags.size()][quTags.size()];  
       int bestTimeHW[chambTags.size()][quTags.size()];
@@ -526,6 +533,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	
 
      } // end HW
+   
+     if (debug && ph2TpgPhiEmuAm_nTrigs!=0 && !titPrint) { 
+       cout << "####################### L1A BX = " << eventoBX << " ############################" << endl;  
+       titPrint = true; 
+     }
      
      if (debug && ph2TpgPhiEmuAm_nTrigs!=0) cout << "####################### EMULATOR PRIMITIVES ############################" << endl;  
       int bestTrigAM[chambTags.size()][quTags.size()];  
@@ -679,8 +691,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
           }
         }
       }
+	bool printTwin = false; 
 
-     if (debug && ltTwinMuxIn_nTrigs!=0) cout << "####################### TwimMux PRIMITIVES ############################" << endl;  
         int bestQualTrigTM[4];int IbestQualTrigTM[4] ; // 4 stations MB1 to MB4 
         int bestQualTrigBXTM[4];int IbestQualTrigBXTM[4] ; // 4 stations MB1 to MB4 
         for(unsigned indstat=0;indstat<4; indstat++){
@@ -702,7 +714,23 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 
         if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
         if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
-
+	if (myWheelTwin == 2 && mySectorTwin == 12) {
+          if (debug && !titPrint) { 
+            cout << "####################### L1A BX = " << eventoBX << " ############################" << endl;  
+            titPrint = true; 
+          }
+          if (debug && !printTwin) { cout << "####################### TwimMux PRIMITIVES ############################" << endl; printTwin = true;   }
+          if (debug) {
+            cout << "Wh:" << myWheelTwin << " Se:" <<  mySectorTwin << " St:" << myStationTwin << endl;	
+            cout << "Quality " << myQualityTwin << endl;	
+            cout << "Phi " << myPhiTwin << endl;	
+            cout << "PhiB " << myPhiBTwin << endl;	
+            cout << "Position " << myPosTwin << endl;	
+            cout << "Direction " << myDirTwin << endl;	
+            cout << "BX " << myBXTwin << endl;	
+            cout << "-------------------------------------------------------------------------" << endl;
+          }	
+	}
 	int indstat = myStationTwin - 1;  
 	if(myQualityTwin>bestQualTrigTM[indstat]){
 	  bestQualTrigTM[indstat]=myQualityTwin;
