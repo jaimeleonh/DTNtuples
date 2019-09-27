@@ -373,8 +373,6 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
 	      
 	      m_seg4D_posGlb_phi.push_back(posGlb.phi());
-	      m_seg4D_posGlb_phi_SL1.push_back(posSL1->phi());
-	      m_seg4D_posGlb_phi_SL3.push_back(posSL3->phi());
 	      m_seg4D_posGlb_eta.push_back(posGlb.eta());
 
 	      m_seg4D_dirGlb_phi.push_back(dirGlb.phi());
