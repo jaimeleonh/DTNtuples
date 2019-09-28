@@ -54,9 +54,13 @@ private:
 
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
- 
+
+  Long64_t entryNumber;  
+  Long64_t totalEntries = 0;  
   bool debug;  
-  bool correctL1A;  
+  bool correctL1A; 
+
+  //struct primitive; 
 };
 
 #endif
