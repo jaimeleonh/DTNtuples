@@ -56,7 +56,7 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_maxMuTrigDPhi  = 0.2;
 
   entryNumber = -1; 
-  debug = true;   
+  debug = false;  ////// 
   correctL1A = correct; 
 }
 
@@ -163,6 +163,9 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots2["hPrimNumber" + chambTag] = new TH2F(("hPrimNumber_" + chambTag).c_str(),
 					    "Distribution of number of primitives; Number of AM_HW; Number of AM_Emul",
 					    11,-0.5,10.5,11,-0.5,10.5); 
+        m_plots2["hPrimTypeVsPos"+ chambTag] = new TH2F(("hPrimTypeVsPos_"+ chambTag).c_str(),
+					    "Number of each type of primitive vs Position; Position (cm); Type",
+					    50,-251.5,250.5, 3,-0.5,2.5); 
         m_plots2["hCorPrimNumber" + chambTag] = new TH2F(("hCorPrimNumber_" + chambTag).c_str(),
 					    "Distribution of number of correlated primitives; Number of Cor AM_HW; Number of Cor AM_Emul",
 					    11,-0.5,10.5,11,-0.5,10.5); 
@@ -172,13 +175,25 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots2["hHWQuality" + chambTag] = new TH2F(("hHWQuality_" + chambTag).c_str(),
 					    "; ; EntryNumber",
 					    5,-0.5,4.5,totalEntries,0,totalEntries); 
+        m_plots2["hAMQualityWhenHWcor" + chambTag] = new TH2F(("hAMQualityWhenHWcor_" + chambTag).c_str(),
+					    "; ; EntryNumber",
+					    5,-0.5,4.5,totalEntries,0,totalEntries); 
+        m_plots2["hHWQualityWhenAMcor" + chambTag] = new TH2F(("hHWQualityWhenAMcor_" + chambTag).c_str(),
+					    "; ; EntryNumber",
+					    5,-0.5,4.5,totalEntries,0,totalEntries); 
         m_plots2["hEventQuality" + chambTag] = new TH2F(("hEventQuality_" + chambTag).c_str(),
 					    "; AM_FW; AM_Emul",
-					    5,-0.5,4.5,5,-0.5,5.5); 
-        std::vector<std::string> tagsEvent = {"Correlated", "SL1&Sl3", "Only SL1","Only SL3","None"};
+					    5,-0.5,4.5,5,-0.5,4.5); 
+        std::vector<std::string> tagsEvent = {"Correlated", "SL1&SL3", "Only SL1","Only SL3","None"};
+        std::vector<std::string> tagsSL = {"Correlated", "SL1","SL3"};
+        for (unsigned int i = 0; i < tagsSL.size(); i++){
+	  m_plots2["hPrimTypeVsPos"+ chambTag]->GetYaxis()->SetBinLabel(i+1, tagsSL[i].c_str());
+	}
         for (unsigned int i = 0; i < tagsEvent.size(); i++){
           m_plots2["hAMQuality" + chambTag]->GetXaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
           m_plots2["hHWQuality" + chambTag]->GetXaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
+          m_plots2["hAMQualityWhenHWcor" + chambTag]->GetXaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
+          m_plots2["hHWQualityWhenAMcor" + chambTag]->GetXaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
           m_plots2["hEventQuality" + chambTag]->GetXaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
           m_plots2["hEventQuality" + chambTag]->GetYaxis()->SetBinLabel(i+1, tagsEvent[i].c_str());
         }
@@ -838,9 +853,16 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  if (qualityGroup (primitiveHW.quality) > 1){
 	    counterHW[i][1]++;
             corHW = true; 
+              m_plots2["hPrimTypeVsPos"+ chambTags.at(i)]->Fill(primitiveHW.position,0.);
 	  } else {
-	    if (primitiveHW.superLayer == 1) SL1HW = true; 
-	    else if (primitiveHW.superLayer == 3) SL3HW = true; 
+	    if (primitiveHW.superLayer == 1){
+	      SL1HW = true;
+	      m_plots2["hPrimTypeVsPos"+ chambTags.at(i)]->Fill(primitiveHW.position,1.);
+	    } 
+	    else if (primitiveHW.superLayer == 3){
+	      SL3HW = true;
+	      m_plots2["hPrimTypeVsPos"+ chambTags.at(i)]->Fill(primitiveHW.position,2.);
+	    } 
 	  } 
 	}
 	for (auto & primitiveAM : primitivesAM[i]) {
@@ -855,28 +877,36 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	}
         if (counterHW[i][0] != 0 || counterAM[i][0] != 0)m_plots2["hPrimNumber" + chambTags.at(i)] -> Fill(counterHW[i][0], counterAM[i][0]);	
         if (counterHW[i][1] != 0 || counterAM[i][1] != 0)m_plots2["hCorPrimNumber" + chambTags.at(i)] -> Fill(counterHW[i][1], counterAM[i][1]);	
+	
 	if (corHW) {
 	  m_plots2["hHWQuality" + chambTags.at(i)]->Fill(0.,entryNumber);
 	  if (corAM) { 
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hAMQualityWhenHWcor"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hHWQualityWhenAMcor"+chambTags.at(i)]->Fill(0.,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(0.,0.);
 	  } else if (SL1AM && SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(1,entryNumber);
+	    m_plots2["hAMQualityWhenHWcor"+chambTags.at(i)]->Fill(1,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(0.,1);
 	  } else if (SL3AM && !SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(2,entryNumber);
+	    m_plots2["hAMQualityWhenHWcor"+chambTags.at(i)]->Fill(2,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(0.,2);
 	  } else if (SL3AM && !SL1AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(3,entryNumber);
+	    m_plots2["hAMQualityWhenHWcor"+chambTags.at(i)]->Fill(3,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(0.,3);
 	  } else {
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(4,entryNumber);
+	    m_plots2["hAMQualityWhenHWcor"+chambTags.at(i)]->Fill(4,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(0.,4);
-	  }
+	  } 
 	} else if (SL1HW && SL3HW) {
 	  m_plots2["hHWQuality"+chambTags.at(i)]->Fill(1,entryNumber);
 	  if (corAM) { 
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hHWQualityWhenAMcor"+chambTags.at(i)]->Fill(1.,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(1,0.);
 	  } else if (SL1AM && SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(1,entryNumber);
@@ -895,6 +925,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  m_plots2["hHWQuality"+chambTags.at(i)]->Fill(2,entryNumber);
 	  if (corAM) { 
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hHWQualityWhenAMcor"+chambTags.at(i)]->Fill(2.,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(2,0.);
 	  } else if (SL1AM && SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(1,entryNumber);
@@ -910,9 +941,10 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(2,4);
 	  }
 	} else if (SL3HW && !SL1HW) {
-	  m_plots2["hHWQuality"+chambTags.at(i)]->Fill(3,entryNumber);
+	  //m_plots2["hHWQuality"+chambTags.at(i)]->Fill(3,entryNumber);
 	  if (corAM) { 
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hHWQualityWhenAMcor"+chambTags.at(i)]->Fill(3.,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(3,0.);
 	  } else if (SL1AM && SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(1,entryNumber);
@@ -927,10 +959,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(4,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(3,4);
 	  } 
-	} else if (corAM || SL1AM || SL3AM ){
-	  m_plots["hHWQuality"+chambTags.at(i)]->Fill(4,entryNumber);
+	} else if (corAM || SL1AM || SL3AM ){ 
+	  m_plots2["hHWQuality"+chambTags.at(i)]->Fill(4,entryNumber);
 	  if (corAM) { 
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(0.,entryNumber);
+	    m_plots2["hHWQualityWhenAMcor"+chambTags.at(i)]->Fill(4.,entryNumber);
 	    m_plots2["hEventQuality"+chambTags.at(i)]->Fill(4,0.);
 	  } else if (SL1AM && SL3AM){
 	    m_plots2["hAMQuality"+chambTags.at(i)]->Fill(1,entryNumber);

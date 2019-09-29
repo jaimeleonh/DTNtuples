@@ -48,7 +48,7 @@ void printPlots_run(std::string run) {
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW_", "hSLAM_", "hPrimsSegs_"};
-  std::vector <std::string> specific2DPlots {"h2DHwQualSegNHits_","h2DEmuQualSegNHits_","h2DTMQualSegNHits_"};
+  std::vector <std::string> specific2DPlots {"hPrimTypeVsPos_","h2DHwQualSegNHits_","h2DEmuQualSegNHits_","h2DTMQualSegNHits_"};
   std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
