@@ -90,9 +90,11 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> secTags    = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
   std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All"};
 
+     // Double_t limtanpsi   = 0.04; Double_t limphi   = 3.14; Double_t limtime  = 50;   Double_t limx   = 0.6; Double_t limBX   = 8.5;
       Double_t limtanpsi   = 0.04; Double_t limphi   = 0.0015; Double_t limtime  = 50;   Double_t limx   = 0.6; Double_t limBX   = 8.5;
       //Double_t limtanpsi   = 0.1; Double_t limphi   = 0.005; Double_t limtime  = 50;   Double_t limx   = 0.2; Double_t limBX   = 8.5;
       UShort_t nbinstanpsi = 101; UShort_t nbinsphi = 101;   UShort_t nbinstime = 101; UShort_t nbinsx = 101; UShort_t nbinsBX = 17;
+      //UShort_t nbinstanpsi = 101; UShort_t nbinsphi = 10001;   UShort_t nbinstime = 101; UShort_t nbinsx = 101; UShort_t nbinsBX = 17;
   
   m_plots["hQualAll"] = new TH1F("HQualAll", "All primitives quality distribution; Quality; Entries",9,0.5,9.5 );
   m_plots["hQualEff"] = new TH1F("HQualEff", "Efficient primitives quality distribution; Quality; Entries",9,0.5,9.5 );
@@ -309,7 +311,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 	    mySegPhi = seg_posGlb_phi->at(iSeg); 
 	  }
           Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuHb_phi->at(iTrigHB),trigHBSec);
+          //Double_t finalHBDPhi   = acos(cos(mySegPhi - trigGlbPhi));
           Double_t finalHBDPhi   = mySegPhi - trigGlbPhi;
+          //Double_t segTrigHBDPhi = abs(finalHBDPhi);
           Double_t segTrigHBDPhi = abs(acos(cos(finalHBDPhi)));
           // if (segTrigHBDPhi < m_maxSegTrigDPhi && trigHBBX == 20 &&  bestSegTrigHBDPhi > segTrigHBDPhi)
           if (unique) {
@@ -426,7 +430,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  } else {
 	    mySegPhi = seg_posGlb_phi->at(iSeg); 
 	  }
+          //Double_t finalAMDPhi   = acos(cos(mySegPhi - trigGlbPhi));
           Double_t finalAMDPhi   = mySegPhi - trigGlbPhi;
+          //Double_t segTrigAMDPhi = abs(finalAMDPhi);
           Double_t segTrigAMDPhi = abs(acos(cos(finalAMDPhi)));
 	  nPrims++;        
 
