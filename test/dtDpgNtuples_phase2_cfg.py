@@ -107,6 +107,8 @@ process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi")
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 
 process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
+process.CalibratedDigis.scenario = 0
+process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
 
 process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
