@@ -193,7 +193,7 @@ void printPlots_run(std::string run) {
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
-          m_plots2[name]->Draw();
+          m_plots2[name]->Draw("colz");
           sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
           gPad->SaveAs(name);
           if (fileOK) cout << nameHisto << ".png" << endl;
@@ -219,7 +219,7 @@ void printPlots_run(std::string run) {
         std::string nameHisto = specificPlot + chambTag + "_" + quTag;
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
-        m_plots2[name]->Draw();
+        m_plots2[name]->Draw("colz");
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
