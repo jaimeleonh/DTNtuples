@@ -18,13 +18,13 @@ git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
 git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
-For Slice Test data: 
+For the Slice Test AM emulator: 
 ```
 cmsrel CMSSW_10_6_0
 cd CMSSW_10_6_0/src/
 cmsenv
-git cms-merge-topic battibass:phase2UnpackerFromOscar_10_6_X # phase-2 primitives data format and phase-2 unpacker
-#git cms-merge-topic -u pozzobon:DTHough_NP_20191004_106X_noL1T # MTT-CHT emulator
+#git cms-merge-topic battibass:phase2UnpackerFromOscar_10_6_X # phase-2 primitives data format and phase-2 unpacker
+git cms-merge-topic -u pozzobon:DTHough_NP_20191004_106X_noL1T # MTT-CHT emulator
 git cms-merge-topic -u jaimeleonh:AM_106X_SliceTest # AM emulator
 git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
