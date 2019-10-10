@@ -109,13 +109,10 @@ process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
 process.CalibratedDigis.scenario = 0
 process.dtTriggerPhase2PrimitiveDigis.scenario = 0
+process.dtTriggerPhase2PrimitiveDigis.use_normal_chi2 = False
+process.dtTriggerPhase2PrimitiveDigis.use_LSB = True
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
 
-process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
-
-process.dtTriggerPhase2HbPrimitiveDigis = process.DTTPG.clone()
-process.dtTriggerPhase2HbPrimitiveDigis.FirstBX = cms.untracked.int32(20)
-process.dtTriggerPhase2HbPrimitiveDigis.LastBX = cms.untracked.int32(20)
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuon_cff')
 process.dt1DRecHits.dtDigiLabel = "simMuonDTDigis"
@@ -126,7 +123,6 @@ process.p = cms.Path(process.dt1DRecHits
                      + process.dt4DSegments
                      + process.CalibratedDigis
                      + process.dtTriggerPhase2AmPrimitiveDigis
-                     + process.dtTriggerPhase2HbPrimitiveDigis
                      + process.dtNtupleProducer)
 
 from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing
