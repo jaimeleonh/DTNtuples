@@ -29,6 +29,17 @@ git cms-merge-topic -u jaimeleonh:AM_106X_SliceTest # AM emulator
 git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
+For the Slice Test AM emulator only: 
+```
+cmsrel CMSSW_10_6_0
+cd CMSSW_10_6_0/src/
+cmsenv
+git cms-merge-topic -u jaimeleonh:AM_106X_SliceTest # AM emulator
+git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi_only DTDPGAnalysis/DTNtuples
+scramv1 b -j 5
+```
+
+
 
 ### Ntuple prduction:
 ```
