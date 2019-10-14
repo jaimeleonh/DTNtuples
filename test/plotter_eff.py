@@ -4,7 +4,7 @@ from copy import deepcopy
 import CMS_lumi
 r.gROOT.SetBatch(True)
 
-path = "~sscruz/www/DT_TDR/2019_12_09_plots_eff_withHBaged_noquality/"
+path = "./plotsEff_QualityFilter/"
 plotscaffold = "hEff_{st}_{al}_{ty}"
 savescaffold = "hEff_{pu}"
 chambTag = ["MB1", "MB2", "MB3", "MB4"]
@@ -12,7 +12,10 @@ suffix = ""
 
 def makeresplot(hlist, aged, algo, pued = False):
     print "Obtaining intermediate plot for algo", algo, "which is", aged, "aged and considering", pued, "pile-up"
-    res = r.TFile.Open("results_eff_" + ((not pued) * "no") + "pu_" + (not aged) * "no" + "age" + suffix + ".root")
+    #res = r.TFile.Open("results_eff_" + ((not pued) * "no") + "pu_" + (not aged) * "no" + "age" + suffix + ".root")
+    #res = r.TFile.Open("results_SliceTest.root")
+    res = r.TFile.Open("effis_QualityFilter_small.root")
+    #res = r.TFile.Open("effis_newcut.root")
     hmatched = [res.Get(plotscaffold.format(al = algo, st = chambTag[ich], ty = "matched")) for ich in range(4)]
     htotal   = [res.Get(plotscaffold.format(al = algo, st = chambTag[ich], ty = "total")) for ich in range(4)]
 
@@ -35,7 +38,7 @@ def makeresplot(hlist, aged, algo, pued = False):
     return
 
 
-lowlimityaxis  = 0.4
+lowlimityaxis  = 0.85
 highlimityaxis = 1
 markersize     = 1
 yaxistitle     = "Efficiency (adim.)"
