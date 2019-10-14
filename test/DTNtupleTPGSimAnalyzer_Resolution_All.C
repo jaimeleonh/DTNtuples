@@ -36,7 +36,7 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
 //
 //  using namespace RooFit;
 
-  unique = true; 
+  unique = false; 
 
 }
 
@@ -83,12 +83,13 @@ void DTNtupleTPGSimAnalyzer::Loop()
 void DTNtupleTPGSimAnalyzer::book()
 {
   m_outFile.cd();
-
   std::vector<std::string> algoTag    = {"_AM","_HB" };
   std::vector<std::string> chambTags  = { "MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> whTags     = { "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"};
   std::vector<std::string> secTags    = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
-  std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All"};
+  std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy"};
+  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "min3", "min4", "Legacy", "CorrelExt"};
+  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All"};
 
      // Double_t limtanpsi   = 0.04; Double_t limphi   = 3.14; Double_t limtime  = 50;   Double_t limx   = 0.6; Double_t limBX   = 8.5;
       Double_t limtanpsi   = 0.04; Double_t limphi   = 0.0015; Double_t limtime  = 50;   Double_t limx   = 0.6; Double_t limBX   = 8.5;
@@ -104,9 +105,26 @@ void DTNtupleTPGSimAnalyzer::book()
   m_plots["PhiDif"] = new TH1F("PhiDif",
 					     "Difference between phi SL1 & phi center; DeltaPhi (rad); entries",
 					     10000,-0.5,0.5);
-  m_plots["Phi"] = new TH1F("Phi",
-		 		"Phi SL1; DeltaPhi (rad); entries",
-				1000,-30,+30);
+  for (const auto & chambTag : chambTags){
+    for (const auto & whTag : whTags){
+      m_plots["hPhiGenSeg" + whTag + chambTag] = new TH1F(("hPhiGenSeg_" + whTag  + "_" + chambTag).c_str(),
+							  ("#Delta #Phi Gen muon-segment "+ whTag + " " + chambTag +  "; #Delta#phi (rad); entries").c_str(),
+							  100,0,0.3);
+      m_plots["hEtaGenSeg" + whTag + chambTag] = new TH1F(("hEtaGenSeg_" + whTag  + "_" + chambTag).c_str(),
+							  ("#Delta #Eta Gen muon-segment "+ whTag + " " + chambTag +  "; #Delta#phi (rad); entries").c_str(),
+							  100,0,+0.4);
+    }
+  }
+  for (const auto & algo : algoTag){
+
+
+
+    for (const auto & secTag : secTags){
+      m_plots["Phi"+algo+secTag] = new TH1F(("Phi"+algo+secTag).c_str(),
+		 		"Phi distribution; DeltaPhi (rad); entries",
+				2000,-2,+8);
+    }
+  }
   m_plots2["PhiDif2D"] = new TH2F("PhiDif2D",
 					     "SL1 phi dif vs SL3 phi dif; DeltaPhi SL1(rad); DeltaPhi SL3 (rad)",
 					     10000,-0.5,0.5, 10000, -0.5, 0.5);
@@ -255,12 +273,16 @@ void DTNtupleTPGSimAnalyzer::fill()
 
     for (std::size_t iSeg = 0; iSeg < seg_nSegments; ++iSeg){
       Int_t segSt    = seg_station->at(iSeg);
+      Int_t segWh    = seg_wheel->at(iSeg);
       Int_t segNHits = seg_phi_nHits->at(iSeg);
       
       Double_t muSegDPhi = std::abs(acos(cos(gen_phi->at(iGenPart) - seg_posGlb_phi->at(iSeg))));
       Double_t muSegDEta = std::abs(gen_eta->at(iGenPart) - seg_posGlb_eta->at(iSeg));
       
-      if (muSegDPhi < m_maxMuSegDPhi &&
+      m_plots["hPhiGenSeg" + whTags.at(segWh+2) + chambTags.at(segSt-1)]->Fill(muSegDPhi);
+      m_plots["hEtaGenSeg" + whTags.at(segWh+2) + chambTags.at(segSt-1)]->Fill(muSegDEta);
+ 
+     if (muSegDPhi < m_maxMuSegDPhi &&
           muSegDEta < m_maxMuSegDEta &&
           segNHits >= m_minSegHits &&
           segNHits >= bestSegNHits.at(segSt - 1)){
@@ -273,7 +295,6 @@ void DTNtupleTPGSimAnalyzer::fill()
     // ==================== VARIABLES FOR THE HOUGH TRANSFORM BASED ALGORITHM
     for (const auto & iSeg : bestSegIndex){
       if (iSeg == 999) continue;
-
       std::vector <int> indexHB;
       std::vector <Double_t> DPhiHB;
       std::vector <int> indexAM;
@@ -311,10 +332,11 @@ void DTNtupleTPGSimAnalyzer::fill()
 	    mySegPhi = seg_posGlb_phi->at(iSeg); 
 	  }
           Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuHb_phi->at(iTrigHB),trigHBSec);
-          //Double_t finalHBDPhi   = acos(cos(mySegPhi - trigGlbPhi));
-          Double_t finalHBDPhi   = mySegPhi - trigGlbPhi;
-          //Double_t segTrigHBDPhi = abs(finalHBDPhi);
-          Double_t segTrigHBDPhi = abs(acos(cos(finalHBDPhi)));
+          if (segWh==-2 && segSt == 1) m_plots["Phi_HB"+secTag]->Fill(trigGlbPhi);
+	  Double_t finalHBDPhi   = acos(cos(mySegPhi - trigGlbPhi));
+          //Double_t finalHBDPhi   = mySegPhi - trigGlbPhi;
+          Double_t segTrigHBDPhi = abs(finalHBDPhi);
+          //Double_t segTrigHBDPhi = abs(acos(cos(finalHBDPhi)));
           // if (segTrigHBDPhi < m_maxSegTrigDPhi && trigHBBX == 20 &&  bestSegTrigHBDPhi > segTrigHBDPhi)
           if (unique) {
             if (segTrigHBDPhi < m_maxSegTrigDPhi && bestSegTrigHBDPhi > segTrigHBDPhi){
@@ -344,11 +366,15 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  if ( (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) == 3 ) || (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) == 5 )) corrList.push_back( "3h" );
 	  else if ((ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) == 4) || (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) == 7)) corrList.push_back( "4h" );
         }
+	//if (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) >= 6) corrList.push_back("CorrelExt");
+        if (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) >= 4 && ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) != 5) corrList.push_back("Legacy");
+        //if (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) >= 4) corrList.push_back("min4");
+        //if (ph2TpgPhiEmuHb_quality->at(indexHB.at(i)) >= 3) corrList.push_back("min3");
 
 
 	for (const auto & corr : corrList){
 	  // TanPsi
-	  Double_t segLocalHBDtanpsi = (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) - TMath::TwoPi() * ph2TpgPhiEmuHb_dirLoc_phi->at(indexHB.at(i)) / 360;
+	  Double_t segLocalHBDtanpsi = (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) - tan (TMath::TwoPi() * ph2TpgPhiEmuHb_dirLoc_phi->at(indexHB.at(i)) / 360 );
 	  m_plots["TanPsiRes_P2_HB" + corr ]           ->Fill( segLocalHBDtanpsi );
 	  m_plots["TanPsiRes_P2_HB" + corr  + whTag]   ->Fill( segLocalHBDtanpsi );
 	  m_plots["TanPsiRes_P2_HB" + corr  + whTag + chambTag]   ->Fill( segLocalHBDtanpsi );
@@ -421,6 +447,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 
         if (segWh  == trigAMWh && segSec == trigAMSec &&  segSt  == trigAMSt){
           Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuAm_phi->at(iTrigAM),trigAMSec);
+          if (segWh==-2 && segSt == 1) m_plots["Phi_AM"+secTag]->Fill(trigGlbPhi);
           Double_t mySegPhi;
          // if (false) {
           if (ph2TpgPhiEmuAm_superLayer->at(iTrigAM)==1) {
@@ -484,8 +511,13 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  if ((ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 1) || (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 2) || (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 5 )) corrList.push_back( "3h" );
 	  else if ((ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 3) || (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 4) || (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) == 7 )) corrList.push_back( "4h" );
 	}	
-	for (const auto & corr : corrList){
-	  Double_t segLocalAMDtanpsi = (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) - TMath::TwoPi() * ph2TpgPhiEmuAm_dirLoc_phi->at(indexAM.at(i)) / 360;
+       // if (isCorrelated) corrList.push_back("CorrelExt");
+        if (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) >= 3 && ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) != 5) corrList.push_back("Legacy");
+       // if (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) >= 3 && ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) != 5) corrList.push_back("min4");
+       // if (ph2TpgPhiEmuAm_quality->at(indexAM.at(i)) >= 1) corrList.push_back("min3");
+	
+        for (const auto & corr : corrList){
+	  Double_t segLocalAMDtanpsi = (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) - tan (TMath::TwoPi() * ph2TpgPhiEmuAm_dirLoc_phi->at(indexAM.at(i)) / 360 ) ; 
 	  m_plots["TanPsiRes_P2_AM" + corr]           ->Fill( segLocalAMDtanpsi );
 	  m_plots["TanPsiRes_P2_AM" + corr + whTag]   ->Fill( segLocalAMDtanpsi );
 	  m_plots["TanPsiRes_P2_AM" + corr + whTag + chambTag]   ->Fill( segLocalAMDtanpsi );
@@ -522,10 +554,6 @@ void DTNtupleTPGSimAnalyzer::fill()
 	    m_plots["BX_P2_AM" + corr + whTag + chambTag + secTag]   ->Fill( ph2TpgPhiEmuAm_BX->at(indexAM.at(i)) - 20);
 	    m_plots["BX_P2_AM" + corr + secTag]  ->Fill( ph2TpgPhiEmuAm_BX->at(indexAM.at(i)) - 20);
 	    m_plots["BX_P2_AM" + corr + chambTag]->Fill( ph2TpgPhiEmuAm_BX->at(indexAM.at(i)) - 20);
-	    //m_plots["BX_P2_AM" + corr]           ->Fill( ph2TpgPhiEmuAm_BX->at(bestTPAM) - 20 );
-	    //m_plots["BX_P2_AM" + corr + whTag]   ->Fill( ph2TpgPhiEmuAm_BX->at(bestTPAM) - 20 );
-	    //m_plots["BX_P2_AM" + corr + secTag]  ->Fill( ph2TpgPhiEmuAm_BX->at(bestTPAM) - 20 );
-	    //m_plots["BX_P2_AM" + corr + chambTag]->Fill( ph2TpgPhiEmuAm_BX->at(bestTPAM) - 20 );
 	  }
 	  // x
 	  Double_t segLocalAMDx = 0;
@@ -605,7 +633,8 @@ void DTNtupleTPGSimAnalyzer::endJob()
   std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
   std::vector<std::string> magnitudes = { "TimeRes", "PhiRes", "TanPsiRes", "xRes"};
   std::vector<std::string> algos      = { "AM", "HB" };
-  std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated", "All"};
+  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated", "All"};
+  std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy"};
   
   for (const auto & mag : magnitudes){
     for (const auto & algo : algos){

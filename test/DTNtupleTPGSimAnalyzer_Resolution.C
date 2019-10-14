@@ -22,7 +22,7 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
 {
 
   m_minMuPt = 0;
-  m_maxMuPt = 20;
+  m_maxMuPt = 100;
 
   m_maxMuSegDPhi = 0.2;
   m_maxMuSegDEta = 0.3;
@@ -85,8 +85,8 @@ void DTNtupleTPGSimAnalyzer::book()
 
   std::vector<std::string> algoTag    = {"_AM","_HB" };
   std::vector<std::string> chambTags  = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> whTags     = { "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"};
-  std::vector<std::string> secTags    = { "Sec.1", "Sec.2", "Sec.3", "Sec.4", "Sec.5", "Sec.6", "Sec.7", "Sec.8","Sec.9","Sec.10","Sec.11","Sec.12","Sec.13","Sec.14"};
+  std::vector<std::string> whTags     = { "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"};
+  std::vector<std::string> secTags    = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
   std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All"};
 
       Double_t limtanpsi   = 0.04; Double_t limphi   = 0.0015; Double_t limtime  = 50;   Double_t limx   = 0.6; Double_t limBX   = 8.5;
@@ -222,11 +222,11 @@ void DTNtupleTPGSimAnalyzer::book()
 void DTNtupleTPGSimAnalyzer::fill()
 {
   std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> whTags    = { "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"};
-  std::vector<std::string> secTags   = { "Sec.1", "Sec.2", "Sec.3", "Sec.4", "Sec.5", "Sec.6", "Sec.7", "Sec.8","Sec.9","Sec.10","Sec.11","Sec.12","Sec.13","Sec.14"};
+  std::vector<std::string> whTags    = { "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"};
+  std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
 
   for (std::size_t iGenPart = 0; iGenPart < gen_nGenParts; ++iGenPart){
-    if (std::abs(gen_pdgId->at(iGenPart)) != 13 || gen_pt->at(iGenPart) < m_minMuPt) continue;
+    if (std::abs(gen_pdgId->at(iGenPart)) != 13 || gen_pt->at(iGenPart) < m_minMuPt || gen_pt->at(iGenPart) < m_minMuPt ) continue;
 
     // CB this should not be a vector ...
     std::vector<std::size_t> bestSegIndex = { 999, 999, 999, 999 };
@@ -392,7 +392,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 
           if (segTrigAMDPhi < m_maxSegTrigDPhi) m_plots["hQualEff"]->Fill(ph2TpgPhiEmuAm_quality->at(iTrigAM));
 	  
-//           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 0) && (bestSegTrigAMDPhi > segTrigAMDPhi))
+//           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 20) && (bestSegTrigAMDPhi > segTrigAMDPhi)) {
           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (bestSegTrigAMDPhi > segTrigAMDPhi)){
             bestTPAM          = iTrigAM;
             bestSegTrigAMDPhi = segTrigAMDPhi;
@@ -535,8 +535,8 @@ void DTNtupleTPGSimAnalyzer::endJob()
 {
   // make the fits
   std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> whTags    = { "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"};
-  std::vector<std::string> secTags   = { "Sec.1", "Sec.2", "Sec.3", "Sec.4", "Sec.5", "Sec.6", "Sec.7", "Sec.8","Sec.9","Sec.10","Sec.11","Sec.12","Sec.13","Sec.14"};
+  std::vector<std::string> whTags    = { "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"};
+  std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
   std::vector<std::string> magnitudes = { "TimeRes", "PhiRes", "TanPsiRes", "xRes"};
   std::vector<std::string> algos      = { "AM", "HB" };
   std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated", "All"};

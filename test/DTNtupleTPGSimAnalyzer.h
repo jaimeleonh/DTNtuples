@@ -54,6 +54,7 @@ private:
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
 
+  bool unique; 
   
 };
 
