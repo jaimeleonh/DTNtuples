@@ -49,10 +49,11 @@ void printPlots_run(std::string run) {
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW_", "hSLAM_", "hPrimsSegs_"};
   std::vector <std::string> specific2DPlots {"hPrimTypeVsPos_","h2DHwQualSegNHits_","h2DEmuQualSegNHits_","h2DTMQualSegNHits_"};
-  std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
+  //std::vector <std::string> moreSpecific1DPlots { };
+  std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_", "hBXfromT0_", "hChi2FW_","hChi2Emul_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
-  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)", "BX (BX units)", "chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
+  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
 
   std::map<std::string, TH1*> m_plots_res;
   std::map<std::string, TH1*> m_plots_mean;
@@ -158,6 +159,7 @@ void printPlots_run(std::string run) {
         m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
+       // if (specificPlot == "hChi2FW_" || specificPlot == "hChi2Emul_") gPad->SetLogy();
         gPad->SaveAs(name);
          if (fileOK) cout << nameHisto << ".png" << endl;
       }
