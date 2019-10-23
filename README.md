@@ -23,7 +23,7 @@ cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNum
 ```
 
 ### Analysis:
-# To run over a ntuple w/o L1A substraction:
+#### To run over a ntuple w/o L1A substraction:
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove.sh runNumber
@@ -32,7 +32,7 @@ W/o copying to eos
 ```
 ./plotAndPrint.sh runNumber
 ```
-# Or, to run over a ntuple w/ L1A substraction
+#### Or, to run over a ntuple w/ L1A substraction
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove_cor.sh  runNumber
