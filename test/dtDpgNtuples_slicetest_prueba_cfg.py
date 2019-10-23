@@ -212,20 +212,35 @@ process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_slicetest_cfi')
 
 process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi")
 process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
-#process.CalibratedDigis.timeOffset = 350 # 325+25 is no offset with the SX5/Cosmics runs (BX is -1)
-process.CalibratedDigis.scenario = 2
+
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
-process.dtTriggerPhase2PrimitiveDigis.scenario = 2
-process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(620./4096.)
-process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(100000) #in cm^2
-process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = cms.untracked.bool(True)
 process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(False)
 process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(False)
-process.dtTriggerPhase2PrimitiveDigis.dT0_correlate_TP = cms.untracked.double(25.) 
-process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = cms.untracked.int32(0) 
-#process.dtTriggerPhase2PrimitiveDigis.debug = True
-#process.dtTriggerPhase2PrimitiveDigis.dump = True
 
+####################### SliceTest specials ##############################
+
+#Scenario -> 2 (SliceTest only)
+process.CalibratedDigis.scenario = 2
+process.dtTriggerPhase2PrimitiveDigis.scenario = 2
+
+#Chi2 -> Changing a lot lately
+process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.16)
+process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(100000) #in cm^2
+
+#LSB -> Position 0.025 cm instead of 0.004 cm
+process.dtTriggerPhase2PrimitiveDigis.use_LSB = True
+process.dtTriggerPhase2PrimitiveDigis.x_precision = cms.untracked.double(0.025)
+process.dtTriggerPhase2PrimitiveDigis.tanPsi_precision = cms.untracked.double(1./4096.)
+
+#Correlate with BX
+process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = True
+process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = 1
+
+#Correlate with tanPsi
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(900./4096.)
+
+#Confirmation forbidden
+process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False
 
 
 process.p = cms.Path(process.muonDTDigis
