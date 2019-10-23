@@ -11,8 +11,7 @@ cmsrel CMSSW_10_6_0
 cd CMSSW_10_6_0/src/
 cmsenv
 git cms-merge-topic jaimeleonh:newUnpacker # phase-2 unpacker
-#git cms-merge-topic -u pozzobon:DTHough_NP_20190619_106X_noL1T # MTT-CHT emulator
-git cms-merge-topic -u jaimeleonh:AM_106X_SliceTest # AM emulator
+git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
 git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
