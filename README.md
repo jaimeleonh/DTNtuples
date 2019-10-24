@@ -21,6 +21,8 @@ scramv1 b -j 5
 cd DTDPGAnalysis/DTNtuples/test/
 cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNumber=330848
 ```
+By default, ```correctL1A=True```, so it corrects the BX and the t0 with the L1A BX. 
+
 
 ### Analysis:
 #### To run over a ntuple w/o L1A substraction:
