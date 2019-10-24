@@ -21,11 +21,11 @@ scramv1 b -j 5
 cd DTDPGAnalysis/DTNtuples/test/
 cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNumber=330848
 ```
-By default, ```correctL1A=True```, so it corrects the BX and the t0 with the L1A BX. 
+By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 with the L1A BX. 
 
 
 ### Analysis:
-#### To run over a ntuple w/o L1A substraction:
+#### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```):
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove.sh runNumber
@@ -34,7 +34,7 @@ W/o copying to eos
 ```
 ./plotAndPrint.sh runNumber
 ```
-#### Or, to run over a ntuple w/ L1A substraction
+#### Or, to run over a ntuple w/ L1A substraction (when choosing ```correctL1A=True```):
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove_cor.sh  runNumber
