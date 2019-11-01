@@ -184,9 +184,9 @@ print process.source.fileNames
 
 if options.ntupleName == '' :
     if options.correctL1A == False :
-      ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + ".root"
+      ntupleName = "/eos/home-j/jleonhol/ntuplesST/DTDPGNtuple_run" + str(options.runNumber) + ".root"
     else :
-      ntupleName = "/afs/cern.ch/work/j/jleonhol/public/DTDPGNtuple_run" + str(options.runNumber) + "_corrected.root"
+      ntupleName = "/eos/home-j/jleonhol/ntuplesST/DTDPGNtuple_run" + str(options.runNumber) + "_corrected.root"
     #ntupleName = "./DTDPGNtuple_run" + str(options.runNumber) + ".root"
     #ntupleName = "./DTDPGNtuple.root"
 else :
