@@ -154,7 +154,15 @@ void DTNtupleTPGSimAnalyzer::book()
 					    50,-251.5,250.5); 
 	m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
 					    "TM Eff vs Seg X",
-					    50,-251.5,250.5); 
+					    50,-251.5,250.5);
+        m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
+					    "Distribution of HW qualities",
+					    9,0.5,9.5); 
+        m_plots["hQualityAM"+chambTag] = new TH1F(("hQualityAM_" +chambTag).c_str(),
+					    "Distribution of AM qualities",
+					    9,0.5,9.5); 
+
+
 
 	/*****************************************************************************************************************************
  	*				         		DATA - EMULATOR
@@ -620,6 +628,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
 //	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25) - 32*myBXHW/25);
 	m_plots["hQualityHW"]->Fill(myQualityHW);
+	m_plots["hQualityHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW);
 	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW);
 	
 
@@ -730,6 +739,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
           cout << "-------------------------------------------------------------------------" << endl;
         }	
 	m_plots["hQualityAM"]->Fill(myQualityAM);
+	m_plots["hQualityAM"+ chambTags.at(myStationAM-1)]->Fill(myQualityAM);
         m_plots["hSLAM" + chambTags.at(myStationAM-1)]->Fill(mySLAM);
 	m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myChi2AM);
 	if (myQualityAM == 6 || myQualityAM == 8 || myQualityAM == 9){	
