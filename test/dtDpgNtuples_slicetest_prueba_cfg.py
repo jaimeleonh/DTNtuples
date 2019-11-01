@@ -223,6 +223,9 @@ process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(False)
 process.CalibratedDigis.scenario = 2
 process.dtTriggerPhase2PrimitiveDigis.scenario = 2
 
+#SL TanPhi cut
+process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(99999.)
+
 #Chi2 -> Changing a lot lately
 process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.16)
 process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(100000) #in cm^2
