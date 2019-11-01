@@ -124,7 +124,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    "Distribution of HW qualities",
 					    9,0.5,9.5); 
       m_plots["hQualityAM"] = new TH1F("hQualityAM",
-					    "Distribution of AM qualities",
+					    "Distribution of Emul qualities",
 					    9,0.5,9.5); 
       m_plots["hBXDif"] = new TH1F("hBXDif",
 					    "BX difference ; BX difference; Entries",
@@ -159,8 +159,14 @@ void DTNtupleTPGSimAnalyzer::book()
 					    "Distribution of HW qualities",
 					    9,0.5,9.5); 
         m_plots["hQualityAM"+chambTag] = new TH1F(("hQualityAM_" +chambTag).c_str(),
-					    "Distribution of AM qualities",
+					    "Distribution of Emul qualities",
 					    9,0.5,9.5); 
+        m_plots2["hQualityVsBXHW"+chambTag] = new TH2F(("hQualityVsBXHW_" +chambTag).c_str(),
+					    "Distribution of Quality vs BX for HW",
+					    9,0.5,9.5,21,-10.5,10.5); 
+        m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
+					    "Distribution of Quality vs BX for Emul",
+					    9,0.5,9.5,21,-10.5,10.5); 
 
 
 
@@ -243,12 +249,19 @@ void DTNtupleTPGSimAnalyzer::book()
         for (const auto & labelTag : labelTags) {
           m_plots["hBX" + chambTag + labelTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of BX; BX; Entries",
-					    3564,0,3564); 
+					    21,-10.5,10.5); 
 					    //201,3199.5,3400.5); 
           m_plots["hBXDif" + chambTag + labelTag] = new TH1F(("hBXDif_" + chambTag + "_" + labelTag).c_str(),
 					    "BX difference ; BX difference; Entries",
 					    //41,-220.5,-179.5); 
 					    7128,-3564,3564); 
+          m_plots["hBXEmul" + chambTag + labelTag] = new TH1F(("hBXEmul_" + chambTag + "_" + labelTag).c_str(),
+					    "Distribution of BX; BX; Entries",
+					    21,-10.5,10.5); 
+          m_plots["hBXDifEmul" + chambTag + labelTag] = new TH1F(("hBXDifEmul_" + chambTag + "_" + labelTag).c_str(),
+					    "BX difference ; BX difference; Entries",
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
           m_plots["hBXfromT0" + chambTag + labelTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
 					    7128,-3564,3564); 
@@ -306,11 +319,18 @@ void DTNtupleTPGSimAnalyzer::book()
 	  for (const auto & slTag : slTags) {
             m_plots["hBX" + chambTag + labelTag + slTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 	   				    "Distribution of BX; BX; Entries",
-					    3564,0,3564); 
+					    21,-10.5,10.5); 
             m_plots["hBXDif" + chambTag + labelTag + slTag] = new TH1F(("hBXDif_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "BX difference ; BX difference; Entries",
 					    //41,-220.5,-179.5); 
 					    7128,-3564,3564); 
+            m_plots["hBXEmul" + chambTag + labelTag + slTag] = new TH1F(("hBXEmul_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
+					    "Distribution of BX; BX; Entries",
+					    21,-10.5,10.5); 
+            m_plots["hBXDifEmul" + chambTag + labelTag + slTag] = new TH1F(("hBXDifEmul_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
+					    "BX difference ; BX difference; Entries",
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
             m_plots["hBXfromT0" + chambTag + labelTag + slTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Distribution of BX got from T0; BX; Entries",
 					    201,3199.5,3400.5); 
@@ -367,8 +387,15 @@ void DTNtupleTPGSimAnalyzer::book()
 	for (const auto & quTag : quTags) {
           m_plots["hBX" + chambTag + quTag] = new TH1F(("hBX_" + chambTag + "_" + quTag).c_str(),
 					    "Distribution of BX; BX; Entries",
-					    3564,0,3564); 
+					    21,-10.5,10.5); 
           m_plots["hBXDif" + chambTag + quTag] = new TH1F(("hBXDif_" + chambTag + "_" + quTag).c_str(),
+					    "BX difference ; BX difference; Entries",
+					    //41,-220.5,-179.5); 
+					    7000,-3564,3564); 
+          m_plots["hBXEmul" + chambTag + quTag] = new TH1F(("hBXEmul_" + chambTag + "_" + quTag).c_str(),
+					    "Distribution of BX; BX; Entries",
+					    21,-10.5,10.5); 
+          m_plots["hBXDifEmul" + chambTag + quTag] = new TH1F(("hBXDifEmul_" + chambTag + "_" + quTag).c_str(),
 					    "BX difference ; BX difference; Entries",
 					    //41,-220.5,-179.5); 
 					    7000,-3564,3564); 
@@ -452,9 +479,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -1; //FIXME
-     offset[1] = -198; //FIXME
-     offset[2] = -198; //FIXME
-     offset[3] = -198; //FIXME
+     offset[1] = -199; //FIXME
+     offset[2] = -199; //FIXME
+     offset[3] = -199; //FIXME
 
      bool titPrint = false; 
 
@@ -595,23 +622,23 @@ void DTNtupleTPGSimAnalyzer::fill()
         }
 	
         m_plots["hSLHW" + chambTags.at(myStationHW-1)]->Fill(mySLHW);
-	m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
+	m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW - offset[myStationHW-1]);
 	m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(round(myt0HW/25));
 	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myChi2HW);
 
 	if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
-	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(round(myt0HW/25));
 	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myChi2HW);
 	} else {
-	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
 	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myChi2HW);
 	  
-	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
+	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
 	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myChi2HW);
@@ -623,12 +650,13 @@ void DTNtupleTPGSimAnalyzer::fill()
 _plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hChi2"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myChi2HW);
  */
-	m_plots["hBX"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
+	m_plots["hBX"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW - offset[myStationHW-1]);
 	m_plots["hBXDif"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
 //	m_plots["hBXDif"+chambTags.at(myStationHW/2-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25) - 32*myBXHW/25);
 	m_plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hQualityHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW);
+	m_plots2["hQualityVsBXHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW, myBXHW-offset[myStationHW-1]);
 	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW);
 	
 
@@ -688,7 +716,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	while (myt0AM > 0) 
 	{
 	  myt0AM = myt0AM - 3564*25; 
-	  myBXAM = myt0AM - 3564   ; 
+	  myBXAM = myBXAM - 3564   ; 
 	}
 
         primitivesAM[myStationAM-1].push_back(primitive({myStationAM, mySectorAM, myWheelAM, myQualityAM, mySLAM, myPhiAM, myPhiBAM, myPosAM, myDirAM, myChi2AM, myBXAM, myt0AM}));
@@ -738,17 +766,28 @@ _plots["hQualityHW"]->Fill(myQualityHW);
           cout << "t0 " << myt0AM << endl;	
           cout << "-------------------------------------------------------------------------" << endl;
         }	
+	m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myBXAM - offset[myStationAM-1]);
+	m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myBXAM);
 	m_plots["hQualityAM"]->Fill(myQualityAM);
 	m_plots["hQualityAM"+ chambTags.at(myStationAM-1)]->Fill(myQualityAM);
+	m_plots2["hQualityVsBXAM"+ chambTags.at(myStationAM-1)]->Fill(myQualityAM, myBXAM-offset[myStationAM-1]);
         m_plots["hSLAM" + chambTags.at(myStationAM-1)]->Fill(mySLAM);
 	m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myChi2AM);
 	if (myQualityAM == 6 || myQualityAM == 8 || myQualityAM == 9){	
           m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myChi2AM);  
+	  m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myBXAM - offset[myStationAM-1]);
+	  m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myBXAM);
         } else {
           m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myChi2AM);  
 	  m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myChi2AM);  
+	  m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myBXAM - offset[myStationAM-1]);
+	  m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myBXAM);
+	  m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myBXAM - offset[myStationAM-1]);
+	  m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myBXAM);
 	}
 	m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myChi2AM);
+	m_plots["hBXEmul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myBXAM - offset[myStationAM-1]);
+	m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myBXAM);
       } // end AM
 
       for (unsigned int i = 0; i<chambTags.size(); i++){
