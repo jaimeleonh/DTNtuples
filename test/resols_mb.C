@@ -14,13 +14,13 @@ void resols_mb () {
 
   //TFile data1("resols_ptcut.root");
   //TFile data1("vlad_new_PU200_noaged_unique.root");
-  TFile data1("resols_NicolaChange_all.root");
+  TFile data1("results_vlad_QualityFilter.root");
   TFile outFile("outPlots.root","RECREATE");
   //TFile data1("resol_vlad_t0.root");
   //
 
-  std::vector <std::string> categories = {"hTanPsiRes","hPhiRes", "hTimeRes", "hxRes", "BX_P2" };
-  std::vector <std::string> categoriesRes = {"TanPsiRes","PhiRes", "TimeRes", "xRes" };
+  std::vector <std::string> categories = {"hTanPsiRes","hPhiRes","hPhiBRes","hTimeRes", "hxRes", "BX_P2" };
+  std::vector <std::string> categoriesRes = {"TanPsiRes","PhiRes","PhiBRes", "TimeRes", "xRes" };
   std::vector <std::string> stuffRes = {"Chamb","Wheel","Sec" };
   std::vector <std::string> chambTags = {"MB1","MB2","MB3","MB4"};
   std::vector <std::string> wheelTags = {"Wh-2", "Wh-1", "Wh0", "Wh+1","Wh+2"}; 
@@ -38,6 +38,56 @@ void resols_mb () {
     for (auto & stuff : stuffRes) {
       for (auto & algoTag : algoTags) {
       data1.cd();
+      sprintf(name,"%s_Res_per%s%s%s", category.c_str(),stuff.c_str(),algoTag.c_str(), qualTags.at(0).c_str() ); 
+      TH1F* E1 = (TH1F*) data1.Get(name); 
+      sprintf(name,"%s_Res_per%s%s%s", category.c_str(),stuff.c_str(),algoTag.c_str(), qualTags.at(1).c_str() ); 
+      TH1F* E2 = (TH1F*) data1.Get(name); 
+      sprintf(name,"%s_Res_per%s%s%s", category.c_str(),stuff.c_str(),algoTag.c_str(), qualTags.at(2).c_str() ); 
+      TH1F* E3 = (TH1F*) data1.Get(name); 
+ 
+      E1->SetLineColor(kBlue);
+      E2->SetLineColor(kRed);
+      E3->SetLineColor(kGreen);
+
+      if (category == "TanPsiRes") E2->SetTitle("Local angle resolution");
+      if (category == "PhiRes") E2->SetTitle("Global angle resolution");
+      if (category == "PhiBRes") E2->SetTitle("Bending angle resolution");
+      if (category == "TimeRes") E2->SetTitle("Local time resolution");
+      if (category == "xRes") E2->SetTitle("Local position resolution");
+      char name[128];
+      sprintf(name,"%s_Res_per%s%s_difHits", category.c_str(),stuff.c_str(),algoTag.c_str()); 
+      new TCanvas(name,name); 
+      if (category == "TanPsiRes") E2->GetYaxis()->SetRangeUser(0,0.03);
+      if (category == "PhiRes") E2->GetYaxis()->SetRangeUser(0,30e-6);
+      if (category == "xRes") E2->GetYaxis()->SetRangeUser(0,0.05);
+      E2->Draw();
+      E1->Draw("same");
+      E3->Draw("same");
+
+      std::string nameFile; 
+
+      double binx = E1->GetBinCenter (1) + E1->GetBinCenter (E1->GetNbinsX()) / 10; 
+      double biny = E1->GetMaximum();
+
+      TLegend *leg = new TLegend(0.6,0.6,0.80,0.8);
+      sprintf(name,"%s", qualTags.at(0).c_str()); 
+      leg->AddEntry(E1,name,"l");
+      sprintf(name,"%s", qualTags.at(1).c_str()); 
+      leg->AddEntry(E2,name,"l");
+      sprintf(name,"%s", qualTags.at(2).c_str()); 
+      leg->AddEntry(E3,name,"l");
+      leg->Draw();
+      sprintf(name,"plots/%s_Res_per%s%s_difHits.png", category.c_str(),stuff.c_str(),algoTag.c_str()); 
+      gPad->SaveAs(name);
+      outFile.cd();
+      gPad->Write();
+      }
+    } // chambTags
+  } //categories 
+  for (auto & category : categoriesRes) {
+    for (auto & stuff : stuffRes) {
+      for (auto & algoTag : algoTags) {
+      data1.cd();
       sprintf(name,"%s_Res_per%s%s%s", category.c_str(),stuff.c_str(),algoTag.c_str(), qualResTags.at(0).c_str() ); 
       TH1F* E1 = (TH1F*) data1.Get(name); 
       sprintf(name,"%s_Res_per%s%s%s", category.c_str(),stuff.c_str(),algoTag.c_str(), qualResTags.at(1).c_str() ); 
@@ -46,15 +96,19 @@ void resols_mb () {
       E1->SetLineColor(kBlue);
       E2->SetLineColor(kRed);
 
-      if (category == "TanPsiRes") E1->SetTitle("Local angle resolution");
-      if (category == "PhiRes") E1->SetTitle("Global angle resolution");
-      if (category == "TimeRes") E1->SetTitle("Local time resolution");
-      if (category == "xRes") E1->SetTitle("Local position resolution");
+      if (category == "TanPsiRes") E2->SetTitle("Local angle resolution");
+      if (category == "PhiRes") E2->SetTitle("Global angle resolution");
+      if (category == "PhiBRes") E2->SetTitle("Bending angle resolution");
+      if (category == "TimeRes") E2->SetTitle("Local time resolution");
+      if (category == "xRes") E2->SetTitle("Local position resolution");
       char name[128];
       sprintf(name,"%s_Res_per%s%s", category.c_str(),stuff.c_str(),algoTag.c_str()); 
       new TCanvas(name,name); 
-      E1->Draw();
-      E2->Draw("same");
+      if (category == "TanPsiRes") E2->GetYaxis()->SetRangeUser(0,0.02);
+      if (category == "PhiRes") E2->GetYaxis()->SetRangeUser(0,30e-6);
+      if (category == "xRes") E2->GetYaxis()->SetRangeUser(0,0.05);
+      E2->Draw();
+      E1->Draw("same");
 
       std::string nameFile; 
 
@@ -263,9 +317,16 @@ void resols_mb () {
       new TCanvas(name,name); 
       
       if (category == "TanPsiRes") E1->SetTitle("Local angle resolution");
-      if (category == "PhiRes") E1->SetTitle("Global angle resolution");
+      if (category == "PhiBRes") E1->SetTitle("Bending angle resolution");
+      if (category == "PhiRes") { 
+        E1->SetTitle("Global angle resolution");
+        E1->GetYaxis()->SetRangeUser(0,30e-6);
+      }
       if (category == "TimeRes") E1->SetTitle("Local time resolution");
-      if (category == "xRes") E1->SetTitle("Local position resolution");
+      if (category == "xRes") {
+        E1->SetTitle("Local position resolution");
+        E1->GetYaxis()->SetRangeUser(0,0.05);
+      }
       E1->Draw("P");
       E2->Draw("Psame");
       E3->Draw("Psame");
