@@ -43,6 +43,7 @@ private:
   std::map<std::string, TEfficiency*> m_effs;
   
   TH1F* makeHistoPer( std::string, std::string, vector<std::string>, std::string);  
+  TH1F* makeHistoPerCorrelated( std::string, std::string, vector<std::string>, std::string);  
   Double_t m_minMuPt;
   Double_t m_maxMuPt;
   
@@ -50,11 +51,13 @@ private:
   Double_t m_maxMuSegDEta;
   
   Int_t m_minSegHits;
+  Int_t m_minSegZHits;
 
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
 
   bool unique; 
+  Int_t numberOfEntries;  
   
 };
 

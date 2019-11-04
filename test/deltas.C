@@ -11,10 +11,11 @@ void deltas () {
   gStyle->SetOptStat(0);
 
 
-  TFile data1("resols.root");
+  TFile data1("resols_NicolaChange.root");
+  //TFile data1("resols.root");
   TFile data2("resols_nopu.root");
   
-  int a = 0; 
+  int a = 1; 
 
   if (a==0) {
 
@@ -62,17 +63,18 @@ TCanvas *canvas10 = new TCanvas();
   if (a==0) {
 
 TCanvas *canvas10 = new TCanvas();
-  TH1F* E1 = (TH1F*) data1.Get("hPhiGenSeg_Wh-2_MB1"); 
-  TH1F* E2 = (TH1F*) data2.Get("hPhiGenSeg_Wh-2_MB1"); 
+  TH1F* E1 = (TH1F*) data1.Get("hPhiGenSeg_Wh0_MB1"); 
+  TH1F* E2 = (TH1F*) data2.Get("hPhiGenSeg_Wh0_MB1"); 
+  //TH1F* E1 = (TH1F*) data1.Get("hPhiGenSeg_Wh-2_MB1"); 
+  //TH1F* E2 = (TH1F*) data2.Get("hPhiGenSeg_Wh-2_MB1"); 
 
-  E1->SetTitle("DeltaPhi MB1 Wh-2"); 
  
 
  
   E1->SetLineColor(kBlue);
   E2->SetLineColor(kRed);
   
-  E1->SetTitle("DeltaPhi MB1 Wh-2"); 
+  E1->SetTitle("DeltaPhi MB1 Wh0"); 
   E1->Draw(); 
   E2->Draw("same"); 
   //E2->Draw("same"); 
@@ -83,7 +85,7 @@ TCanvas *canvas10 = new TCanvas();
   leg->Draw(); 
 
 
-  gPad->SaveAs("deltaPhi_both.png"); 
+  gPad->SaveAs("deltaPhi_both_Wh0.png"); 
 
 
   }
@@ -93,10 +95,11 @@ TCanvas *canvas10 = new TCanvas();
 
   if (a==0) {
 TCanvas *canvas10 = new TCanvas();
-  TH1F* E1 = (TH1F*) data1.Get("hEtaGenSeg_Wh-2_MB1"); 
-  TH1F* E2 = (TH1F*) data2.Get("hEtaGenSeg_Wh-2_MB1"); 
+  TH1F* E1 = (TH1F*) data1.Get("hEtaGenSeg_Wh0_MB1"); 
+  TH1F* E2 = (TH1F*) data2.Get("hEtaGenSeg_Wh0_MB1"); 
+  //TH1F* E1 = (TH1F*) data1.Get("hEtaGenSeg_Wh-2_MB1"); 
+  //TH1F* E2 = (TH1F*) data2.Get("hEtaGenSeg_Wh-2_MB1"); 
 
-  E1->SetTitle("DeltaEta MB1 Wh-2"); 
   //E1->Scale(1./ (double) E1->GetEntries());
  
 
@@ -104,7 +107,7 @@ TCanvas *canvas10 = new TCanvas();
   E1->SetLineColor(kBlue);
   E2->SetLineColor(kRed);
   
-  E1->SetTitle("DeltaEta MB1 Wh-2"); 
+  E1->SetTitle("DeltaEta MB1 Wh0"); 
   E1->Draw(); 
   E2->Draw("same"); 
 
@@ -115,7 +118,7 @@ TCanvas *canvas10 = new TCanvas();
 
 
  // gPad->SetLogy();
-  gPad->SaveAs("deltaEta_both.png"); 
+  gPad->SaveAs("deltaEta_both_Wh0.png"); 
 
 
   }
@@ -185,7 +188,7 @@ TCanvas *canvas10 = new TCanvas();
   }
 
 
-  if (true) {
+  if (a == 0) {
 
 TCanvas *canvas10 = new TCanvas();
   TH1F* E1 = (TH1F*) data1.Get("hPhiGenSeg_Wh-2_MB1"); 
@@ -221,6 +224,97 @@ TCanvas *canvas10 = new TCanvas();
 
   }
   
+  if (a==1) {
+TCanvas *canvas10 = new TCanvas();
+  TH1F* E1 = (TH1F*) data1.Get("ht0SegBefore_Wh-2_MB1"); 
+  TH1F* E2 = (TH1F*) data1.Get("ht0SegAfterDPhi_Wh-2_MB1"); 
+  TH1F* E3 = (TH1F*) data1.Get("ht0SegAfterDEta_Wh-2_MB1"); 
+  TH1F* E4 = (TH1F*) data1.Get("ht0SegAfterSegHits_Wh-2_MB1"); 
+  TH1F* E5 = (TH1F*) data1.Get("ht0SegAfterSegZHits_Wh-2_MB1"); 
+/*
+  E1->Scale(1./ (double) E1->GetEntries());
+  E2->Scale(1./ (double) E2->GetEntries());
+  E3->Scale(1./ (double) E3->GetEntries());
+  E4->Scale(1./ (double) E4->GetEntries());
+  E5->Scale(1./ (double) E5->GetEntries());
+*/
+
+  E1->SetLineColor(kBlue);
+  E2->SetLineColor(kRed);
+  E3->SetLineColor(kGreen);
+  E4->SetLineColor(kOrange);
+  E5->SetLineColor(kBlack);
+ 
+  //E1->GetYaxis()->SetRangeUser(0,10000); 
+  E1->SetTitle("t0 distribution after several cuts PU 200 - Wh-2 MB1"); 
+  E1->Draw(); 
+  E2->Draw("same"); 
+  E3->Draw("same"); 
+  E4->Draw("same"); 
+  E5->Draw("same"); 
+
+  TLegend *leg = new TLegend(0.6,0.6,0.80,0.8);
+  leg->AddEntry(E1,"Before cuts","l");
+  leg->AddEntry(E2,"dPhi Cut","l");
+  leg->AddEntry(E3,"dEta Cut","l");
+  leg->AddEntry(E4,"Phi Hits >= 4","l");
+  leg->AddEntry(E5,"Z Hits >= 4","l");
+  leg->Draw(); 
+
+  gPad->SetLogy();
+  gPad->SaveAs("t0_cuts_MB1_Wh-2.png"); 
+
+
+  }
+  if (a==1) {
+TCanvas *canvas10 = new TCanvas();
+  TH1F* E1 = (TH1F*) data1.Get("ht0SegBefore_Wh-2_MB1"); 
+  TH1F* E2 = (TH1F*) data1.Get("ht0SegAfterDPhi_Wh-2_MB1"); 
+  TH1F* E3 = (TH1F*) data1.Get("ht0SegAfterDEta_Wh-2_MB1"); 
+  TH1F* E4 = (TH1F*) data1.Get("ht0SegAfterSegHits_Wh-2_MB1"); 
+  TH1F* E5 = (TH1F*) data1.Get("ht0SegAfterSegZHits_Wh-2_MB1"); 
+/*
+  E1->Scale(1./ (double) E1->GetEntries());
+  E2->Scale(1./ (double) E2->GetEntries());
+  E3->Scale(1./ (double) E3->GetEntries());
+  E4->Scale(1./ (double) E4->GetEntries());
+  E5->Scale(1./ (double) E5->GetEntries());
+*/
+  E2->Divide (E1);
+  E3->Divide (E1);
+  E4->Divide (E1);
+  E5->Divide (E1);
+  E1->Divide (E1);
+
+
+  E1->SetLineColor(kBlue);
+  E2->SetLineColor(kRed);
+  E3->SetLineColor(kGreen);
+  E4->SetLineColor(kOrange);
+  E5->SetLineColor(kBlack);
+ 
+  //E1->GetYaxis()->SetRangeUser(0,10000); 
+  E1->SetTitle("Ratio - Wh-2 MB1"); 
+  E1->Draw(); 
+  E2->Draw("same"); 
+  E3->Draw("same"); 
+  E4->Draw("same"); 
+  E5->Draw("same"); 
+
+  TLegend *leg = new TLegend(0.6,0.6,0.80,0.8);
+  leg->AddEntry(E1,"Before cuts","l");
+  leg->AddEntry(E2,"dPhi Cut","l");
+  leg->AddEntry(E3,"dEta Cut","l");
+  leg->AddEntry(E4,"Phi Hits >= 4","l");
+  leg->AddEntry(E5,"Z Hits >= 4","l");
+  leg->Draw(); 
+
+  gPad->SetLogy();
+  gPad->SaveAs("t0_cuts_MB1_Wh-2_cociente.png"); 
+
+
+  }
+
 
 }
 // end macro
