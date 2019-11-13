@@ -15,6 +15,18 @@ git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
 git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
 scramv1 b -j 5
 ```
+
+####With last emulator version
+```
+cmsrel CMSSW_10_6_1_patch2
+cd CMSSW_10_6_1_patch2/src/
+cmsenv
+git cms-merge-topic jaimeleonh:newUnpacker # phase-2 unpacker
+git cms-merge-topic -u jaimeleonh:EmulFW # AM emulator
+git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
+scramv1 b -j 5
+```
+
 ##### Changing to ssh (easier to do PR)
 ```
 git remote set-url origin git@github.com:jaimeleonh/DTNtuples.git
