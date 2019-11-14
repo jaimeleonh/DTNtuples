@@ -644,26 +644,26 @@ void DTNtupleTPGSimAnalyzer::fill()
 	m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW - offset[myStationHW-1]);
 	m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
 	m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(round(myt0HW/25));
-	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myChi2HW / (1024. * 100) );
+	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(1.E6*myChi2HW / (1024. * 100) );
 
 	if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
   	  m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myDirHW);
 	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myChi2HW / (1024. * 100) );
+	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(1.E6*myChi2HW / (1024. * 100) );
 	} else {
   	  m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myDirHW);
 	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myChi2HW/ (1024. * 100) );
+	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(1.E6*myChi2HW/ (1024. * 100) );
 	  
   	  m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myDirHW);
 	  m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW - offset[myStationHW-1]);
 	  m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
 	  m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
-	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myChi2HW/ (1024. * 100) );
+	  m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(1.E6*myChi2HW/ (1024. * 100) );
 	}
 
 /*	m_plots["hBX"+chambTags.at(myStationHW/2-1)+quTags.at(myQualityHW-1)]->Fill(myBXHW);
@@ -680,7 +680,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hQualityHW"]->Fill(myQualityHW);
 	m_plots["hQualityHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW);
 	m_plots2["hQualityVsBXHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW, myBXHW-offset[myStationHW-1]);
-	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myChi2HW/ (1024. * 100) );
+	m_plots["hChi2FW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(1.E6*myChi2HW/ (1024. * 100) );
 	
 
      } // end HW
