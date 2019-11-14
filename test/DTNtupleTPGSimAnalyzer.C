@@ -271,7 +271,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    10000,-0.5,99999.5); 
           m_plots["hChi2FW" +  chambTag + labelTag] = new TH1F(("hChi2FW_" + chambTag + "_" + labelTag).c_str(),
 					    "Distribution of #chi^2; #chi^2; Entries",
-					    32,-0.5,31.5); 
+					    10000,-0.5,99999.5); 
           m_plots["hPsiHW" + chambTag + labelTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + labelTag).c_str(),
 					    "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
 					    160,-80,80); 
@@ -345,7 +345,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    10000,-0.5,99999.5); 
             m_plots["hChi2FW" +  chambTag + labelTag + slTag] = new TH1F(("hChi2FW_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Distribution of #chi^2; #chi^2; Entries",
-					    32,-0.5,31.5); 
+					    10000,-0.5,99999.5); 
             m_plots["hPsiHW" + chambTag + labelTag + slTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + labelTag+ "_" + slTag).c_str(),
 					    "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
 					    160,-80,80); 
@@ -419,7 +419,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    10000,-0.5,99999.5); 
           m_plots["hChi2FW" +  chambTag + quTag] = new TH1F(("hChi2FW_" + chambTag + "_" + quTag).c_str(),
 					    "Distribution of #chi^2; #chi^2; Entries",
-					    32,-0.5,31.5); 
+					    10000,-0.5,99999.5); 
           m_plots["hPsiHW" + chambTag + quTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + quTag).c_str(),
 					    "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
 					    160,-80,80); 
