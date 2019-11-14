@@ -18,6 +18,17 @@ git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis
 scramv1 b -j 5
 ```
 
+With SliceTest version: 
+```
+cmsrel CMSSW_10_6_1_patch2
+cd CMSSW_10_6_1_patch2/src/
+cmsenv
+git cms-merge-topic -u pozzobon:DTHough_NP_20191004_106X_noL1T # MTT-CHT emulator
+git cms-merge-topic -u jaimeleonh:EmulFW # AM emulator
+git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis/DTNtuples
+scramv1 b -j 5
+```
+
 ### Ntuple prduction:
 ```
 cd DTDPGAnalysis/DTNtuples/test/
