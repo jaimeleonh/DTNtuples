@@ -156,16 +156,16 @@ void DTNtupleTPGSimAnalyzer::book()
 					    "TM Eff vs Seg X",
 					    50,-251.5,250.5);
         m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
-					    "Distribution of HW qualities",
+					    "Distribution of HW qualities; HW Qualities; Entries",
 					    9,0.5,9.5); 
         m_plots["hQualityAM"+chambTag] = new TH1F(("hQualityAM_" +chambTag).c_str(),
-					    "Distribution of Emul qualities",
+					    "Distribution of Emul qualities; Emul Qualities; Entries",
 					    9,0.5,9.5); 
         m_plots2["hQualityVsBXHW"+chambTag] = new TH2F(("hQualityVsBXHW_" +chambTag).c_str(),
-					    "Distribution of Quality vs BX for HW",
+					    "Distribution of Quality vs BX for HW; HW Primitive Quality; HW Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
         m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
-					    "Distribution of Quality vs BX for Emul",
+					    "Distribution of Quality vs BX for Emul; Emul Primitive Quality; Emul Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
 
 
