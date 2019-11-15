@@ -1118,7 +1118,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	}
 	
 	for (unsigned int i = 0; i<chambTags.size(); i++){
-          for (unsigned int j = 0; j<labelTags.size(); j++){
+          for (unsigned int j = 0; j<quTags.size(); j++){
             if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
 	      
 	      short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
