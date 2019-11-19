@@ -109,7 +109,13 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
-  
+ 
+  int nbinPosEmuFW = 101; double minPosEmuFW = 0.01 * (0.5 + nbinPosEmuFW / 2); 
+  int nbinPsiEmuFW = 101; double minPsiEmuFW = 0.01 * (0.5 + nbinPsiEmuFW / 2); 
+  int nbinTimeEmuFW = 101; double minTimeEmuFW = 1 * (0.5 + nbinTimeEmuFW / 2); 
+
+
+ 
 
       m_effs["hEffCorAM"] = new TEfficiency("hEffCorAM",
 					    "Primitive percentage that appear in AM",
@@ -289,13 +295,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    600,-300,300,600,-300,300); 
           m_plots["hPsi"+ chambTag + labelTag] = new TH1F(("hPsi_"+ chambTag + "_" +labelTag).c_str(),
 					    "Firmware - Emulator #Psi; Firmware - Emulator #Psi (#circ); Entries",
-					    40,-2,2); 
+					    nbinPsiEmuFW,-minPsiEmuFW,minPsiEmuFW); 
           m_plots["hTime"+ chambTag + labelTag] = new TH1F(("hTime_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Emulator time; Firmware - Emulator Time (ns); Entries",
-					    200,-100,100); 
+					    nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
           m_plots["hPos"+ chambTag + labelTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
-					    100,-10,10); 
+					    nbinPosEmuFW,-minTimeEmuFW,minTimeEmuFW); 
           m_plots2["hPsi2DSeg" + chambTag + labelTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag).c_str(),
 					    "Firmware vs Segment #Psi; Firmware #Psi (#circ); Emulator #Psi (#circ)",
 					    160,-80,80,160,-80,80); 
@@ -437,13 +443,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    600,-300,300,600,-300,300); 
           m_plots["hPsi"+ chambTag + quTag] = new TH1F(("hPsi_"+ chambTag + "_" +quTag).c_str(),
 					    "Firmware - Emulator #Psi; Firmware - Emulator #Psi (#circ); Entries",
-					    40,-2,2); 
+					    nbinPsiEmuFW,-minPsiEmuFW,minPsiEmuFW); 
           m_plots["hTime"+ chambTag + quTag] = new TH1F(("hTime_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Emulator time; Firmware - Emulator Time (ns); Entries",
-					    200,-100,100); 
+					    nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
           m_plots["hPos"+ chambTag + quTag] = new TH1F(("hPos_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
-					    100,-10,10); 
+					    nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
           m_plots2["hPsi2DSeg" + chambTag + quTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + quTag).c_str(),
 					    "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
 					    160,-80,80,160,-80,80); 
