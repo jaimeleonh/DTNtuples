@@ -115,7 +115,7 @@ process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 #process.dtTriggerPhase2PrimitiveDigis.debug = True
 
 #Chi2 -> Changing a lot lately
-process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.16)
+process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.01)
 process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(9999.)
 
 
@@ -134,6 +134,8 @@ process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.doubl
 #Confirmation forbidden
 process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False
 
+#SL TanPsi cut
+process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.)
 
 
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()

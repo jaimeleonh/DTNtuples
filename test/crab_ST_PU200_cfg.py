@@ -22,7 +22,7 @@ inputFiles = []
 
 config.section_('General')
 config.General.workArea = 'crab_jobs'
-config.General.requestName = 'DTDPGNtuples_PU200_SliceTest_v3'
+config.General.requestName = 'DTDPGNtuples_PU200_SliceTest_v4'
 config.General.transferOutputs = True
 
 config.section_('JobType')
@@ -38,7 +38,7 @@ config.Data.inputDataset = inputDataset
 config.Data.splitting    = 'LumiBased'
 config.Data.unitsPerJob  = 10  
 #config.Data.inputDBS     = 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader/'
-config.Data.outLFNDirBase  = '/store/user/jleonhol/PU200_SliceTest_v3'
+config.Data.outLFNDirBase  = '/store/user/jleonhol/PU200_SliceTest_v4'
 
 config.section_('Site')
 config.Site.storageSite = 'T2_ES_CIEMAT'
