@@ -51,7 +51,7 @@ void printPlots_run(std::string run) {
   std::vector <std::string> specific2DPlots {"hPrimTypeVsPos_","h2DHwQualSegNHits_","h2DEmuQualSegNHits_","h2DTMQualSegNHits_","hQualityVsBXHW_", "hQualityVsBXAM_"};
   //std::vector <std::string> moreSpecific1DPlots { };
   std::vector <std::string> moreSpecific1DPlots {"hBX_","hBXDif_","hBXEmul_","hBXDifEmul_", "hBXfromT0_", "hChi2FW_","hChi2Emul_","hPsiHW_","hPsiEmul_", "hPsi_", "hTime_","hPos_", "hPsiSeg_", "hTimeSeg_","hPosSeg_"};
-  std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
+  std::vector <std::string> moreSpecific2DPlots {"hPsi2D_", "hTime2D_","hPos2D_","hPsi2DTM_","hPos2DTM_","hPhi2DTM_","hPhiB2DTM_","hPsi2DSeg_", "hTime2DSeg_","hPos2DSeg_", "hTimeSegvsPos_", "hTimeSegvsPsi_"};
 
   std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware Psi (#circ)","Emulator Psi (#circ)","Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
 
@@ -192,6 +192,7 @@ void printPlots_run(std::string run) {
       
         for (auto & specificPlot : moreSpecific2DPlots) {
           if (specificPlot == "hPsi2D_" || specificPlot == "hTime2D_" || specificPlot == "hPos2D_") continue;
+          if (specificPlot == "hPsi2DTM_" ||specificPlot == "hPos2DTM_" || specificPlot == "hPhi2DTM_" ||specificPlot == "hPhiB2DTM_" ) continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
