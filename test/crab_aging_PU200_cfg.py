@@ -7,7 +7,7 @@ inputDataset = "/Mu_FlatPt2to100-pythia8-gun/PhaseIITDRSpring19DR-PU200_106X_upg
 
 # These are the cfg parameters used to configure the 
 # dtDpgNtuples_slicetest_cfg.py configuration file
-configParams = ['ntupleName=DTDPGNtuple.root','applyTriggerAgeing=True','ageingTag=MuonAgeingAndFailures_3000fbm1_DT_L1TTDR'] 
+configParams = ['ntupleName=DTDPGNtuple.root']+['applyTriggerAgeing=True']+['ageingTag=MuonAgeingAndFailures_3000fbm1_DT_L1TTDR']+['ageingInput=sqlite_file:MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db'] 
 # E.g. use dedicated tTrigs
 # configParams = ['ntupleName=DTDPGNtuple.root', \
 #                 'tTrigFile=calib/TTrigDB_cosmics_ttrig.db'] 
