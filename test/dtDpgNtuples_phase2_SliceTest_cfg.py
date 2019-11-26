@@ -51,7 +51,6 @@ options.register('applyRpcAgeing',
 
 options.register('ageingInput',
                  '', #default value
-                 #'MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db', #default value
                  #'sqlite_file:MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
@@ -64,6 +63,7 @@ options.register('ageingTag',
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Tag for customised ageing")
+
 
 options.register('ntupleName',
                  './DTDPGNtuple_10_6_0_Phase2_Simulation.root', #default value
@@ -128,6 +128,33 @@ process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
 #process.dtTriggerPhase2AmPrimitiveDigis.useRPC = True
 
+####################### SliceTest specials ##############################
+
+#process.dtTriggerPhase2PrimitiveDigis.debug = True
+
+#Chi2 -> Changing a lot lately
+process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.01)
+process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(0.1)
+
+
+#LSB -> Position 0.00625 cm instead of 0.004 cm
+process.dtTriggerPhase2PrimitiveDigis.use_LSB = True
+process.dtTriggerPhase2PrimitiveDigis.x_precision = cms.untracked.double(1./160.)
+process.dtTriggerPhase2PrimitiveDigis.tanPsi_precision = cms.untracked.double(1./4096.)
+
+#Correlate with BX
+#process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = False
+process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = True
+process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = 1
+
+#Correlate with tanPsi
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(99999./4096.)
+
+#Confirmation forbidden
+process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False
+
+#SL TanPsi cut
+process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.)
 process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
 
 process.dtTriggerPhase2HbPrimitiveDigis = process.DTTPG.clone()
