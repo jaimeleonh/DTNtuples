@@ -54,10 +54,12 @@ private:
   Double_t m_maxMuSegDEta;
   
   Int_t m_minSegHits;
+  Int_t m_minZSegHits;
 
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
 
+  Int_t numberOfEntries; 
   
 };
 

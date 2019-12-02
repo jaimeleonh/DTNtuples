@@ -27,6 +27,7 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_maxMuSegDEta = 0.3;
 
   m_minSegHits = 4;
+  m_minZSegHits = 4;
 
   m_maxSegTrigDPhi = 0.1;
   m_maxMuTrigDPhi  = 0.2;
@@ -114,6 +115,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     {
       Int_t segSt    = seg_station->at(iSeg);
       Int_t segNHits = seg_phi_nHits->at(iSeg);
+      Int_t segZNHits = seg_z_nHits->at(iSeg);
       
       Double_t muSegDPhi = std::abs(acos(cos(gen_phi->at(iGenPart) - seg_posGlb_phi->at(iSeg))));
       Double_t muSegDEta = std::abs(gen_eta->at(iGenPart) - seg_posGlb_eta->at(iSeg));
@@ -121,6 +123,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (muSegDPhi < m_maxMuSegDPhi &&
           muSegDEta < m_maxMuSegDEta &&
           segNHits >= m_minSegHits &&
+     //     segZNHits >= m_minZSegHits &&
           segNHits >= bestSegNHits.at(segSt - 1))
       {
         bestSegNHits[segSt - 1] = segNHits;
@@ -164,6 +167,8 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuHb_phi->at(iTrigHB),trigHBSec);
           Double_t finalHBDPhi   = seg_posGlb_phi->at(iSeg) - trigGlbPhi;
           Double_t segTrigHBDPhi = abs(acos(cos(finalHBDPhi)));
+	  
+          //if (ph2TpgPhiEmuHb_index->at(iTrigHB) > 3 ) continue;  	  
 
           if ((segTrigHBDPhi < m_maxSegTrigDPhi) && (trigHBBX == 20) && (bestSegTrigHBDPhi > segTrigHBDPhi) && (ph2TpgPhiEmuHb_quality->at(iTrigHB) >= minQuality))
           {
@@ -205,6 +210,8 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t finalAMDPhi   = seg_posGlb_phi->at(iSeg) - trigGlbPhi;
           Double_t segTrigAMDPhi = abs(acos(cos(finalAMDPhi)));
 
+	  if (ph2TpgPhiEmuAm_index->at(iTrigAM) > 3 ) continue;  	  
+	  //if (ph2TpgPhiEmuAm_quality->at(iTrigAM) < 3 ) continue;  	  
 
           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 20) && (bestSegTrigAMDPhi > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
 //           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 0) && (bestSegTrigAMDPhi > segTrigAMDPhi))
