@@ -11,7 +11,8 @@ r.gROOT.SetBatch(True)
 print "\nBeginning plotting\n"
 #path = "./plotsEff_allThree/"
 path = "./ratePlots/"
-savescaffold = "h"
+#savescaffold = "h"
+savescaffold = { "rates": "hRates", "bandwidths": "hBandwidths" }
 #stuff = ["results_nu_pu250_noage_norpc"]
 stuff = []
 prefixes = [""]
@@ -23,8 +24,10 @@ legends = ["AM"]
 if len(sys.argv) == 2 : 
   if sys.argv[1] == 'noageing' or sys.argv[1] == 'noaging': 
     stuff.append("results_nu_pu250_noage_norpc")
+    ranges = { "rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
   elif sys.argv[1] == 'ageing' or sys.argv[1] == 'aging': 
     stuff.append("results_nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000")
+    ranges = { "rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
   else : 
     print ("Bad argument")
     sys.exit(1)
@@ -32,12 +35,16 @@ if len(sys.argv) == 2 :
 elif len(sys.argv) == 3 : 
   if (sys.argv[1] == 'noageing' or sys.argv[1] == 'noaging') and sys.argv[2] == 'norpc' : 
     stuff.append("results_nu_pu250_noage_norpc")
+    ranges = { "rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
   elif (sys.argv[1] == 'ageing' or sys.argv[1] == 'aging')  and sys.argv[2] == 'norpc': 
     stuff.append("results_nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000")
+    ranges = { "rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,5E8,5E8,5E8,5E8,5E8,20E8,5E8] }
   elif (sys.argv[1] == 'noageing' or sys.argv[1] == 'noaging') and sys.argv[2] == 'rpc' : 
     stuff.append("results_nu_pu250_noage_withrpc")
+    ranges = { "rates":[100E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[100E8,50E8,15E8,15E8,15E8,15E8,50E8,5E8] }
   elif (sys.argv[1] == 'ageing' or sys.argv[1] == 'aging')  and sys.argv[2] == 'rpc': 
     stuff.append("results_nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000")
+    ranges = { "rates":[100E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,20E8,15E8,15E8,15E8,15E8,20E8,5E8] }
   else : 
     print ("Bad argument")
     sys.exit(1)
@@ -45,6 +52,8 @@ elif len(sys.argv) == 3 :
 elif len(sys.argv) == 1  : 
   print ("Default case: no ageing no RPC")
   stuff.append("results_nu_pu250_noage_norpc")
+  #ranges = [60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6]
+  ranges = { "rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
 
 else : 
   print ("Need a correct number of arguments")
@@ -54,14 +63,14 @@ else :
 
 
 
-plotscaffold = "ratePrims_{al}_{wh}_{se}_{st}"
+plotscaffold = { "rates": "ratePrims_{al}_{wh}_{se}_{st}", "bandwidths": "bandwidth_{al}_{wh}_{se}_{st}" }
 chambTag = ["MB1", "MB2", "MB3", "MB4"]
 wheelTag = [ "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
 sectorTag = ["Sec1","Sec2","Sec3","Sec4","Sec5","Sec6","Sec7","Sec8","Sec9","Sec10","Sec11","Sec12"]
-ranges = [60E6,10E6,10E6,10E6,10E6,10E6,50E6]
+#ranges = [60E6,10E6,10E6,10E6,10E6,10E6,50E6]
 suffix = ""
 
-def makeresplot(hlist, algo, suffix, fileName,binToUse):
+def makeresplot(hlist, algo, suffix, fileName,binToUse,plotScaffold):
     print "Obtaining intermediate plot for algo ", algo
     res = r.TFile.Open(fileName)
     #hmatched = [res.Get(plotscaffold.format(mag = magnit + "Res", qu = quality, al = algo, wh = wheelTag[iwh])) for iwh in range(5)]
@@ -69,7 +78,7 @@ def makeresplot(hlist, algo, suffix, fileName,binToUse):
     for ich in range(4):
       for iwh in range(5):
         for ise in range(12):
-          hmatched.append(res.Get(plotscaffold.format(al = algo, wh = wheelTag[iwh], se=sectorTag[ise], st=chambTag[ich]) ))
+          hmatched.append(res.Get(plotScaffold.format(al = algo, wh = wheelTag[iwh], se=sectorTag[ise], st=chambTag[ich]) ))
     resplot = r.TH1F("h_{al}_{su}".format(su = suffix, al = algo), "", 20, -0.5, 19.5)
     
     #resplot=r.TH1F("hEff_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
@@ -106,7 +115,7 @@ legxhigh       = 0.65
 legyhigh       = 0.9
 
 
-def combineresplots(hlist, binToUse, legends):
+def combineresplots(hlist, binToUse, legends, whatToPlot):
     print "Combining list of plots"
     if len(hlist) == 0: raise RuntimeError("Empty list of plots")
     c   = r.TCanvas("c", "c", 800, 800)
@@ -115,7 +124,7 @@ def combineresplots(hlist, binToUse, legends):
     leg = r.TLegend(legxlow, legylow, legxhigh, legyhigh)
     hlist[0].SetStats(False)
     #hlist[0].SetTitle("L1 DT Phase 2 algorithm efficiency comparison")
-    hlist[0].GetYaxis().SetRangeUser(lowlimityaxis, ranges[binToUse-1])
+    hlist[0].GetYaxis().SetRangeUser(lowlimityaxis, ranges[whatToPlot][binToUse-1])
     hlist[0].GetYaxis().SetTitleOffset(yaxistitleoffset)
     hlist[0].GetYaxis().SetMaxDigits(2)
     #hlist[0].GetYaxis().SetTitle(magnitude[index] + " resolution " + units[index])
@@ -172,9 +181,9 @@ def combineresplots(hlist, binToUse, legends):
 
 
     #c.SetLogy()
-    c.SaveAs(path + savescaffold  + "_" + str(binToUse) + ".png")
-    c.SaveAs(path + savescaffold  + "_" + str(binToUse) + ".pdf")
-    c.SaveAs(path + savescaffold  + "_" + str(binToUse) + ".root")
+    c.SaveAs(path + savescaffold[whatToPlot]  + "_" + str(binToUse) + ".png")
+    c.SaveAs(path + savescaffold[whatToPlot]  + "_" + str(binToUse) + ".pdf")
+    c.SaveAs(path + savescaffold[whatToPlot]  + "_" + str(binToUse) + ".root")
     c.Close(); del c
     return
 
@@ -182,7 +191,7 @@ def combineresplots(hlist, binToUse, legends):
 
 markertypedir  = {}
 markertypedir["h_" + "AM" + "_" + stuff[0]] = 20
-markertypedir["h_" + "HB" + "_" + stuff[0]] = 20
+#markertypedir["h_" + "HB" + "_" + stuff[0]] = 20
 #markertypedir["hEff_" + "AM" + "_" + stuff[1]] = 29
 #markertypedir["AM+RPC_age"] = 29
 #markertypedir["AM+RPC_noage"] = 29
@@ -199,20 +208,13 @@ markercolordir["h_" + "AM" + "_" + stuff[0]] = r.kBlue
 #markercolordir["AM_noage"] = r.kBlue
 #markercolordir["HB_age"] = r.kRed
 
-listofplots1     = []
-listofplots2     = []
-listofplots3     = []
-listofplots4     = []
-listofplots5     = []
-listofplots6     = []
-listofplots7     = []
-makeresplot(listofplots1, "AM", stuff[0], stuff[0]+suffixes[0],1)
-makeresplot(listofplots2, "AM", stuff[0], stuff[0]+suffixes[0],2)
-makeresplot(listofplots3, "AM", stuff[0], stuff[0]+suffixes[0],3)
-makeresplot(listofplots4, "AM", stuff[0], stuff[0]+suffixes[0],4)
-makeresplot(listofplots5, "AM", stuff[0], stuff[0]+suffixes[0],5)
-makeresplot(listofplots6, "AM", stuff[0], stuff[0]+suffixes[0],6)
-makeresplot(listofplots7, "AM", stuff[0], stuff[0]+suffixes[0],7)
+listofplots = {1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[]}
+listofplots2 = {1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[]}
+
+for i in range (1,9):
+  makeresplot(listofplots[i], "AM", stuff[0], stuff[0]+suffixes[0], i, plotscaffold["rates"])
+  makeresplot(listofplots2[i], "AM", stuff[0], stuff[0]+suffixes[0], i, plotscaffold["bandwidths"])
+
 #makeresplot(listofplots1, "HB", stuff[0], stuff[0]+suffixes[0],1)
 #makeresplot(listofplots, False, "HB", False)
 #makeresplot(listofplots, True, "HB", False)
@@ -230,11 +232,6 @@ makeresplot(listofplots7, "AM", stuff[0], stuff[0]+suffixes[0],7)
 #makeresplot(puedlistofplots, True,  "AM+RPC", True)
 
 print "\nCombining and saving\n"
-combineresplots(listofplots1, 1, legends)
-combineresplots(listofplots2, 2, legends)
-combineresplots(listofplots3, 3, legends)
-combineresplots(listofplots4, 4, legends)
-combineresplots(listofplots5, 5, legends)
-combineresplots(listofplots6, 6, legends)
-combineresplots(listofplots7, 7, legends)
-#combineresplots(puedlistofplots, True)
+for i in range (1,9) :
+  combineresplots(listofplots[i], i, legends, "rates")
+  combineresplots(listofplots2[i], i, legends, "bandwidths")

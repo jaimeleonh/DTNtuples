@@ -24,7 +24,7 @@
 //#include "tdrstyle.C"
 
 
-void plotAll_aging_norpc(){
+void plotAll_aging_rpc(){
 
 //  setTDRStyle();
 
