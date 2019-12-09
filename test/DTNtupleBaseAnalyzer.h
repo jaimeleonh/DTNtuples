@@ -38,6 +38,8 @@ public :
    vector<float>   *gen_phi;
    vector<float>   *gen_eta;
    vector<short>   *gen_charge;
+   vector<double>   *gen_lxy;
+   vector<double>   *gen_dxy;
    Short_t         environment_truePileUp;
    Short_t         environment_actualPileUp;
    Int_t           environment_instLumi;
@@ -267,6 +269,8 @@ public :
    TBranch        *b_gen_pt;   //!
    TBranch        *b_gen_phi;   //!
    TBranch        *b_gen_eta;   //!
+   TBranch        *b_gen_lxy;   //!
+   TBranch        *b_gen_dxy;   //!
    TBranch        *b_gen_charge;   //!
    TBranch        *b_environment_truePileUp;   //!
    TBranch        *b_environment_actualPileUp;   //!

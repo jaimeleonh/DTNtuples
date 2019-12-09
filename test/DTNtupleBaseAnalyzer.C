@@ -59,6 +59,10 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    gen_phi = 0;
    gen_eta = 0;
    gen_charge = 0;
+   gen_phi = 0;
+   gen_eta = 0;
+   gen_dxy = 0;
+   gen_lxy = 0;
    digi_wheel = 0;
    digi_sector = 0;
    digi_station = 0;
@@ -268,6 +272,8 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    fChain->SetBranchAddress("gen_pt", &gen_pt, &b_gen_pt);
    fChain->SetBranchAddress("gen_phi", &gen_phi, &b_gen_phi);
    fChain->SetBranchAddress("gen_eta", &gen_eta, &b_gen_eta);
+   fChain->SetBranchAddress("gen_lxy", &gen_lxy, &b_gen_lxy);
+   fChain->SetBranchAddress("gen_dxy", &gen_dxy, &b_gen_dxy);
    fChain->SetBranchAddress("gen_charge", &gen_charge, &b_gen_charge);
    fChain->SetBranchAddress("environment_truePileUp", &environment_truePileUp, &b_environment_truePileUp);
    fChain->SetBranchAddress("environment_actualPileUp", &environment_actualPileUp, &b_environment_actualPileUp);
