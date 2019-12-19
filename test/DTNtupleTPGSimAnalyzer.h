@@ -62,6 +62,7 @@ private:
   Double_t m_maxMuTrigDPhi;
 
   Int_t numberOfEntries; 
+  Int_t m_maxSegT0;
 
   bool unique; 
 

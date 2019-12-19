@@ -34,6 +34,8 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_maxSegTrigDPhi = 0.1;
   m_maxMuTrigDPhi  = 0.2;
 
+  m_maxSegT0 = 15;
+
 }
 
 
@@ -168,7 +170,9 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots2["hSegmentPsiVST0"] -> Fill( atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , seg_phi_t0->at(iSeg) );
       m_plots["hGenSegDeltaPhi"] -> Fill( muSegDPhi );
       m_plots["hGenSegDeltaEta"] -> Fill( muSegDEta );
-      
+
+      if (abs(seg_phi_t0->at(iSeg)) > m_maxSegT0 ) continue;
+
       if (muSegDPhi < m_maxMuSegDPhi &&
           muSegDEta < m_maxMuSegDEta &&
           segNHits >= m_minSegHits &&
