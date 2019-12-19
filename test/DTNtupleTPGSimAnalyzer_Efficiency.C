@@ -23,8 +23,10 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
 
   m_minMuPt = 20;
 
-  m_maxMuSegDPhi = 0.2;
-  m_maxMuSegDEta = 0.3;
+  //m_maxMuSegDPhi = 20;
+  m_maxMuSegDPhi = 0.1;
+  //m_maxMuSegDEta = 20;
+  m_maxMuSegDEta = 0.15;
 
   m_minSegHits = 4;
   m_minZSegHits = 4;
@@ -79,16 +81,57 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> algoTag  = {"HB",      "AM", "AM+RPC"};
   std::vector<std::string> totalTag = {"matched", "total"};
   std::vector<std::string> chambTag = {"MB1",     "MB2", "MB3", "MB4"};
+  std::vector<std::string> wheelTag = {"Wh.-2","Wh.-1","Wh.0","Wh.+1","Wh.+2",};
+
+  m_plots["hSegmentPsi"] = new TH1D("hSegmentPsi",
+                          "Segment Psi distribution ; Psi; Entries",
+                          200, -50, +50);
+  m_plots2["hSegmentPsiVST0"] = new TH2D("hSegmentPsiVST0",
+                          "Segment Psi distribution vs segment t0; Psi; Segment t0 (ns)",
+                          200, -50, +50, 200, -100, 100);
+  m_plots["hGenSegDeltaPhi"] = new TH1D("hGenSegDeltaPhi",
+                          "Gen Muon - Segment Delta Phi distribution ; Delta Phi; Entries",
+                          600, 0, 0.5);
+  m_plots["hGenSegDeltaEta"] = new TH1D("hGenSegDeltaEta",
+                          "Gen Muon - Segment Delta Eta distribution ; Delta Eta; Entries",
+                          600, 0, 0.5);
 
   for (const auto & algo : algoTag)
   {
+    m_plots2["hSegmentPsiVSDeltaT0"] = new TH2D("hSegmentPsiVSDeltaT0",
+                          "Segment Psi distribution vs Delta t0; Psi; Delta t0 (ns)",
+                          200, -50, +50, 100, -50, 50);
+    m_plots["hPrimPsi" + algo] = new TH1D(("hPrimPsi_" + algo).c_str(),
+                          (algo + " Primitives Psi distribution ; Psi; Entries").c_str(),
+                          200, -50, +50);
+    m_plots2["hBXvsPrimPsi" + algo] = new TH2D(("hBXvsPrimPsi_" + algo).c_str(),
+                          (algo + " BX vs Primitives Psi distribution ; BX; Psi").c_str(),
+                          11, -5.5, 5.5, 13 ,-65., 65.);
+    m_plots["hDeltaPhi" + algo] = new TH1D(("hDeltaPhi_" + algo).c_str(),
+                          (algo + " Primitive - Segment Delta Phi distribution ; Delta Phi; Entries").c_str(),
+                          600, 0, 0.1);
+    m_plots["hEffvsSlope" + algo + "matched"] = new TH1D(("hEff_" + algo + "_matched" ).c_str(),
+                                                ("Efficiency for " + algo + "; Local Direction; Efficiency").c_str(),
+                                                50, -50, 50);
+    m_plots["hEffvsSlope" + algo + "total"] = new TH1D(("hEff_" + algo + "_total" ).c_str(),
+                                                ("Efficiency for "  + algo + "; Local Direction; Efficiency").c_str(),
+                                                50, -50, 50);
     for (const auto & chamb : chambTag)
     {
       for (const auto & total : totalTag)
       {
       m_plots["Eff_" + chamb + "_" + algo + "_" + total] = new TH1D(("hEff_" + chamb + "_" + algo + "_" + total).c_str(),
-                                                ("Efficiency for " + chamb + " " + algo + "; Sector; efficiency").c_str(),
+                                                ("Efficiency for " + chamb + " " + algo + "; Sector; Efficiency").c_str(),
                                                 5, -2.5, +2.5);
+      m_plots["EffEta_" + chamb + "_" + algo + "_" + total] = new TH1D(("hEffEta_" + chamb + "_" + algo + "_" + total).c_str(),
+                                                ("Efficiency vs Eta for " + chamb + " " + algo + "; #eta; Efficiency").c_str(),
+                                                100, -1.5, +1.5);
+        for (const auto & wheel : wheelTag)
+        {
+          m_plots["hEffvsSlope" + algo + chamb + wheel + total] = new TH1D(("hEff_" + wheel + "_" + chamb + "_" + algo + "_" + total ).c_str(),
+                                                ("Efficiency for " + wheel + " " + chamb + " " + algo + "; Local Direction; Efficiency").c_str(),
+                                                50, -50, 50);
+        }
       }
     }
   }
@@ -100,11 +143,12 @@ void DTNtupleTPGSimAnalyzer::fill()
 {
   std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> whTags    = { "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"};
-  std::vector<std::string> secTags   = { "Sec.1", "Sec.2", "Sec.3", "Sec.4", "Sec.5", "Sec.6", "Sec.7", "Sec.8","Sec.9","Sec.10","Sec.11","Sec.12","Sec.13","Sec.14"};
+  std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
 
   for (std::size_t iGenPart = 0; iGenPart < gen_nGenParts; ++iGenPart)
   {
     if (std::abs(gen_pdgId->at(iGenPart)) != 13 || gen_pt->at(iGenPart) < m_minMuPt) continue;
+//    if (gen_lxy->at(iGenPart) > 100) continue;
 
     // CB this should not be a vector ...
     std::vector<std::size_t> bestSegIndex = { 999, 999, 999, 999 };
@@ -120,10 +164,15 @@ void DTNtupleTPGSimAnalyzer::fill()
       Double_t muSegDPhi = std::abs(acos(cos(gen_phi->at(iGenPart) - seg_posGlb_phi->at(iSeg))));
       Double_t muSegDEta = std::abs(gen_eta->at(iGenPart) - seg_posGlb_eta->at(iSeg));
       
+      m_plots["hSegmentPsi"] -> Fill( atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi())  );
+      m_plots2["hSegmentPsiVST0"] -> Fill( atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , seg_phi_t0->at(iSeg) );
+      m_plots["hGenSegDeltaPhi"] -> Fill( muSegDPhi );
+      m_plots["hGenSegDeltaEta"] -> Fill( muSegDEta );
+      
       if (muSegDPhi < m_maxMuSegDPhi &&
           muSegDEta < m_maxMuSegDEta &&
           segNHits >= m_minSegHits &&
-     //     segZNHits >= m_minZSegHits &&
+          (segZNHits >= m_minZSegHits  || segSt==4) &&
           segNHits >= bestSegNHits.at(segSt - 1))
       {
         bestSegNHits[segSt - 1] = segNHits;
@@ -132,8 +181,40 @@ void DTNtupleTPGSimAnalyzer::fill()
     }
 
     int minQuality = -99;
-    if (quality_ == "nothreehits")
+    int maxIndex = 9999;
+    bool qualityMatched = false;
+    bool qualityORSegs = false;
+    bool qualityORSegsClus = false;
+    bool qualityMatchedORSegs = false;
+    bool qualityMatchedORSegsClus = false;
+    bool qualityCorrelated = false;
+    bool qualityLegacy = false;
+    
+    if (quality_ == "nothreehits"){
       minQuality = 3;
+    } 
+    else if (quality_ == "index0")
+      maxIndex = 0;
+    else if (quality_ == "index01")
+      maxIndex = 1;
+    else if (quality_ == "index012")
+      maxIndex = 2;
+    else if (quality_ == "index0123")
+      maxIndex = 3;
+    else if (quality_ == "withmatchedthreehits")
+      qualityMatched = true;  
+    else if (quality_ == "qualityORSegs")
+      qualityORSegs = true;  
+    else if (quality_ == "qualityORSegsClus")
+      qualityORSegsClus = true;  
+    else if (quality_ == "qualityMatchedORSegs")
+      qualityMatchedORSegs = true;  
+    else if (quality_ == "qualityMatchedORSegsClus")
+      qualityMatchedORSegsClus = true;  
+    else if (quality_ == "correlated")
+      qualityCorrelated = true;  
+    else if (quality_ == "legacy")
+      qualityLegacy = true;  
     
 
     // ==================== VARIABLES FOR THE HOUGH TRANSFORM BASED ALGORITHM
@@ -168,8 +249,12 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t finalHBDPhi   = seg_posGlb_phi->at(iSeg) - trigGlbPhi;
           Double_t segTrigHBDPhi = abs(acos(cos(finalHBDPhi)));
 	  
+          m_plots["hPrimPsiHB"] -> Fill( ph2TpgPhiEmuHb_dirLoc_phi->at(iTrigHB) );
+          m_plots["hDeltaPhiHB"] -> Fill( segTrigHBDPhi );
+          m_plots2["hBXvsPrimPsiHB"] -> Fill ( trigHBBX - 20 , atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()));
           //if (ph2TpgPhiEmuHb_index->at(iTrigHB) > 3 ) continue;  	  
 
+          //if ((segTrigHBDPhi < m_maxSegTrigDPhi)  && (bestSegTrigHBDPhi > segTrigHBDPhi) && (ph2TpgPhiEmuHb_quality->at(iTrigHB) >= minQuality))
           if ((segTrigHBDPhi < m_maxSegTrigDPhi) && (trigHBBX == 20) && (bestSegTrigHBDPhi > segTrigHBDPhi) && (ph2TpgPhiEmuHb_quality->at(iTrigHB) >= minQuality))
           {
             bestTPHB          = iTrigHB;
@@ -183,11 +268,17 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (bestTPHB > -1 && seg_phi_t0->at(iSeg) > -500)
       {
         m_plots["Eff_" + chambTag + "_HB_matched"]->Fill(segWh);
+        m_plots["EffEta_" + chambTag + "_HB_matched"]->Fill(gen_eta->at(iGenPart));
+        m_plots["hEffvsSlopeHB" + chambTag + whTag + "matched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsSlopeHBmatched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
       }
 
       if (seg_phi_t0->at(iSeg) > -500)
       {
         m_plots["Eff_" + chambTag + "_HB_total"]->Fill(segWh);
+        m_plots["EffEta_" + chambTag + "_HB_total"]->Fill(gen_eta->at(iGenPart));
+        m_plots["hEffvsSlopeHB" + chambTag + whTag + "total"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsSlopeHBtotal"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
       }
 
 
@@ -203,6 +294,8 @@ void DTNtupleTPGSimAnalyzer::fill()
         Int_t trigAMSec = ph2TpgPhiEmuAm_sector->at(iTrigAM);
         Int_t trigAMSt  = ph2TpgPhiEmuAm_station->at(iTrigAM);
         Int_t trigAMBX  = ph2TpgPhiEmuAm_BX->at(iTrigAM);
+        Int_t trigAMqual  = ph2TpgPhiEmuAm_quality->at(iTrigAM);
+        Int_t trigAMrpc  = ph2TpgPhiEmuAm_rpcFlag->at(iTrigAM);
 
         if (segWh == trigAMWh && segSec == trigAMSec && segSt  == trigAMSt)
         {
@@ -210,11 +303,23 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t finalAMDPhi   = seg_posGlb_phi->at(iSeg) - trigGlbPhi;
           Double_t segTrigAMDPhi = abs(acos(cos(finalAMDPhi)));
 
-	  if (ph2TpgPhiEmuAm_index->at(iTrigAM) > 3 ) continue;  	  
-	  //if (ph2TpgPhiEmuAm_quality->at(iTrigAM) < 3 ) continue;  	  
+          m_plots["hPrimPsiAM"] -> Fill( ph2TpgPhiEmuAm_dirLoc_phi->at(iTrigAM) );
+          m_plots["hDeltaPhiAM"] -> Fill( segTrigAMDPhi );
+          m_plots2["hBXvsPrimPsiAM"] -> Fill ( trigAMBX - 20 , atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()));
+	 
+          m_plots2["hSegmentPsiVSDeltaT0"]->Fill(  atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , ph2TpgPhiEmuAm_t0->at(iTrigAM) - 20*25 - seg_phi_t0->at(iSeg) );
+          if (ph2TpgPhiEmuAm_index->at(iTrigAM) > maxIndex ) continue;  	  
+	      if (ph2TpgPhiEmuAm_quality->at(iTrigAM) < minQuality ) continue;  	  
+          if (qualityORSegs && ( (trigAMqual < 3 && trigAMqual > -1) || ( trigAMqual ==-1 && trigAMrpc!=2 ) )) continue;
+          if (qualityORSegsClus &&  (trigAMqual < 3 && trigAMqual > -1)  ) continue;
+          if (qualityMatched && ( (ph2TpgPhiEmuAm_quality->at(iTrigAM) < 3 && ph2TpgPhiEmuAm_rpcFlag->at(iTrigAM)==0 ) || ( ph2TpgPhiEmuAm_quality->at(iTrigAM) ==-1 ) ) ) continue;
+          if (qualityMatchedORSegs && ( ( (trigAMqual < 3 && trigAMrpc==0 ) && trigAMqual > -1) || ( trigAMqual ==-1 && trigAMrpc!=2 ) )) continue;
+          if (qualityMatchedORSegsClus && ( ( (trigAMqual < 3 && trigAMrpc==0 ) && trigAMqual > -1) )) continue;
+          if (qualityCorrelated && (trigAMqual < 6 || trigAMqual==7)) continue;
+          if (qualityLegacy && (trigAMqual < 3 || trigAMqual==5)) continue;
 
+          //if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (bestSegTrigAMDPhi > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 20) && (bestSegTrigAMDPhi > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
-//           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 0) && (bestSegTrigAMDPhi > segTrigAMDPhi))
           {
             bestTPAM          = iTrigAM;
             besttrigAMBX      = trigAMBX;
@@ -228,12 +333,17 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (bestTPAM > -1 && seg_phi_t0->at(iSeg) > -500)
       {
         m_plots["Eff_" + chambTag + "_AM_matched"]->Fill(segWh);
+        m_plots["EffEta_" + chambTag + "_AM_matched"]->Fill(gen_eta->at(iGenPart));
+        m_plots["hEffvsSlopeAM" + chambTag + whTag + "matched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsSlopeAMmatched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         if (AMRPCflag > 0) m_plots["Eff_" + chambTag + "_AM+RPC_matched"]->Fill(segWh);
       }
-
       if (seg_phi_t0->at(iSeg) > -500)
       {
         m_plots["Eff_" + chambTag + "_AM_total"]->Fill(segWh);
+        m_plots["EffEta_" + chambTag + "_AM_total"]->Fill(gen_eta->at(iGenPart));
+        m_plots["hEffvsSlopeAM" + chambTag + whTag + "total"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsSlopeAMtotal"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         m_plots["Eff_" + chambTag + "_AM+RPC_total"]->Fill(segWh);
       }
 //       if (iSeg == 0)

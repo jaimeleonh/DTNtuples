@@ -7,6 +7,7 @@
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TEfficiency.h"
+#include "TProfile.h"
 #include "TMath.h"
 
 #include <string>
