@@ -65,7 +65,7 @@ for cat in files :
         for quality in qualities[cat] :
           print ('Obtaining efficiency ntuples for ' + fil + ' with quality type ' + quality )
           time.sleep(2) 
-          analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_' +fil + '_' + quality + '.root', quality)
+          analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effs_' +fil + '_' + quality + '.root', quality)
           analysis.Loop()
    
 
@@ -94,7 +94,7 @@ for cat in files :
       for i in range (len(qualities[cat])) : 
         plottingStuff['markertypedir']["hEff_" + "AM" + "_" + qualities[cat][i]] = 20
         plottingStuff['markercolordir']["hEff_" + "AM" + "_" + qualities[cat][i]] = i+1
-        effplot.makeresplot(listofplots, "AM", qualities[cat][i], outputPath + 'results_' + fil + '_' + qualities[cat][i] + '.root', plotscaffold)
+        effplot.makeresplot(listofplots, "AM", qualities[cat][i], outputPath + 'results_effs_' + fil + '_' + qualities[cat][i] + '.root', plotscaffold)
 
 
       print "\nCombining and saving\n"
@@ -196,7 +196,7 @@ for ch in chambTag :
         for i in range (len(Qualities[key])) : 
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
-          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
+          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_effs_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
         a+=1
 
       print "\nCombining and saving\n"
@@ -217,7 +217,7 @@ for ch in chambTag :
         for i in range (len(Qualities[key])) : 
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
-          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
+          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_effs_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
         a+=1
 
       print "\nCombining and saving\n"
@@ -235,7 +235,7 @@ whTags    = [ "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"]
 
 
 for File in filesDM : 
-  res = r.TFile.Open('./ntuples/results_' + File + '.root')
+  res = r.TFile.Open('./ntuples/results_effs_' + File + '.root')
   plottingStuff = { 'lowlimityaxis': 0,
  	            'highlimityaxis': 1,
 	            'markersize': 1,

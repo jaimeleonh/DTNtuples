@@ -51,6 +51,7 @@ gStyle->SetOptFit(111111);
   //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q9","Q8","Q6"};
 
   TFile *inFile = TFile::Open(("./ntuples/results_" + file + "_.root" ).c_str());
+  gSystem->Exec("mkdir summaryPlots/"  );
   gSystem->Exec("mkdir summaryPlots/" + TString(file) );
   for (unsigned int i = 0; i < qualTags.size(); i++){
     TString quality = qualTags.at(i);

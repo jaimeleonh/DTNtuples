@@ -74,7 +74,7 @@ for cat in files :
       if sys.argv[2] == 'yes' :
         print ('Obtaining resolution ntuples for ' + fil )
         time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_' +fil + '_.root')
+        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_resols_' +fil + '_.root')
         analysis.Loop()
 
     if len(sys.argv)>=2 :
@@ -197,7 +197,7 @@ for ch in chambTag :
         for i in range (len(Qualities[key])) : 
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[a]
-          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
+          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_resols_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
           a+=1
 
       print "\nCombining and saving\n"
@@ -218,7 +218,7 @@ for ch in chambTag :
         for i in range (len(Qualities[key])) : 
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[a]
-          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
+          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_resols_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
           a+=1
 
       print "\nCombining and saving\n"
@@ -236,7 +236,7 @@ whTags    = [ "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"]
 
 
 for File in filesDM : 
-  res = r.TFile.Open('./ntuples/results_' + File + '.root')
+  res = r.TFile.Open('./ntuples/results_resols_' + File + '.root')
   plottingStuff = { 'lowlimityaxis': 0,
  	            'highlimityaxis': 1,
 	            'markersize': 1,

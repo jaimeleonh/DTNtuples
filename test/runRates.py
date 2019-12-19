@@ -108,7 +108,7 @@ for cat in files :
       if sys.argv[1] == 'yes' :
         print ('Obtaining rate ntuples for ' + fil)
         time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_' + fil + '.root')
+        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_rates_' + fil + '.root')
         analysis.Loop()
 
     print "\nBeginning plotting\n"
@@ -119,24 +119,24 @@ for cat in files :
         listofplots = []     
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[0]
-        effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+        effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
         effplot.combineRatesPerRingplots(listofplots, i, legends, plot, plottingStuff, ratePath + fil, fil,  savescaffold[plot] )
 
-        effplot.makeRatesPerSectorplot("AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot], plottingStuff, savescaffold[plot], plot, ratePath + fil, i)
+        effplot.makeRatesPerSectorplot("AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot], plottingStuff, savescaffold[plot], plot, ratePath + fil, i)
         
 
     for plot in ['rates']: 
       listofplots = []     
       plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
       plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[0]
-      effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][0]], plotscaffold[plot])
+      effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][0]], plotscaffold[plot])
       effplot.combineRatesPerRingplots(listofplots, 0, legends, plot, plottingStuff, ratePath + fil, fil,  savescaffold[plot] )
 
       for i in range (1,len(qualities[cat])) : 
         listofplots2 = []     
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[0]
-        effplot.makeRatesPerRingplot(listofplots2, "AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+        effplot.makeRatesPerRingplot(listofplots2, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
         effplot.combineRatesPerRingplots(listofplots2, i, legends, plot, plottingStuff, ratePath + fil, fil,  savescaffold[plot] )
         effplot.combineRateRatiosPerRingplots(listofplots2, listofplots, ratePath + fil, fil, i, plottingStuffRat,legends)
       
@@ -151,7 +151,7 @@ for cat in files :
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[num]
         num+=1
-        effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+        effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
       effplot.combineRatesPerRingplots(listofplots, i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
 
         
@@ -165,7 +165,7 @@ for cat in files :
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[num]
         num+=1
-        effplot.makeRatesPerRingplot(listofplots2[i], "AM", fil, outputPath + 'results_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+        effplot.makeRatesPerRingplot(listofplots2[i], "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
       effplot.combineRatesPerRingplots(listofplots2[i], i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
       effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, ['No aging','Aging 3000fb^{-1}'])
 
