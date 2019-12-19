@@ -21,18 +21,16 @@
 #include <TLatex.h>
 
 
-//#include "tdrstyle.C"
+#include "tdrstyle.C"
 
 
-void plotAll(){
+void plotAll( std::string file ){
 
 //  setTDRStyle();
 
 TLatex latex;
 latex.SetTextSize(0.03);
 
-TFile *inFile = TFile::Open("./results_nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000.root");
-inFile->cd();
 
 gStyle->SetPalette(1,0);
 gStyle->SetOptFit(111111);
@@ -42,95 +40,206 @@ gStyle->SetOptFit(111111);
   gSystem->Load("libRooFit");
   using namespace RooFit;
   
-  std::vector<std::string> algoTags = { "AM","HB"};
   std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> whTags    = { "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"};
-  std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12"};
+  std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
+  //std::vector<std::string> magnitudes = { "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
+  std::vector<std::string> magnitudes = { "TimeRes", "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
+  std::vector<std::string> algos      = { "AM", "HB" };
+  std::vector<std::string> qualTags   = { "3h","4h"};
+  //std::vector<std::string> qualTags   = { "All","Correlated"};
+  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q9","Q8","Q6"};
 
-  gSystem->Exec("mkdir ratePlots/ratioPlots/");
+  TFile *inFile = TFile::Open(("./ntuples/results_" + file + "_.root" ).c_str());
+  gSystem->Exec("mkdir summaryPlots/" + TString(file) );
+  for (unsigned int i = 0; i < qualTags.size(); i++){
+    TString quality = qualTags.at(i);
+    gSystem->Exec("mkdir summaryPlots/" + TString(file) + "/" + quality);
+  }
  
+  TFile outPlots( "summaryPlots/" + TString (file)+ "/outPlots.root","RECREATE");
+  
+  std::map<std::string,float> ranges;
+  ranges["TimeResAll"  ] = 20;
+  ranges["PhiResAll"   ] = 0.0002;
+  ranges["PhiBResAll"   ] = 0.02;
+  ranges["TanPsiResAll"] = 0.02;
+  ranges["xResAll"     ] = 0.35;
+  ranges["TimeResCorrelated"  ] = 20;
+  ranges["PhiResCorrelated"   ] = 0.0002;
+  ranges["PhiBResCorrelated"   ] = 0.005;
+  ranges["TanPsiResCorrelated"] = 0.01;
+  ranges["xResCorrelated"     ] = 0.15;
+  ranges["TimeRes3h"  ] = 20;
+  ranges["PhiRes3h"   ] = 0.0002;
+  ranges["PhiBRes3h"   ] = 0.1;
+  ranges["TanPsiRes3h"] = 0.1;
+  ranges["xRes3h"     ] = 0.35;
+  ranges["TimeRes4h"  ] = 20;
+  ranges["PhiRes4h"   ] = 0.0002;
+  ranges["PhiBRes4h"   ] = 0.02;
+  ranges["TanPsiRes4h"] = 0.02;
+  ranges["xRes4h"     ] = 0.35;
  
 
  //TFile outPlots = TFile::Open("./outPlots.root","RECREATE");
- TFile outPlots("outPlots_ratios.root","RECREATE");
-
  
  char name [128];
  std::map<std::string, TH1*> m_plots;
 
- for (auto & algo : algoTags ) {
-   for (auto & chambTag : chambTags ) {
-     for (auto & wheelTag : whTags ) {
-       m_plots["ratePrims" + algo + wheelTag + chambTag] = new TH1F(("ratePrims_" + algo + "_" + wheelTag + "_" + chambTag).c_str(),
- 							(algo + " Primitive rate ratio in " + wheelTag + " " + chambTag  + "; ; Rate").c_str(),
-							5, 0.5, 5.5);
-       long counter[5] = {0,0,0,0,0};
-       long totalCounter = 0;
+ for (auto & qual : qualTags ) {
+ for (auto & mag : magnitudes ) {
+   for (unsigned int i = 0; i < whTags.size(); i++) {
+     auto whTag = whTags.at(i);
+     m_plots[mag + "AM" + qual + whTag] = new TH1F(("h" + mag + "_AM_" +  qual  + "_" + whTag).c_str(),
+							   ( mag + " Seg-TP distribution for " + whTag +  "; ; sigma").c_str(),
+							   4,0.5,4.5);
+     
+     for (unsigned int j = 0; j < chambTags.size(); j++) {
+       auto chambTag = chambTags.at(j);
+       m_plots[mag + "AM" + qual + whTag]->GetXaxis()->SetBinLabel(j+1, chambTag.c_str());
 
 
-       for (auto & secTag : secTags ) {
 
-          m_plots["ratePrims" + algo + wheelTag + secTag + chambTag] = new TH1F(("ratePrims_" + algo + "_" + wheelTag + "_" + secTag + "_" + chambTag).c_str(),
-									(algo + " Primitive rate ratio in " + wheelTag + " " +  secTag + " " + chambTag  + "; ; Rate").c_str(),
-									5, 0.5, 5.5);
-       string namePlot = "ratePrims_" + algo + "_" + wheelTag + "_" + secTag + "_" + chambTag;
+       string namePlot = "h" + mag + "_" + "AM" + qual + "_" + whTag + "_" + chambTag + "_P2";
        cout << namePlot << endl; 
-       //TFile *inFile = TFile::Open("./results_nu_pu250_noage_norpc.root");
+       inFile->cd();
        TH1F *hResSlope4h1 = (TH1F*)inFile->Get(namePlot.c_str());
 
-       m_plots["ratePrims" + algo + wheelTag + chambTag]->GetXaxis()->SetBinLabel(1,hResSlope4h1->GetXaxis()->GetBinLabel(3));
-       m_plots["ratePrims" + algo + wheelTag + chambTag]->GetXaxis()->SetBinLabel(2,hResSlope4h1->GetXaxis()->GetBinLabel(4));
-       m_plots["ratePrims" + algo + wheelTag + chambTag]->GetXaxis()->SetBinLabel(3,hResSlope4h1->GetXaxis()->GetBinLabel(5));
-       m_plots["ratePrims" + algo + wheelTag + chambTag]->GetXaxis()->SetBinLabel(4,hResSlope4h1->GetXaxis()->GetBinLabel(6));
-       m_plots["ratePrims" + algo + wheelTag + chambTag]->GetXaxis()->SetBinLabel(5,hResSlope4h1->GetXaxis()->GetBinLabel(8));
-       
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->GetXaxis()->SetBinLabel(1,hResSlope4h1->GetXaxis()->GetBinLabel(3));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->GetXaxis()->SetBinLabel(2,hResSlope4h1->GetXaxis()->GetBinLabel(4));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->GetXaxis()->SetBinLabel(3,hResSlope4h1->GetXaxis()->GetBinLabel(5));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->GetXaxis()->SetBinLabel(4,hResSlope4h1->GetXaxis()->GetBinLabel(6));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->GetXaxis()->SetBinLabel(5,hResSlope4h1->GetXaxis()->GetBinLabel(8));
-
-       counter[0]+=hResSlope4h1->GetBinContent(3);
-       counter[1]+=hResSlope4h1->GetBinContent(4);
-       counter[2]+=hResSlope4h1->GetBinContent(5);
-       counter[3]+=hResSlope4h1->GetBinContent(6);
-       counter[4]+=hResSlope4h1->GetBinContent(8);
-
-       totalCounter+=hResSlope4h1->GetBinContent(2);
-
-
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->SetBinContent(1, (double) hResSlope4h1->GetBinContent(3) / (double) hResSlope4h1->GetBinContent(2));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->SetBinContent(2, (double) hResSlope4h1->GetBinContent(4) / (double) hResSlope4h1->GetBinContent(2));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->SetBinContent(3, (double) hResSlope4h1->GetBinContent(5) / (double) hResSlope4h1->GetBinContent(2));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->SetBinContent(4, (double) hResSlope4h1->GetBinContent(6) / (double) hResSlope4h1->GetBinContent(2));
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->SetBinContent(5, (double) hResSlope4h1->GetBinContent(8) / (double) hResSlope4h1->GetBinContent(2));
 
        TCanvas *canvas10 = new TCanvas(namePlot.c_str(),namePlot.c_str());
-       outPlots.cd();
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->Draw();
-       m_plots["ratePrims" + algo + wheelTag + secTag + chambTag]->Write();
-       sprintf(name,"ratePlots/ratioPlots/%s.png", namePlot.c_str());
-       //canvas1->SetLogy();
-       //outPlots.cd();
-       gPad->SetName(namePlot.c_str());
-       //gPad->SaveAs(name);
-       //canvas10->Write();
-       //gPad->Write();
-       sprintf(name,"ratePlots/ratioPlots/%s.pdf", namePlot.c_str());
-       //gPad->SaveAs(name);
-      }
 
-      for (int i=0; i<5; i++){
-         m_plots["ratePrims" + algo + wheelTag + chambTag]->SetBinContent(i+1, (double) counter[i] / (double)  totalCounter );
-//         TCanvas *canvas10 = new TCanvas(namePlot.c_str(),namePlot.c_str());
-      }
-      outPlots.cd();
-      m_plots["ratePrims" + algo + wheelTag + chambTag]->Draw();
-      m_plots["ratePrims" + algo + wheelTag + chambTag]->Write();
-     
+       hResSlope4h1->Draw();
+ 
+       TH2F*  hResSlope4h;
+       hResSlope4h=(TH2F*)hResSlope4h1->Clone();
+    // hResSlope4h->Draw();
+       std::string nameFile; 
+
+       RooRealVar x("x","",-ranges[mag+qual],ranges[mag+qual]);
+       RooRealVar mean("mean",",mean of Gaussian",0.,-ranges[mag+qual]/2,ranges[mag+qual]/2);
+       RooRealVar sigma1("sigma1",",width of narrow Gaussian",ranges[mag+qual]/20,0,ranges[mag+qual]);
+       RooRealVar sigma2("sigma2",",width of wide Gaussian",ranges[mag+qual]/2,0,3*ranges[mag+qual]);
+       //RooRealVar sigma3("sigma3",",width of wide Gaussian",0.01,0,0.05);
+       RooRealVar sigma3("sigma3",",width of wide Gaussian",100,100,200);
+       RooRealVar fraction("fraction",",fraction of narrow Gaussian",2./3.,0.,1.);
+       RooRealVar fraction2("fraction2",",fraction of narrow Gaussian",1./3.,0.,1.);
+
+       RooGaussian gauss1("gauss1","Narrow Gaussian",x, mean, sigma1);
+       RooGaussian gauss2("gauss2","Wide Gaussian",x, mean, sigma2);
+       RooGaussian gauss3("gauss3","Wide Gaussian",x, mean, sigma3);
+
+       RooAddPdf twogauss("twogauss","Two Gaussians pdf",RooArgList(gauss1,gauss2,gauss3),RooArgList(fraction,fraction2));
+     //RooAddPdf twogauss("twogauss","Two Gaussians pdf",RooArgList(gauss1,gauss2),fraction);
+
+       RooDataHist data("data","data",x,hResSlope4h);
+
+       twogauss.fitTo(data,RooFit::Extended());
+
+       double coreSigma;
+       if (sigma1.getVal() > sigma2.getVal()) {
+         if (sigma2.getVal() > sigma3.getVal()) coreSigma = sigma3.getVal();
+	 else coreSigma = sigma2.getVal();
+       } else if ( sigma1.getVal() > sigma3.getVal()) coreSigma = sigma3.getVal();	
+       else coreSigma = sigma1.getVal();
+ 
+       if (mag == "xRes" || mag == "TimeRes") m_plots[mag + "AM" + qual + whTag]->SetBinContent(j+1,coreSigma);
+       else m_plots[mag + "AM" + qual + whTag]->SetBinContent(j+1,coreSigma*1000);
+
+       RooPlot* xframe=x.frame();
+       data.plotOn(xframe);
+       twogauss.plotOn(xframe);
+       twogauss.plotOn(xframe,Components("gauss1"),LineColor(kRed));
+       twogauss.plotOn(xframe,Components("gauss2"),LineStyle(kDashed)); 
+       twogauss.plotOn(xframe,Components("gauss3"),LineStyle(kDotted)); 
+
+       sprintf(name,"%s",namePlot.c_str());
+       xframe->SetTitle(name);
+       //xframe->SetXTitle("Primitive - Segment #Psi (rad) ");
+       xframe->SetYTitle("Events");
+       gStyle->SetOptFit(1111);
+       TCanvas *canvas1 = new TCanvas();
+       xframe->GetYaxis()->SetRangeUser(1,30000);
+       xframe->Draw();
+
+       //double xPosition = 0.;
+       double xPosition = ranges[mag+qual] / 10.;
+       //double xPosition = hResSlope4h1->GetXaxis()->GetXmax() / 10.;
+
+
+       nameFile = "Fraction = "+std::to_string(fraction.getVal());
+       sprintf(name,"%s",nameFile.c_str());
+       latex.DrawLatex(xPosition,5000,name);
+       nameFile = "Fraction2 = "+std::to_string(fraction2.getVal());
+       sprintf(name,"%s",nameFile.c_str());
+       latex.DrawLatex(xPosition,7500,name);
+       if (mag == "PhiRes" || mag == "PhiBRes" || mag == "TanPsiRes") { 
+         nameFile = "Mean = "+std::to_string(mean.getVal()*1000);
+         sprintf(name,"%s mrad",nameFile.c_str());
+         latex.DrawLatex(xPosition,3000,name); 
+         nameFile = "#sigma_{1} = "+std::to_string(sigma1.getVal()*1000. );
+         sprintf(name,"%s mrad",nameFile.c_str());
+         latex.DrawLatex(xPosition,2000,name);
+         nameFile = "#sigma_{2} = "+std::to_string(sigma2.getVal()*1000.);
+         sprintf(name,"%s mrad",nameFile.c_str());
+         latex.DrawLatex(xPosition,1200,name);
+         nameFile = "#sigma_{3} = "+std::to_string(sigma3.getVal()*1000.);
+         sprintf(name,"%s mrad",nameFile.c_str());
+         latex.DrawLatex(xPosition,800,name);
+       } else if (mag == "TimeRes") {
+         nameFile = "Mean = "+std::to_string(mean.getVal());
+         sprintf(name,"%s ns",nameFile.c_str());
+         latex.DrawLatex(xPosition,3000,name); 
+         nameFile = "#sigma_{1} = "+std::to_string(sigma1.getVal() );
+         sprintf(name,"%s ns",nameFile.c_str());
+         latex.DrawLatex(xPosition,2000,name);
+         nameFile = "#sigma_{2} = "+std::to_string(sigma2.getVal());
+         sprintf(name,"%s ns",nameFile.c_str());
+         latex.DrawLatex(xPosition,1200,name);
+         nameFile = "#sigma_{3} = "+std::to_string(sigma3.getVal());
+         sprintf(name,"%s ns",nameFile.c_str());
+         latex.DrawLatex(xPosition,800,name);
+       } else {
+         nameFile = "Mean = "+std::to_string(mean.getVal());
+         sprintf(name,"%s cm",nameFile.c_str());
+         latex.DrawLatex(xPosition,3000,name); 
+         nameFile = "#sigma_{1} = "+std::to_string(sigma1.getVal() );
+         sprintf(name,"%s cm",nameFile.c_str());
+         latex.DrawLatex(xPosition,2000,name);
+         nameFile = "#sigma_{2} = "+std::to_string(sigma2.getVal());
+         sprintf(name,"%s cm",nameFile.c_str());
+         latex.DrawLatex(xPosition,1200,name);
+         nameFile = "#sigma_{3} = "+std::to_string(sigma3.getVal());
+         sprintf(name,"%s cm",nameFile.c_str());
+         latex.DrawLatex(xPosition,800,name);
+
+       }
+
+       sprintf(name,"summaryPlots/%s/%s/%s.png",file.c_str(), qual.c_str(), namePlot.c_str());
+       canvas1->SetLogy();
+       outPlots.cd();
+       gPad->SetName(namePlot.c_str());
+       gPad->SaveAs(name);
+       gPad->Write();
+       sprintf(name,"summaryPlots/%s/%s/%s.pdf",file.c_str(), qual.c_str(), namePlot.c_str());
+       canvas1->SetLogy();
+       outPlots.cd();
+       gPad->SetName(namePlot.c_str());
+       gPad->SaveAs(name);
+
+
 
     }
+    outPlots.cd();
+    m_plots[mag + "AM" + qual + whTag] -> Write();
+    sprintf(name,"summaryPlots/%s/%s/h%s_AM_%s_%s.png",file.c_str(),qual.c_str(),mag.c_str(), qual.c_str(), whTag.c_str());
+    TCanvas *canvas1 = new TCanvas();
+    m_plots[mag + "AM" + qual + whTag] -> Draw();
+    canvas1 -> SaveAs(name);
+    sprintf(name,"summaryPlots/%s/%s/h%s_AM_%s_%s.pdf",file.c_str(),qual.c_str(),mag.c_str(), qual.c_str(), whTag.c_str());
+    canvas1 -> SaveAs(name);
   }
+} //magnitudes
 } //qualTags
 
 outPlots.Close();

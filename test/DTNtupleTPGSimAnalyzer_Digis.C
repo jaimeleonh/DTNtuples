@@ -130,13 +130,13 @@ void DTNtupleTPGSimAnalyzer::fill()
   std::vector<std::string> layerTags = { "La1", "La2", "La3", "La4"};
 
 
-      for (std::size_t iDigi = 0; iDigi < digi_nDigis; ++iDigi){
-        auto mySector = digi_sector->at(iDigi); if (mySector==13) mySector=4; if (mySector==14) mySector=10;
-        auto myWheel = digi_wheel->at(iDigi);
-        auto myStation = digi_station->at(iDigi);
-        auto myLayer = digi_layer->at(iDigi);
-        auto mySuperlayer = digi_superLayer->at(iDigi);
-        auto myWire = digi_wire->at(iDigi);
+      for (std::size_t iDigi = 0; iDigi < ph2Digi_nDigis; ++iDigi){
+        auto mySector = ph2Digi_sector->at(iDigi); if (mySector==13) mySector=4; if (mySector==14) mySector=10;
+        auto myWheel = ph2Digi_wheel->at(iDigi);
+        auto myStation = ph2Digi_station->at(iDigi);
+        auto myLayer = ph2Digi_layer->at(iDigi);
+        auto mySuperlayer = ph2Digi_superLayer->at(iDigi);
+        auto myWire = ph2Digi_wire->at(iDigi);
 
         m_plots2["hits" + chambTags.at(myStation-1)] -> Fill (mySector, myWheel);
         m_plots["hits" + whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)] -> Fill (0);

@@ -61,8 +61,9 @@ def main() :
 
 def makeResolPlot(hlist, algo, suffix, fileName, plotscaffold):
     print "Obtaining intermediate plot for algo ", algo
+    wheelTag = ["Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
     res = r.TFile.Open(fileName)
-    hmatched = [res.Get(plotscaffold.format(mag = magnit + "Res", qu = quality, al = algo, wh = wheelTag[iwh])) for iwh in range(5)]
+    hmatched = [res.Get(plotscaffold.format(al = algo, wh = wheelTag[iwh])) for iwh in range(5)]
 
     resplot = r.TH1F("h_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
     
@@ -569,6 +570,8 @@ def combineRateRatiosPerRingplots(hlist, hlist2, path, fil, binToUse, plottingSt
 
 
 def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savescaffold):
+    chambTag = ["MB1", "MB2", "MB3", "MB4"]
+    wheelTag = [ "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
     print "Combining list of plots"
     if len(hlist) == 0: raise RuntimeError("Empty list of plots")
     
@@ -592,9 +595,9 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
             ilabel += 1
 
     for iplot in range(len(hlist)):
-        hlist[iplot].SetMarkerSize(markersize)
-        hlist[iplot].SetMarkerStyle(markertypedir[hlist[iplot].GetName()])
-        hlist[iplot].SetMarkerColor(markercolordir[hlist[iplot].GetName()])
+        hlist[iplot].SetMarkerSize(plottingStuff['markersize'])
+        hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][hlist[iplot].GetName()])
+        hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
      #   leg.AddEntry(hlist[iplot], legends[iplot], "P")
         hlist[iplot].Draw("P,hist" + (iplot != 0) * "same")
 
@@ -624,11 +627,10 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
     secondtext.Draw("same")
     
-    r.TGaxis.SetMaxDigits(4)
+    r.TGaxis.SetMaxDigits(3)
     r.gPad.Update()
     c.Update()
 
-    savescaffold = 'hRatios' 
     c.SaveAs(path + "/" + savescaffold + ".png")
     c.SaveAs(path + "/" + savescaffold + ".pdf")
     c.SaveAs(path + "/" + savescaffold + ".root")

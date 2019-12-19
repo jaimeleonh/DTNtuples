@@ -4,105 +4,106 @@ import ROOT as r
 from ROOT import gSystem
 from copy import deepcopy
 import CMS_lumi
-import myPlotter_input as effplot 
+#import myPlotter_input as effplot 
 r.gROOT.SetBatch(True)
+from subprocess import call
+import myPlotter_input as effplot
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-#files['DM'].append('PU0_DM_PT10-30_mod_2')
-files['norpc'].append('nopu_noage_norpc')
-#files['norpc'].append('pu200_noage_norpc')
-#files['norpc'].append('nopu_noage_norpc')
-#files['norpc'].append('PU200_range3')
-#files['norpc'].append('pu200_age_norpc_youngseg_muonage_norpcage_fail_3000')
-#files['rpc'].append('pu200_noage_withrpc')
-#files['rpc'].append('pu200_age_withrpc_youngseg_muonage_norpcage_fail_3000')
-
+files['norpc'].append('3h4h') 
 
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
-#qualities['norpc'] = ['','nothreehits','correlated','legacy']
-qualities['norpc'] = ['']
-#qualities['norpc'] = ['','nothreehits']
-#qualities['norpc'] = ['legacy']
-#qualities['rpc'] = ['qualityMatchedORSegs','qualityMatchedORSegsClus']
-qualities['rpc'] = ['','nothreehits', 'withmatchedthreehits' ,'qualityORSegs','qualityORSegsClus','qualityMatchedORSegs','qualityMatchedORSegsClus']
-qualities['DM'] = ['']
-
-
-legends = {'norpc':[],'rpc':[], 'DM':[]}
-legends['norpc'] = ['All','Quality>2','Correlated Only']
-#legends['norpc'] = ['All','Quality>2','index0','index01','index012','index0123']
-legends['rpc'] = ['All','Without Quality<3', 'With RPC-matched Quality<3' ,'Quality>2 + RPC segments','Quality>2 + RPC segments and clusters'  ,'With RPC-matched Quality<3 + RPC segments', 'With RPC-matched Quality<3 + RPC segments and clusters']
-legends['DM'] = ['']
-
+qualities['norpc'].append('4h')
+qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if len(sys.argv) >= 2 :
-  if sys.argv[1] == 'yes' :
+if len(sys.argv) >= 3 :
+  if sys.argv[2] == 'yes' :
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
-    r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis.C")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Efficiency_C.so")
+    r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Res_All.C")
+    gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
+    gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Resolution_All_C.so")
     from ROOT import DTNtupleTPGSimAnalyzer
 elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'): 
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
 path = '/afs/cern.ch/work/j/jleonhol/public/'
-effPath = "./plotsEff/"
+plotsPath = "./summaryPlots/"
 outputPath = './ntuples/'
+eosPath='/eos/home-j/jleonhol/www/resolutionsNote/'
+
+
+chambTag = ["MB1", "MB2", "MB3", "MB4"]
+wheelTag    = [ "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
+magnitude = ["Time", "Phi", "PhiB", "TanPsi", "x"]
+
+plottingStuff = { 'lowlimityaxis': 0,
+		      'highlimityaxis': {},
+		      'markersize': 1,
+              'yaxistitle' : {"Time":"Time resolution (ns)", "Phi":"Global Phi resolution (mrad)", "PhiB":"Bending Phi resolution (mrad)", "TanPsi":"Local direction resolution (mrad)", "x":"Position resolution (cm)"}, 
+		      'yaxistitleoffset': 1.5,
+		      'xaxistitle': "Wheel",
+		      'legxlow' : 0.85,
+		      'legylow': 0.85,
+		      'legxhigh': 0.99,
+		      'legyhigh': 0.99,
+		      'markertypedir':{},
+		      'markercolordir':{}  
+   		    }
+
+plottingStuff['highlimityaxis']['Time'] = {'3h': 5, '4h': 5}
+plottingStuff['highlimityaxis']['Phi'] = {'3h': 50E-3, '4h':50E-3}
+plottingStuff['highlimityaxis']['PhiB'] = {'3h': 15,  '4h': 10}
+plottingStuff['highlimityaxis']['TanPsi'] = {'3h': 15, '4h': 10}
+plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
+
+markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
+
 
 
 for cat in files :  
   for fil in files[cat] :
-    if len(sys.argv)==2 :
+    if len(sys.argv)>=3 :
+      if sys.argv[2] == 'yes' :
+        print ('Obtaining resolution ntuples for ' + fil )
+        time.sleep(2) 
+        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_' +fil + '_.root')
+        analysis.Loop()
+
+    if len(sys.argv)>=2 :
       if sys.argv[1] == 'yes' :
-        for quality in qualities[cat] :
-          print ('Obtaining efficiency ntuples for ' + fil + ' with quality type ' + quality )
-          time.sleep(2) 
-          analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_' +fil + '_' + quality + '.root', quality)
-          analysis.Loop()
-   
+        rc = call ('./runPlots.sh ' + fil, shell=True) 
+    
+    
+    for mag in magnitude :
+      for qual in qualities[cat] : 
+        listofplots = []
+        plotscaffold = "h" + mag + "Res_{al}_" + qual + "_{wh}"
+        savescaffold = "h" + mag + "Res_{al}_" + qual
 
-    plottingStuff = { 'lowlimityaxis': 0,
-		      'highlimityaxis': 1,
-		      'markersize': 1,
-		      'yaxistitle' : 'Efficiency (adim.)',
-		      'yaxistitleoffset': 1.5,
-		      'xaxistitle': "Wheel",
-		      #'legxlow' : 0.5,
-		      'legxlow' : 0.3075 + 2 * 0.1975,
-		      #'legylow': 0.2,
-		      'legylow': 0.4,
-		      'legxhigh': 0.9,
-		      'legyhigh': 0.6,
-		      'markertypedir':{},
-		      'markercolordir':{}  
-   		    }   
+        plottingStuff['markertypedir']["h_" + "AM" + "_" + fil+qual] = 20
+        plottingStuff['markercolordir']["h_" + "AM" + "_" + fil+qual] = markerColors[0]
+        effplot.makeResolPlot(listofplots, "AM", fil+qual, plotsPath + fil + '/' +  'outPlots.root', plotscaffold)
 
-    for plot in ["Eff"] :
-      plotscaffold = "h" + plot + "_{st}_{al}_{ty}"
-      savescaffold = "h" + plot + "_" + fil 
-
-      listofplots = []     
- 
-      for i in range (len(qualities[cat])) : 
-        plottingStuff['markertypedir']["hEff_" + "AM" + "_" + qualities[cat][i]] = 20
-        plottingStuff['markercolordir']["hEff_" + "AM" + "_" + qualities[cat][i]] = i+1
-        effplot.makeresplot(listofplots, "AM", qualities[cat][i], outputPath + 'results_' + fil + '_' + qualities[cat][i] + '.root', plotscaffold)
+        print "\nCombining and saving\n"
+        effplot.combineResolPlots(listofplots, mag, qual, [], plottingStuff, plotsPath + fil + '/' + qual  + '/', savescaffold.format(al='AM') )
+           
+    rc = call('cp -r ' + plotsPath + fil + ' ' + eosPath , shell=True)
+    rc = call('cp -r /eos/home-j/jleonhol/backup/index_resol_php ' + eosPath + fil + "/index.php" , shell=True)
+    for qual in qualities[cat] : rc = call('cp -r /eos/home-j/jleonhol/backup/index_resol_php ' + eosPath + fil + "/" + qual + "/index.php" , shell=True)
+     
 
 
-      print "\nCombining and saving\n"
-      effplot.combineresplots(listofplots, legends[cat], plottingStuff, effPath,  savescaffold+'_0' )
-      #effplot.combineresplots(listofplots, legends[cat], plottingStuff, effPath,  savescaffold+'zoomIn' )
 
 
-#if True : sys.exit(1)
+if True : sys.exit(1)
 
 
 
@@ -124,12 +125,12 @@ plottingStuff2['qualities1'] = { 'lowlimityaxis': 0.2,
 		      'yaxistitle' : 'Efficiency (adim.)',
 		      'yaxistitleoffset': 1.5,
 		      'xaxistitle': "#eta",
-		      'legxlow' : 0.84,
+		      'legxlow' : 0.85,
 		      #'legxlow' : 0.3075 + 2 * 0.1975,
 		      #'legylow': 0.2,
-		      'legylow': 0.84,
-		      'legxhigh': .99,
-		      'legyhigh': .99,
+		      'legylow': 0.85,
+		      'legxhigh': 1,
+		      'legyhigh': 1,
 		      'markertypedir':{},
 		      'markercolordir':{}  
    		    }   
@@ -141,11 +142,11 @@ plottingStuff2['qualities2'] = { 'lowlimityaxis': 0.5,
 		      'xaxistitle': "#eta",
 		      #'legxlow' : 0.5,
 		      #'legxlow' : 0.3075 + 2 * 0.1975,
-		      'legxlow' : 0.84,
+		      'legxlow' : 0.85,
 		      #'legylow': 0.2,
-		      'legylow': 0.84,
-		      'legxhigh': .99,
-		      'legyhigh': .99,
+		      'legylow': 0.85,
+		      'legxhigh': 1,
+		      'legyhigh': 1,
 		      'markertypedir':{},
 		      'markercolordir':{}  
    		    }   
@@ -157,11 +158,11 @@ plottingStuff2['qualities3'] = { 'lowlimityaxis': 0.9,
 		      'xaxistitle': "#eta",
 		      #'legxlow' : 0.5,
 		      #'legxlow' : 0.3075 + 2 * 0.1975,
-		      'legxlow' : 0.84,
+		      'legxlow' : 0.85,
 		      #'legylow': 0.2,
-		      'legylow': 0.84,
-		      'legxhigh': .99,
-		      'legyhigh': .99,
+		      'legylow': 0.85,
+		      'legxhigh': 1,
+		      'legyhigh': 1,
 		      'markertypedir':{},
 		      'markercolordir':{}  
    		    }   
@@ -188,16 +189,16 @@ for ch in chambTag :
   for plot in ["EffEta"] :
     for key in ['qualities1','qualities2'] :
       listofplots = []   
-      a=0
+      a = 0
       for fil in files['norpc'] :
         plotscaffold = "h" + plot + "_" + ch +"_{al}_{ty}"
         savescaffold = "h" + plot + "_" + key + "_" + ch 
 
         for i in range (len(Qualities[key])) : 
-          plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
-          plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
+          plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20
+          plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[a]
           effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
-        a+=1
+          a+=1
 
       print "\nCombining and saving\n"
       effplot.combineEffPlots(listofplots, Legends[key], plottingStuff2[key], effPath,  savescaffold+'_0' )
@@ -215,10 +216,10 @@ for ch in chambTag :
         savescaffold = "h" + plot + "_" + key + "_" + ch 
 
         for i in range (len(Qualities[key])) : 
-          plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
-          plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
+          plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20
+          plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[a]
           effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
-        a+=1
+          a+=1
 
       print "\nCombining and saving\n"
       effplot.combineEffPlots(listofplots, Legends[key], plottingStuff2[key], effPath,  savescaffold+'_0' )
