@@ -7,10 +7,11 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 ### Installation:
 ```
-cmsrel CMSSW_10_6_1_patch2
-cd CMSSW_10_6_1_patch2/src/
+cmsrel CMSSW_10_6_5_patch1
+cd CMSSW_10_6_5_patch1/src/
 cmsenv
 git cms-merge-topic jaimeleonh:newUnpacker # phase-2 unpacker
+git cms-merge-topic battibass:Phase2_DTRecoAndCalib
 git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
 git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
 scramv1 b -j 5
