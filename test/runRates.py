@@ -96,7 +96,8 @@ elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'):
 
 path = '/afs/cern.ch/work/j/jleonhol/public/'
 ratePath = "./plotsRates/"
-outputPath = './ntuples/'
+#outputPath = './ntuples/'
+outputPath = './eos/home-j/jleonhol/ntuplesResults/'
 plotscaffold = { "rates": "ratePrims_{al}_{wh}_{se}_{st}", "bandwidths": "bandwidth_{al}_{wh}_{se}_{st}" }
 savescaffold = { "rates": "hRates", "bandwidths": "hBandwidths" }
 markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]

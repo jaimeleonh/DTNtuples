@@ -36,7 +36,8 @@ elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'):
 
 path = '/afs/cern.ch/work/j/jleonhol/public/'
 plotsPath = "./summaryPlots/"
-outputPath = './ntuples/'
+#outputPath = './ntuples/'
+outputPath = './eos/home-j/jleonhol/ntuplesResults/'
 eosPath='/eos/home-j/jleonhol/www/resolutionsNote/'
 
 

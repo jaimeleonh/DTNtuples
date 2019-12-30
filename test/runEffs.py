@@ -55,7 +55,8 @@ elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'):
 
 path = '/afs/cern.ch/work/j/jleonhol/public/'
 effPath = "./plotsEff/"
-outputPath = './ntuples/'
+#outputPath = './ntuples/'
+outputPath = './eos/home-j/jleonhol/ntuplesResults/'
 
 
 for cat in files :  
