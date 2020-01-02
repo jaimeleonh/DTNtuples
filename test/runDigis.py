@@ -8,6 +8,7 @@ import CMS_lumi
 r.gROOT.SetBatch(True)
 from subprocess import call
 import myPlotter_input as effplot
+from markerColors import markerColors
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
@@ -40,6 +41,7 @@ plotsPath = "./digiPlots/"
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'
 eosPath='/eos/home-j/jleonhol/www/resolutionsNote/'
 
+if not os.path.isdir(plotsPath) : rc = call('mkdir ' + plotsPath, shell=True)
 
 chambTag = ["MB1", "MB2", "MB3", "MB4"]
 wheelTag    = [ "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
@@ -65,7 +67,7 @@ plottingStuff['highlimityaxis']['PhiB'] = {'3h': 15,  '4h': 10}
 plottingStuff['highlimityaxis']['TanPsi'] = {'3h': 15, '4h': 10}
 plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
 
-markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
+#markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 
 
 

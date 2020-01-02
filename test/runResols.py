@@ -8,6 +8,7 @@ import CMS_lumi
 r.gROOT.SetBatch(True)
 from subprocess import call
 import myPlotter_input as effplot
+from markerColors import markerColors
 
 ################################# CHANGE BEFORE RUNNING #######################################
 

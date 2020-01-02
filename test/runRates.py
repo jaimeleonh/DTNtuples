@@ -7,6 +7,7 @@ import CMS_lumi
 import myPlotter_input as effplot 
 r.gROOT.SetBatch(True)
 from subprocess import call
+from markerColors import markerColors
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
@@ -100,7 +101,9 @@ ratePath = "./plotsRates/"
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'
 plotscaffold = { "rates": "ratePrims_{al}_{wh}_{se}_{st}", "bandwidths": "bandwidth_{al}_{wh}_{se}_{st}" }
 savescaffold = { "rates": "hRates", "bandwidths": "hBandwidths" }
-markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
+#markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
+
+if not os.path.isdir(ratePath) : rc = call('mkdir ' + ratePath, shell=True)
 
 for cat in files : 
   for fil in files[cat] :

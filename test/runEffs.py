@@ -9,6 +9,7 @@ r.gROOT.SetBatch(True)
 from allLegends import legends
 from subprocess import call
 from bcolors import bcolors
+from markerColors import markerColors
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
@@ -49,8 +50,8 @@ possibleQualities = ['All','correlated', 'legacy', 'index0', 'index01', 'index01
 
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
-qualities['norpc'] = ['A']
-#qualities['norpc'] = ['All','nothreehits','correlated','legacy']
+#qualities['norpc'] = ['A']
+qualities['norpc'] = ['All','nothreehits','correlated','legacy']
 #qualities['norpc'] = ['All']
 #qualities['norpc'] = ['','nothreehits']
 #qualities['norpc'] = ['legacy']
@@ -201,7 +202,7 @@ plottingStuff2['qualities3'] = { 'lowlimityaxis': 0.9,
    		    }   
 
     
-markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
+#markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 chambTag = ["MB1", "MB2", "MB3", "MB4"]
 
 Qualities = {'qualities1':[] , 'qualities2':[], 'qualities3':[] }
