@@ -1,5 +1,5 @@
 # DTNtuples
-Ntuples for the analysis of the CMS drift tubes detector performance
+Analysis tools to get the AM simulated performance plots. 
 
 ## Preliminary instructions
 **Note**: 
@@ -7,8 +7,8 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 ### Installation:
 ```
-cmsrel CMSSW_10_6_1_patch2
-cd CMSSW_10_6_1_patch2/src/
+cmsrel CMSSW_10_6_5_patch1
+cd CMSSW_10_6_5_patch1/src/
 cmsenv
 #git cms-merge-topic battibass:phase2UnpackerFromOscar_10_6_X # phase-2 primitives data format and phase-2 unpacker
 git cms-merge-topic -u pozzobon:DTHough_NP_20190619_106X_noL1T # MTT-CHT emulator
@@ -16,26 +16,14 @@ git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
 git clone https://github.com/jaimeleonh/DTNtuples.git -b unifiedPerf DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
-or (for Slice Test data-emulator comparison)
-```
-cmsrel CMSSW_10_6_1_patch2
-cd CMSSW_10_6_1_patch2/src/
-cmsenv
-#git cms-merge-topic battibass:phase2UnpackerFromOscar_10_6_X # phase-2 primitives data format and phase-2 unpacker
-git cms-merge-topic -u pozzobon:DTHough_NP_20190619_106X_noL1T # MTT-CHT emulator
-git cms-merge-topic -u jaimeleonh:EmulFW # AM emulator for SliceTest
-git clone https://github.com/jaimeleonh/DTNtuples.git -b unifiedPerf DTDPGAnalysis/DTNtuples
-scramv1 b -j 5
+ -j 5
 ```
 
 ### Analysis:
-```
-root -b
-root [0] .x loadTPGSimAnalysis.C
 
-root [1] DTNtupleTPGSimAnalyzer analysis("DTDPGNtuple_10_6_0_SX5.root","results.root")
-// or
-root [1] DTNtupleTPGSimAnalyzer analysis("DTDPGNtuple_10_6_0_Phase2_Simulation.root","results.root")
+This repository groups 4 types of plotting tools: 
+- Efficiency plots w.r.t segments
+- Resolution plots w.r.t segments
+- Digi rates
+- Primitive rates
 
-root [2] analysis.Loop()
-```
