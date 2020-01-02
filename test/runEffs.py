@@ -8,6 +8,7 @@ import myPlotter_input as effplot
 r.gROOT.SetBatch(True)
 from allLegends import legends
 from subprocess import call
+from bcolors import bcolors
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
@@ -48,7 +49,8 @@ possibleQualities = ['All','correlated', 'legacy', 'index0', 'index01', 'index01
 
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
-qualities['norpc'] = ['All','nothreehits','correlated','legacy']
+qualities['norpc'] = ['A']
+#qualities['norpc'] = ['All','nothreehits','correlated','legacy']
 #qualities['norpc'] = ['All']
 #qualities['norpc'] = ['','nothreehits']
 #qualities['norpc'] = ['legacy']
@@ -85,7 +87,8 @@ for cat in files :
         for quality in qualities[cat] :
           print ('Obtaining efficiency ntuples for ' + fil + ' with quality type ' + quality )
           if quality not in possibleQualities :
-            print (  '\033[1;31m\033[91m' + 'ERROR: quality category not possible. It will not get considered in the ntuple production' + '\033[0m')
+            #print (  '\033[1;31m\033[91m' + 'ERROR: quality category not possible. It will not get considered in the ntuple production' + '\033[0m')
+            print (  bcolors.red + 'ERROR: quality category does not exist. It will not get considered in the ntuple production' + bcolors.reset)
             continue
           time.sleep(2) 
           analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality)
@@ -116,6 +119,12 @@ for cat in files :
       myLegends = []
  
       for i in range (len(qualities[cat])) : 
+        if not os.path.isfile(outputPath + 'results_effis_' + fil + '_' + qualities[cat][i] + '.root') :
+          if not qualities[cat][i] in legends :
+            print (bcolors.red + "ERROR: '" +  qualities[cat][i]  + "' is not one of the possible qualities" + bcolors.reset)
+          else :
+            print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + qualities[cat][i] + '.root + does not exist, maybe running the ntuple production helps') 
+          continue 
         myLegends.append(legends[qualities[cat][i]])
         plottingStuff['markertypedir']["hEff_" + "AM" + "_" + qualities[cat][i]] = 20
         plottingStuff['markercolordir']["hEff_" + "AM" + "_" + qualities[cat][i]] = i+1
@@ -214,6 +223,12 @@ for ch in chambTag :
         savescaffold = "h" + plot + "_" + key + "_" + ch 
 
         for i in range (len(Qualities[key])) : 
+          if not os.path.isfile(outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root') :
+            if not Qualities[key][i] in legends :
+              print (bcolors.red + "ERROR: '" +  Qualities[key][i]  + "' is not one of the possible qualities" + bcolors.reset)
+            else :
+              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps') 
+            continue 
           myLegends.append(legends[Qualities[key][i]])
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
@@ -237,6 +252,12 @@ for ch in chambTag :
         savescaffold = "h" + plot + "_" + key + "_" + ch 
 
         for i in range (len(Qualities[key])) :         
+          if not os.path.isfile(outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root') :
+            if not Qualities[key][i] in legends :
+              print (bcolors.red + "ERROR: '" +  Qualities[key][i]  + "' is not one of the possible qualities" + bcolors.reset)
+            else :
+              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps') 
+            continue 
           myLegends.append(legends[Qualities[key][i]])
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
@@ -293,9 +314,9 @@ for File in filesDM :
         h_matched = res.Get('hEff_' + wh + "_" + ch + "_" + algo +  "_matched") 
         h_total = res.Get('hEff_' + wh + "_" + ch + "_" + algo + "_total")
         h_Eff = r.TEfficiency(h_matched, h_total) 
- 	h_Eff.SetMarkerColor(plottingStuff['markercolordir'][algo])
- 	h_Eff.SetLineColor(plottingStuff['markercolordir'][algo])
- 	h_Eff.SetMarkerSize(plottingStuff['markersize'])
+      	#h_Eff.SetMarkerColor(plottingStuff['markercolordir'][algo])
+      	#h_Eff.SetLineColor(plottingStuff['markercolordir'][algo])
+ 	      #h_Eff.SetMarkerSize(plottingStuff['markersize'])
         plotList.append(h_Eff)
       effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + wh + '_' + ch )
 	 
