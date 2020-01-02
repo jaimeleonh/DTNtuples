@@ -16,7 +16,7 @@
 
 DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
                                                const TString & outFileName,
-					       const TString & quality = ""
+                    					       const TString & quality = ""
 					       ):
   m_outFile(outFileName,"RECREATE"), DTNtupleBaseAnalyzer(inFileName), quality_(quality)
 {
@@ -100,7 +100,7 @@ void DTNtupleTPGSimAnalyzer::book()
 
   for (const auto & algo : algoTag)
   {
-    m_plots2["hSegmentPsiVSDeltaT0"] = new TH2D("hSegmentPsiVSDeltaT0",
+    m_plots2["hSegmentPsiVSDeltaT0" + algo] = new TH2D(("hSegmentPsiVSDeltaT0_" + algo).c_str(),
                           "Segment Psi distribution vs Delta t0; Psi; Delta t0 (ns)",
                           200, -50, +50, 100, -50, 50);
     m_plots["hPrimPsi" + algo] = new TH1D(("hPrimPsi_" + algo).c_str(),
@@ -218,7 +218,13 @@ void DTNtupleTPGSimAnalyzer::fill()
     else if (quality_ == "correlated")
       qualityCorrelated = true;  
     else if (quality_ == "legacy")
-      qualityLegacy = true;  
+      qualityLegacy = true; 
+    else if (quality_ == "All" ) 
+      minQuality = -999;
+    else {
+      cout << "Error: Efficiency category not found" << endl;
+    //  std::exit(EXIT_FAILURE);
+    }
     
 
     // ==================== VARIABLES FOR THE HOUGH TRANSFORM BASED ALGORITHM
@@ -311,7 +317,7 @@ void DTNtupleTPGSimAnalyzer::fill()
           m_plots["hDeltaPhiAM"] -> Fill( segTrigAMDPhi );
           m_plots2["hBXvsPrimPsiAM"] -> Fill ( trigAMBX - 20 , atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()));
 	 
-          m_plots2["hSegmentPsiVSDeltaT0"]->Fill(  atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , ph2TpgPhiEmuAm_t0->at(iTrigAM) - 20*25 - seg_phi_t0->at(iSeg) );
+          m_plots2["hSegmentPsiVSDeltaT0AM"]->Fill(  atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , ph2TpgPhiEmuAm_t0->at(iTrigAM) - 20*25 - seg_phi_t0->at(iSeg) );
           if (ph2TpgPhiEmuAm_index->at(iTrigAM) > maxIndex ) continue;  	  
 	      if (ph2TpgPhiEmuAm_quality->at(iTrigAM) < minQuality ) continue;  	  
           if (qualityORSegs && ( (trigAMqual < 3 && trigAMqual > -1) || ( trigAMqual ==-1 && trigAMrpc!=2 ) )) continue;
