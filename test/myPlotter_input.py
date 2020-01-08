@@ -3,6 +3,7 @@ import ROOT as r
 from copy import deepcopy
 import CMS_lumi
 import sys
+from lookForPU import lookForPU 
 r.gROOT.SetBatch(True)
 
 
@@ -136,20 +137,15 @@ def makeRatesPerRingplot(hlist, algo, suffix, fileName,binToUse,plotScaffold):
           hmatched.append(res.Get(plotScaffold.format(al = algo, wh = wheelTag[iwh], se=sectorTag[ise], st=chambTag[ich]) ))
     resplot = r.TH1F("h_{al}_{su}".format(su = suffix, al = algo), "", 20, -0.5, 19.5)
     
-    #resplot=r.TH1F("hEff_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
-        #resplot = r.TH1F("hEff_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
-    #resplot = r.TH1F("h_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
-    
     ibin = 1
     resplot.GetYaxis().SetTitle(hmatched[0].GetXaxis().GetBinLabel(binToUse))
-    for ich in range(4):
-    	for iwh in range(5):
-            content = 0;
-    	    for ise in range(12):
-                content += hmatched[(5*12)*ich + 12*iwh + ise].GetBinContent(binToUse)
-            
-	        resplot.SetBinContent(ibin, content / 12.0)
-            ibin += 1
+    for ich in range(4) :
+      for iwh in range(5):
+        content = 0
+        for ise in range(12):
+          content += hmatched[(5*12)*ich + 12*iwh + ise].GetBinContent(binToUse)
+        resplot.SetBinContent(ibin, content / 12.0)
+        ibin += 1
     hlist.append(deepcopy(resplot))
     res.Close(); del hmatched, res, resplot
     return
@@ -173,48 +169,49 @@ def makeRatesPerSectorplot(algo, suffix, fileName,binToUse,plotScaffold, plottin
     markerColors = [r.kBlue, r.kRed, r.kMagenta, r.kBlack, r.kGreen]
     resplots = []
     for iwh in range(5):
-    	resplots.append( r.TH1F("h_{al}_{su}".format(su = suffix + wheelTag[iwh], al = algo), "", 12, -0.5, 11.5) )
-    	resplot = resplots[iwh]
-        resplot.GetYaxis().SetTitle("Bandwidth (bps) - " + hmatched[0].GetXaxis().GetBinLabel(binToUse))
-    	ibin = 1
-    	for ise in range(12):
-            content = 0;
-    	    for ich in range(4):
-                content += hmatched[(5*4)*ich + 4*iwh + ich].GetBinContent(binToUse)
-            
-	    resplot.SetBinContent(ibin, content)
-            ibin += 1
+      resplots.append( r.TH1F("h_{al}_{su}".format(su = suffix + wheelTag[iwh], al = algo), "", 12, -0.5, 11.5) )
+      resplot = resplots[iwh]
+      resplot.GetYaxis().SetTitle("Bandwidth (bps) - " + hmatched[0].GetXaxis().GetBinLabel(binToUse))
+      ibin = 1
+      for ise in range(12):
+        content = 0;
+        for ich in range(4):
+          content += hmatched[(5*4)*ich + 4*iwh + ich].GetBinContent(binToUse)
+        resplot.SetBinContent(ibin, content)
+        ibin += 1
     	     
-    	resplot.SetStats(False)
-    	resplot.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highLimitYAxis_perSector'][suffix])
-    	resplot.GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
-    	resplot.GetXaxis().SetTitle("Sector")
-       	resplot.GetXaxis().SetNdivisions(12)
-        resplot.SetMarkerSize(plottingStuff['markersize'])
-        resplot.SetMarkerStyle(20)
-        resplot.SetMarkerColor(markerColors[iwh])
-        for ilabel in range(1, 13):
-            resplot.GetXaxis().SetBinLabel(ilabel, str(ilabel))
-        resplot.Draw("P,hist" + (iwh!=-2)*'same')
+      resplot.SetStats(False)
+      resplot.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highLimitYAxis_perSector'][suffix])
+      resplot.GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
+      resplot.GetXaxis().SetTitle("Sector")
+      resplot.GetXaxis().SetNdivisions(12)
+      resplot.SetMarkerSize(plottingStuff['markersize'])
+      resplot.SetMarkerStyle(20)
+      resplot.SetMarkerColor(markerColors[iwh])
+      for ilabel in range(1, 13):
+        resplot.GetXaxis().SetBinLabel(ilabel, str(ilabel))
+      resplot.Draw("P,hist" + (ilabel!=1)*'same')
         
-        leg.AddEntry(resplots[iwh], wheelTag[iwh], "P")
+      leg.AddEntry(resplots[iwh], wheelTag[iwh], "P")
     
   #	CMS_lumi.lumi_13TeV = ""
    # 	CMS_lumi.extraText  = 'Simulation - No ageing'
   # 	CMS_lumi.cmsTextSize= 0.5
   # 	CMS_lumi.lumi_sqrtS = ''
   #  	CMS_lumi.CMS_lumi(r.gPad, 0, 0, 0.07)
-    	firsttex = r.TLatex()
-        firsttex.SetTextSize(0.03)
-        firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{       CMS} Phase-2 Simulation")
-        firsttex.Draw("same");
+      firsttex = r.TLatex()
+      firsttex.SetTextSize(0.03)
+      firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{       CMS} Phase-2 Simulation")
+      firsttex.Draw("same");
 
-        secondtext = r.TLatex()
-        toDisplay  = r.TString("14 TeV, 250 PU")
-        secondtext.SetTextSize(0.035)
-        secondtext.SetTextAlign(31)
-        secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
-        secondtext.Draw("same")
+      secondtext = r.TLatex()
+      toDisplay = r.TString()
+      if (lookForPU(suffix) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(suffix)) + " PU")
+      else :  toDisplay  = r.TString("14 TeV")
+      secondtext.SetTextSize(0.035)
+      secondtext.SetTextAlign(31)
+      secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
+      secondtext.Draw("same")
 
 
     #c.SetLogy()
@@ -320,8 +317,9 @@ def combineresplots(hlist, legends, plottingStuff, path, savescaffold):
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    if plottingStuff['printPU'] == True : toDisplay  = r.TString("14 TeV, 200 PU")
-    else : toDisplay  = r.TString("14 TeV")
+    toDisplay = r.TString()
+    if ("PU" in plottingStuff) : toDisplay  = r.TString("14 TeV, " + str(plottingStuff["PU"]) + " PU")
+    else : r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
@@ -358,8 +356,8 @@ def combineRatesPerRingplots(hlist, binToUse, legends, whatToPlot, plottingStuff
     #print ('shit ' + hlist[0].GetYaxis().GetMaxDigits())
 
     ilabel = 1
-
-    for iwh in range(-2, 3):
+    for ich in range(4):
+      for iwh in range(-2, 3):
         hlist[0].GetXaxis().ChangeLabel(ilabel, -1, -1, -1, -1, -1, (iwh > 0) * "+" + str(iwh))
         ilabel += 1
 
@@ -399,7 +397,9 @@ def combineRatesPerRingplots(hlist, binToUse, legends, whatToPlot, plottingStuff
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    toDisplay  = r.TString("14 TeV, 250 PU")
+    toDisplay = r.TString()
+    if (lookForPU(fil) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(fil))  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
@@ -410,7 +410,7 @@ def combineRatesPerRingplots(hlist, binToUse, legends, whatToPlot, plottingStuff
     #r.gPad.Modified() 
     #r.gPad.Update() 
    # c.Update()
-
+    
     r.TGaxis.SetMaxDigits(4)
     r.gPad.Update()
     c.Update()
@@ -481,7 +481,9 @@ def combineRatesPerSectorplots(hlist, binToUse, legends, whatToPlot, plottingStu
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    toDisplay  = r.TString("14 TeV, 250 PU")
+    toDisplay = r.TString()
+    if (lookForPU(fil) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(fil))  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
@@ -551,7 +553,9 @@ def combineRateRatiosPerRingplots(hlist, hlist2, path, fil, binToUse, plottingSt
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    toDisplay  = r.TString("14 TeV, 250 PU")
+    toDisplay = r.TString()
+    if (lookForPU(fil) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(fil))  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
@@ -622,7 +626,9 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    toDisplay  = r.TString("14 TeV, 200 PU")
+    toDisplay = r.TString()
+    if ("PU" in plottingStuff) : toDisplay  = r.TString("14 TeV, " + str(plottingStuff["PU"])  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())

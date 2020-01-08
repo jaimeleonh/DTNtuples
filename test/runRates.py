@@ -8,13 +8,14 @@ import myPlotter_input as effplot
 r.gROOT.SetBatch(True)
 from subprocess import call
 from markerColors import markerColors
+from allLegends import legends as Legends
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-#files['norpc'].append('nopu_noage_norpc')
-#files['norpc'].append('pu200_noage_norpc')
+files['norpc'].append('nopu_noage_norpc')
+files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nu_pu250_noage_norpc')
 #files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
 #files['rpc'].append('nu_pu250_noage_withrpc')
@@ -54,7 +55,8 @@ plottingStuff = { 'lowlimityaxis' : 0,
 	          'legyhigh': 0.5,
 	          'markertypedir':{},
 	          'markercolordir':{}, 
-	          'highLimitYAxis_perSector':{}  
+	          'highLimitYAxis_perSector':{},  
+            'PU':{}
    	        }   
 #plottingStuff['ranges'] = {"rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
 plottingStuff['ranges']['nu_pu250_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
@@ -77,6 +79,8 @@ plottingStuff['highLimitYAxis_perSector']['nopu_noage_norpc'] = 200E6;
 plottingStuff['highLimitYAxis_perSector']['pu200_noage_norpc'] = 200E6;  
 
 
+
+
 plottingStuffRat = { 'lowlimityaxis' : {},
 	             'markersize': 1,
 	             'yaxistitleoffset': 1.5,
@@ -86,7 +90,8 @@ plottingStuffRat = { 'lowlimityaxis' : {},
 	             'legxhigh': 0.9,
 	             'legyhigh': 0.5,
 	             'markertypedir':{},
-	             'markercolordir':{}  
+	             'markercolordir':{},  
+               'PU':{}
    	           }   
 plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0,0,0,0,0]
 #plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0.4,0.4,0.4,0.4,0.4]
@@ -176,12 +181,16 @@ for cat in files :
     for i in range (len(qualities[cat])) : 
       listofplots = []     
       num=0
+      myLegends = []
       for fil in files[cat] :
+        myLegends.append(Legends[fil])
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[num]
         num+=1
         effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
-      effplot.combineRatesPerRingplots(listofplots, i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
+        #effplot.makeRatesPerRingplot(listofplots, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+      effplot.combineRatesPerRingplots(listofplots, i, myLegends, plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
+      #effplot.combineRatesPerRingplots(listofplots, i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
 
         
 
@@ -190,13 +199,17 @@ for cat in files :
     for i in range (len(qualities[cat])) : 
       listofplots2[i] = []     
       num=0
+      myLegends = []
       for fil in files[cat] :
+        myLegends.append(Legends[fil])
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
         plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[num]
         num+=1
         effplot.makeRatesPerRingplot(listofplots2[i], "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
-      effplot.combineRatesPerRingplots(listofplots2[i], i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
-      effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, ['No aging','Aging 3000fb^{-1}'])
+      effplot.combineRatesPerRingplots(listofplots2[i], i, myLegends, plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
+      #effplot.combineRatesPerRingplots(listofplots2[i], i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
+      effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, myLegends)
+      #effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, ['No aging','Aging 3000fb^{-1}'])
 
 
 

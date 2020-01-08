@@ -204,7 +204,7 @@ plottingStuff2['qualities3'] = { 'lowlimityaxis': 0.9,
 		      'legyhigh': .99,
 		      'markertypedir':{},
 		      'markercolordir':{}, 
-          'printPU':False
+          'PU': 200
    		    }   
 
     

@@ -13,5 +13,14 @@ legends = {
   'qualityMatchedORSegs'     : 'Quality > 2 + RPC-matched Quality<=2 + RPC segments',
   'qualityMatchedORSegsClus' : 'Quality > 2 + RPC-matched Quality<=2 + RPC segments and clusters',
   'AM'                       : 'AM',
-  'HB'                       : 'HB'
+  'HB'                       : 'HB',
+  'nu_pu250_noage_norpc'     : 'No Aging No RPC',  
+  'nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000' : 'w/Aging No RPC',
+  'nu_pu250_noage_withrpc'   : 'No Aging w/RPC',  
+  'nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000' : 'w/Aging w/RPC',  
+  'PU0_bkgHits'              : 'PU0 + bkg',  
+  'PU200_bkgHits'            : 'PU200 + bkg',  
+  'nopu_noage_norpc'         : 'PU0 NoAging',  
+  'pu200_noage_norpc'        : 'PU200 NoAging'
+
 }
