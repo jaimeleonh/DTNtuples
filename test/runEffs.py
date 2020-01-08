@@ -17,7 +17,9 @@ categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
 #files['DM'].append('PU0_DM_PT10-30_mod_2')
 files['norpc'].append('nopu_noage_norpc')
-#files['norpc'].append('pu200_noage_norpc')
+#files['norpc'].append('PU0_bkgHits')
+#files['norpc'].append('PU200_bkgHits')
+files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nopu_noage_norpc')
 #files['norpc'].append('PU200_range3')
 #files['norpc'].append('pu200_age_norpc_youngseg_muonage_norpcage_fail_3000')
@@ -96,7 +98,7 @@ for cat in files :
           analysis.Loop()
    
 
-    plottingStuff = { 'lowlimityaxis': 0,
+    plottingStuff = { 'lowlimityaxis': 0.7,
 		      'highlimityaxis': 1,
 		      'markersize': 1,
 		      'yaxistitle' : 'Efficiency (adim.)',
@@ -109,7 +111,8 @@ for cat in files :
 		      'legxhigh': 0.9,
 		      'legyhigh': 0.6,
 		      'markertypedir':{},
-		      'markercolordir':{}  
+		      'markercolordir':{}, 
+          'printPU':True
    		    }   
 
     for plot in ["Eff"] :
@@ -166,7 +169,8 @@ plottingStuff2['qualities1'] = { 'lowlimityaxis': 0.2,
 		      'legxhigh': .99,
 		      'legyhigh': .99,
 		      'markertypedir':{},
-		      'markercolordir':{}  
+		      'markercolordir':{}, 
+          'printPU':True
    		    }   
 plottingStuff2['qualities2'] = { 'lowlimityaxis': 0.5,
 		      'highlimityaxis': 1,
@@ -182,7 +186,8 @@ plottingStuff2['qualities2'] = { 'lowlimityaxis': 0.5,
 		      'legxhigh': .99,
 		      'legyhigh': .99,
 		      'markertypedir':{},
-		      'markercolordir':{}  
+		      'markercolordir':{}, 
+          'printPU':True
    		    }   
 plottingStuff2['qualities3'] = { 'lowlimityaxis': 0.9,
 		      'highlimityaxis': 1,
@@ -198,7 +203,8 @@ plottingStuff2['qualities3'] = { 'lowlimityaxis': 0.9,
 		      'legxhigh': .99,
 		      'legyhigh': .99,
 		      'markertypedir':{},
-		      'markercolordir':{}  
+		      'markercolordir':{}, 
+          'printPU':False
    		    }   
 
     
@@ -209,7 +215,7 @@ Qualities = {'qualities1':[] , 'qualities2':[], 'qualities3':[] }
     
 Qualities['qualities1'] = ['All', 'correlated']
 Qualities['qualities2'] = ['nothreehits', 'legacy']
-Qualities['qualities3'] = ['All', 'nothreehits']
+#Qualities['qualities3'] = ['All', 'nothreehits']
     
 
 
@@ -249,8 +255,8 @@ for ch in chambTag :
       myLegends = []
       a = 0
       for fil in filesPU :
-        plotscaffold = "h" + plot + "_" + ch +"_{al}_{ty}"
-        savescaffold = "h" + plot + "_" + key + "_" + ch 
+        plotscaffold = "h" + plot + "_PU_" + ch +"_{al}_{ty}"
+        savescaffold = "h" + plot + "_PU_" + key + "_" + ch 
 
         for i in range (len(Qualities[key])) :         
           if not os.path.isfile(outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root') :

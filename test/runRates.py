@@ -13,10 +13,15 @@ from markerColors import markerColors
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['norpc'].append('nu_pu250_noage_norpc')
-files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
-files['rpc'].append('nu_pu250_noage_withrpc')
-files['rpc'].append('nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000')
+#files['norpc'].append('nopu_noage_norpc')
+#files['norpc'].append('pu200_noage_norpc')
+#files['norpc'].append('nu_pu250_noage_norpc')
+#files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
+#files['rpc'].append('nu_pu250_noage_withrpc')
+#files['rpc'].append('nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000')
+
+#files['norpc'].append('PU0_bkgHits')
+#files['norpc'].append('PU200_bkgHits')
 #files['rpc'].append('pu200_age_withrpc_youngseg_muonage_norpcage_fail_3000')
 
 r.gROOT.ForceStyle()
@@ -39,7 +44,7 @@ qualities['rpc'] = ["GoodBX","GoodBX+qu>=3","GoodBX+matchedqu<3", "GoodBX+qu>=3+
 
 
 plottingStuff = { 'lowlimityaxis' : 0,
-		  'ranges' : {},
+		        'ranges' : {},
 	          'markersize': 1,
 	          'yaxistitleoffset': 1.5,
 	          'xaxistitle': "Wheel",
@@ -48,13 +53,29 @@ plottingStuff = { 'lowlimityaxis' : 0,
 	          'legxhigh': 0.9,
 	          'legyhigh': 0.5,
 	          'markertypedir':{},
-	          'markercolordir':{}  
+	          'markercolordir':{}, 
+	          'highLimitYAxis_perSector':{}  
    	        }   
 #plottingStuff['ranges'] = {"rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
 plottingStuff['ranges']['nu_pu250_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_noage_withrpc'] = { "rates":[15E5,15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = { "rates":[15E5,15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8,1E8] }
+plottingStuff['ranges']['PU0_bkgHits'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1.5E8,1.5E8,1.5E8,1.5E8,1.5E8,1.5E8] }
+plottingStuff['ranges']['PU200_bkgHits'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1.5E8,1.5E8,1.5E8,1.5E8,1.5E8,1.5E8] }
+plottingStuff['ranges']['nopu_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
+plottingStuff['ranges']['pu200_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
+
+
+plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_norpc'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_withrpc'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['PU0_bkgHits'] = 250E6;  
+plottingStuff['highLimitYAxis_perSector']['PU200_bkgHits'] = 250E6;  
+plottingStuff['highLimitYAxis_perSector']['nopu_noage_norpc'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['pu200_noage_norpc'] = 200E6;  
+
 
 plottingStuffRat = { 'lowlimityaxis' : {},
 	             'markersize': 1,
@@ -74,6 +95,10 @@ plottingStuffRat['lowlimityaxis']['nu_pu250_age_norpc_youngseg_muonage_norpcage_
 plottingStuffRat['lowlimityaxis']['nu_pu250_noage_withrpc'] = [0,0,0,0,0,0,0]
 #plottingStuffRat['lowlimityaxis']['nu_pu250_noage_withrpc'] = [0.5,0.5,0.5,0.5]
 plottingStuffRat['lowlimityaxis']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = [0,0,0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['PU0_bkgHits'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['PU200_bkgHits'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['nopu_noage_norpc'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['pu200_noage_norpc'] = [0,0,0,0,0]
 
 #legends = {'norpc':[],'rpc':[], 'DM':[]}
 #legends['norpc'] = ['All','Quality>2','index0','index01','index012','index0123']

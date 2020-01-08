@@ -186,7 +186,7 @@ def makeRatesPerSectorplot(algo, suffix, fileName,binToUse,plotScaffold, plottin
             ibin += 1
     	     
     	resplot.SetStats(False)
-    	resplot.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], 200E6)
+    	resplot.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highLimitYAxis_perSector'][suffix])
     	resplot.GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
     	resplot.GetXaxis().SetTitle("Sector")
        	resplot.GetXaxis().SetNdivisions(12)
@@ -320,7 +320,8 @@ def combineresplots(hlist, legends, plottingStuff, path, savescaffold):
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
-    toDisplay  = r.TString("14 TeV, 200 PU")
+    if plottingStuff['printPU'] == True : toDisplay  = r.TString("14 TeV, 200 PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
