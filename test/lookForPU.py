@@ -5,11 +5,10 @@ def lookForPU ( fileToUse ):
     print("First Error: PU not found in file's name")
     return -1
 
-
-  if (  fileToUse[a-1] == "o" and  fileToUse[a-2] == "n" ) :
+  if (a > 1 and  fileToUse[a-1] == "o" and  fileToUse[a-2] == "n" ) :
     return 0
 
-  elif ( ord(fileToUse[a-1]) >= 48 and ord(fileToUse[a-1])<=57) :
+  elif (a > 1 and ord(fileToUse[a-1]) >= 48 and ord(fileToUse[a-1])<=57) :
     num = 0
     exp = 1; 
     while ( ord(fileToUse[a-1]) >= 48 and ord(fileToUse[a-1])<=57) :
