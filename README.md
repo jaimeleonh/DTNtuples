@@ -15,19 +15,8 @@ cmsenv
 git cms-merge-topic oglez:Phase2_DTAB7Unpacker_v9.1
 git cms-merge-topic battibass:Phase2_DTRecoAndCalib
 git cms-merge-topic -u pozzobon:DTHough_NP_20191004_106X_noL1T # MTT-CHT emulator
-git cms-merge-topic -u dtp2-tpg-am:v1.4_AM_106X # AM emulator
-git clone https://github.com/battibass/DTNtuples.git DTDPGAnalysis/DTNtuples -b branchPhi 
-scramv1 b -j 5
-```
-
-With SliceTest version: 
-```
-cmsrel CMSSW_10_6_1_patch2
-cd CMSSW_10_6_1_patch2/src/
-cmsenv
-git cms-merge-topic -u pozzobon:DTHough_NP_20191004_106X_noL1T # MTT-CHT emulator
-git cms-merge-topic -u jaimeleonh:EmulFW # AM emulator
-git clone https://github.com/jaimeleonh/DTNtuples.git -b branchPhi DTDPGAnalysis/DTNtuples
+git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
+git clone https://github.com/battibass/DTNtuples.git DTDPGAnalysis/DTNtuples -b newBranchPhi 
 scramv1 b -j 5
 ```
 
