@@ -23,8 +23,8 @@ qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if len(sys.argv) >= 3 :
-  if sys.argv[2] == 'yes' :
+if len(sys.argv) >= 2 :
+  if sys.argv[1] == 'yes' :
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Digis.C")
@@ -73,8 +73,8 @@ plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
 
 for cat in files :  
   for fil in files[cat] :
-    if len(sys.argv)>=3 :
-      if sys.argv[2] == 'yes' :
+    if len(sys.argv)>=2 :
+      if sys.argv[1] == 'yes' :
         print ('Obtaining resolution ntuples for ' + fil )
         time.sleep(2) 
         analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_digis_' +fil + '_.root')
