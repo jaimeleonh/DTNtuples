@@ -529,9 +529,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -1; //FIXME
-     offset[1] = -199; //FIXME
-     offset[2] = -199; //FIXME
-     offset[3] = -199; //FIXME
+     offset[1] = -193; //FIXME
+     offset[2] = -193; //FIXME
+     offset[3] = -193; //FIXME
 
      bool titPrint = false; 
 
