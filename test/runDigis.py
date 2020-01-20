@@ -4,17 +4,22 @@ import ROOT as r
 from ROOT import gSystem
 from copy import deepcopy
 import CMS_lumi
-#import myPlotter_input as effplot 
 r.gROOT.SetBatch(True)
 from subprocess import call
 import myPlotter_input as effplot
 from markerColors import markerColors
 
+import argparse
+parser = argparse.ArgumentParser(description='Plotter options')
+parser.add_argument('-n','--ntuples', action='store_true', default = False)
+my_namespace = parser.parse_args()
+
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['norpc'].append('PU200_bkgHits') 
+files['norpc'].append('PU250_nu_bkg9') 
+#files['norpc'].append('PU200_bkgHits') 
 
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
@@ -23,15 +28,14 @@ qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if len(sys.argv) >= 2 :
-  if sys.argv[1] == 'yes' :
+if my_namespace.ntuples == True : 
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Digis.C")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Digis_C.so")
     from ROOT import DTNtupleTPGSimAnalyzer
-elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'): 
+else : 
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
@@ -73,10 +77,9 @@ plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
 
 for cat in files :  
   for fil in files[cat] :
-    if len(sys.argv)>=2 :
-      if sys.argv[1] == 'yes' :
-        print ('Obtaining resolution ntuples for ' + fil )
-        time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_digis_' +fil + '_.root')
-        analysis.Loop()
+    if my_namespace.ntuples == True :     
+      print ('Obtaining resolution ntuples for ' + fil )
+      time.sleep(2) 
+      analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_digis_' +fil + '_.root')
+      analysis.Loop()
    

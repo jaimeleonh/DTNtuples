@@ -11,6 +11,10 @@ from subprocess import call
 from bcolors import bcolors
 from markerColors import markerColors
 
+import argparse
+parser = argparse.ArgumentParser(description='Plotter options')
+parser.add_argument('-n','--ntuples', action='store_true', default = False)
+my_namespace = parser.parse_args()
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
@@ -64,15 +68,14 @@ qualities['DM'] = ['All']
 
 ##############################################################################################
 
-if len(sys.argv) >= 2 :
-  if sys.argv[1] == 'yes' :
-    print ("Starting ntuplizer for every sample in input")
-    time.sleep(2)
-    r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Effs.C")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Efficiency_C.so")
-    from ROOT import DTNtupleTPGSimAnalyzer
-elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'): 
+if my_namespace.ntuples == True :
+  print ("Starting ntuplizer for every sample in input")
+  time.sleep(2)
+  r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Effs.C")
+  gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
+  gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Efficiency_C.so")
+  from ROOT import DTNtupleTPGSimAnalyzer
+else :  
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
@@ -85,17 +88,16 @@ if not os.path.isdir(effPath) : rc = call('mkdir ' + effPath, shell=True)
 
 for cat in files :  
   for fil in files[cat] :
-    if len(sys.argv)==2 :
-      if sys.argv[1] == 'yes' :
-        for quality in qualities[cat] :
-          print ('Obtaining efficiency ntuples for ' + fil + ' with quality type ' + quality )
-          if quality not in possibleQualities :
-            #print (  '\033[1;31m\033[91m' + 'ERROR: quality category not possible. It will not get considered in the ntuple production' + '\033[0m')
-            print (  bcolors.red + 'ERROR: quality category does not exist. It will not get considered in the ntuple production' + bcolors.reset)
-            continue
-          time.sleep(2) 
-          analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality)
-          analysis.Loop()
+    if my_namespace.ntuples == True :    
+      for quality in qualities[cat] :
+        print ('Obtaining efficiency ntuples for ' + fil + ' with quality type ' + quality )
+        if quality not in possibleQualities :
+          #print (  '\033[1;31m\033[91m' + 'ERROR: quality category not possible. It will not get considered in the ntuple production' + '\033[0m')
+          print (  bcolors.red + 'ERROR: quality category does not exist. It will not get considered in the ntuple production' + bcolors.reset)
+          continue
+        time.sleep(2) 
+        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality)
+        analysis.Loop()
    
 
     plottingStuff = { 'lowlimityaxis': 0.7,

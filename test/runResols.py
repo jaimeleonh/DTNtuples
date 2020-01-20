@@ -10,6 +10,12 @@ from subprocess import call
 import myPlotter_input as effplot
 from markerColors import markerColors
 
+import argparse
+parser = argparse.ArgumentParser(description='Plotter options')
+parser.add_argument('-n','--ntuples', action='store_true', default = False)
+parser.add_argument('-r','--redoPlots', action='store_true', default = False)
+my_namespace = parser.parse_args()
+
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
@@ -23,15 +29,14 @@ qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if len(sys.argv) >= 3 :
-  if sys.argv[2] == 'yes' :
+if my_namespace.ntuples == True: 
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Res_All.C")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Resolution_All_C.so")
     from ROOT import DTNtupleTPGSimAnalyzer
-elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'): 
+else :
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
@@ -72,16 +77,14 @@ markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 
 for cat in files :  
   for fil in files[cat] :
-    if len(sys.argv)>=3 :
-      if sys.argv[2] == 'yes' :
-        print ('Obtaining resolution ntuples for ' + fil )
-        time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_resols_' +fil + '_.root')
-        analysis.Loop()
+    if my_namespace.ntuples == True:
+      print ('Obtaining resolution ntuples for ' + fil )
+      time.sleep(2) 
+      analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_resols_' +fil + '_.root')
+      analysis.Loop()
 
-    if len(sys.argv)>=2 :
-      if sys.argv[1] == 'yes' :
-        rc = call ('./runPlots.sh ' + fil, shell=True) 
+    if my_namespace.redoPlots == True : 
+      rc = call ('./runPlots.sh ' + fil, shell=True) 
     
     
     for mag in magnitude :

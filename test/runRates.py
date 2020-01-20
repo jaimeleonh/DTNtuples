@@ -10,17 +10,24 @@ from subprocess import call
 from markerColors import markerColors
 from allLegends import legends as Legends
 
+
+import argparse
+parser = argparse.ArgumentParser(description='Plotter options')
+parser.add_argument('-n','--ntuples', action='store_true', default = False)
+my_namespace = parser.parse_args()
+
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
 files['norpc'].append('nopu_noage_norpc')
-files['norpc'].append('pu200_noage_norpc')
+#files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nu_pu250_noage_norpc')
 #files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
 #files['rpc'].append('nu_pu250_noage_withrpc')
 #files['rpc'].append('nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000')
 
+#files['norpc'].append('PU250_nu_bkg9') 
 #files['norpc'].append('PU0_bkgHits')
 #files['norpc'].append('PU200_bkgHits')
 #files['rpc'].append('pu200_age_withrpc_youngseg_muonage_norpcage_fail_3000')
@@ -69,6 +76,7 @@ plottingStuff['ranges']['nopu_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5
 plottingStuff['ranges']['pu200_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
 
 
+plottingStuff['highLimitYAxis_perSector']['default'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_norpc'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_withrpc'] = 200E6;  
@@ -93,6 +101,7 @@ plottingStuffRat = { 'lowlimityaxis' : {},
 	             'markercolordir':{},  
                'PU':{}
    	           }   
+plottingStuffRat['lowlimityaxis']['default'] = [0,0,0,0,0]
 plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0,0,0,0,0]
 #plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0.4,0.4,0.4,0.4,0.4]
 plottingStuffRat['lowlimityaxis']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = [0,0,0,0,0]
@@ -113,15 +122,14 @@ plottingStuffRat['lowlimityaxis']['pu200_noage_norpc'] = [0,0,0,0,0]
 
 ##############################################################################################
 
-if len(sys.argv) >= 2 :
-  if sys.argv[1] == 'yes' :
+if my_namespace.ntuples == True :
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Rates.C")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
     gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Rates_C.so")
     from ROOT import DTNtupleTPGSimAnalyzer
-elif len(sys.argv)==1 or (len(sys.argv)!=1 and sys.argv[1]!='yes'): 
+else : 
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
@@ -138,12 +146,11 @@ if not os.path.isdir(ratePath) : rc = call('mkdir ' + ratePath, shell=True)
 for cat in files : 
   for fil in files[cat] :
     rc = call('mkdir ' + ratePath + fil, shell=True) 
-    if len(sys.argv)==2 :
-      if sys.argv[1] == 'yes' :
-        print ('Obtaining rate ntuples for ' + fil)
-        time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_rates_' + fil + '.root')
-        analysis.Loop()
+    if my_namespace.ntuples == True :
+      print ('Obtaining rate ntuples for ' + fil)
+      time.sleep(2) 
+      analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_rates_' + fil + '.root')
+      analysis.Loop()
 
     print "\nBeginning plotting\n"
 
