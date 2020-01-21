@@ -3,7 +3,7 @@ config = Configuration()
 
 ##### Configuration parameters ################################
 
-runNumber = 331628
+runNumber = 333866
 inputDataset = "/Cosmics/Commissioning2019-v1/RAW"
 
 # These are the cfg parameters used to configure the 

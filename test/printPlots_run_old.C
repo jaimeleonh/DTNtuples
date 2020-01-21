@@ -94,24 +94,9 @@ void printPlots_run(std::string run) {
   }
 
 
-  for (auto & generalPlot : general1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + generalPlot);
-  }
-  for (auto & generalPlot : generalEffPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + generalPlot);
-  }
-  for (auto & specificPlot : specific1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
-  }
-  for (auto & specificPlot : specific2DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
-  }
-  for (auto & specificPlot : moreSpecific1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
-  }
-  for (auto & specificPlot : moreSpecific2DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
-  }
+
+
+
 /*
   for (auto & generalPlot : generalEffPlots) {
     std::string nameHisto = generalPlot;
@@ -127,7 +112,7 @@ void printPlots_run(std::string run) {
     sprintf(name,"%s",nameHisto.c_str());
     m_plots[name] = (TH1F*) data1.Get(name);
     m_plots[name]->Draw();
-    sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
+    sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
     gPad->SaveAs(name);
     if (fileOK) cout << nameHisto << ".png" << endl;
   }
@@ -140,7 +125,7 @@ void printPlots_run(std::string run) {
       sprintf(name,"%s",nameHisto.c_str());
       m_effs[name] = (TEfficiency*) data1.Get(name);
       m_effs[name]->Draw();
-      sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
+      sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
     } 
@@ -149,7 +134,7 @@ void printPlots_run(std::string run) {
       sprintf(name,"%s",nameHisto.c_str());
       m_plots[name] = (TH1F*) data1.Get(name);
       m_plots[name]->Draw();
-      sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+      sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
     }
@@ -158,7 +143,7 @@ void printPlots_run(std::string run) {
       sprintf(name,"%s",nameHisto.c_str());
       m_plots2[name] = (TH2F*) data1.Get(name);
       m_plots2[name]->Draw("colz");
-      sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+      sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
     }
@@ -173,7 +158,7 @@ void printPlots_run(std::string run) {
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
        // if (specificPlot == "hChi2FW_" || specificPlot == "hChi2Emul_") gPad->SetLogy();
         gPad->SaveAs(name);
          if (fileOK) cout << nameHisto << ".png" << endl;
@@ -184,7 +169,7 @@ void printPlots_run(std::string run) {
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
         m_plots2[name]->Draw("colz");
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
@@ -200,7 +185,7 @@ void printPlots_run(std::string run) {
           m_plots[name]->Draw();
           m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetRMS(1));
           m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetMean(1));
-          sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+          sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
           gPad->SaveAs(name);
           if (fileOK) cout << nameHisto << ".png" << endl;
         }
@@ -212,7 +197,7 @@ void printPlots_run(std::string run) {
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
           m_plots2[name]->Draw("colz");
-          sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+          sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
           gPad->SaveAs(name);
           if (fileOK) cout << nameHisto << ".png" << endl;
         }
@@ -228,7 +213,7 @@ void printPlots_run(std::string run) {
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "res_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "mean_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
@@ -238,7 +223,7 @@ void printPlots_run(std::string run) {
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
         m_plots2[name]->Draw("colz");
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
@@ -253,14 +238,14 @@ void printPlots_run(std::string run) {
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "res_" + chambTag + "_" + categories.at(i);
         m_plots_res[nameHisto]->Draw();
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "mean_" + chambTag + "_" + categories.at(i);
         m_plots_mean[nameHisto]->Draw();
-        sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
+        sprintf(name,"run%s/%s.png",run.c_str(),nameHisto.c_str());
         gPad->SaveAs(name);
         if (fileOK) cout << nameHisto << ".png" << endl;
       }
