@@ -20,6 +20,8 @@ legends = {
   'nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000' : 'w/Aging w/RPC',  
   'PU0_bkgHits'              : 'PU0 + bkg',  
   'PU200_bkgHits'            : 'PU200 + bkg',  
+  'PU200_nu_bkg7p5'          : 'nuPU200 + bkg7p5',  
+  'PU250_nu_bkg9'            : 'nuPU250 + bkg9',  
   'nopu_noage_norpc'         : 'PU0 NoAging',  
   'pu200_noage_norpc'        : 'PU200 NoAging'
 
