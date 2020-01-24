@@ -69,7 +69,6 @@ DTNtupleTPGSimAnalyzer::~DTNtupleTPGSimAnalyzer()
 void DTNtupleTPGSimAnalyzer::Loop()
 {
 
-
   if (fChain == 0) return;
 
   Long64_t nentries = fChain->GetEntries();
@@ -77,12 +76,12 @@ void DTNtupleTPGSimAnalyzer::Loop()
   book();
   Long64_t nbytes = 0, nb = 0;
  // for (Long64_t jentry=0; jentry<50000;jentry++) 
-  for (Long64_t jentry=0; jentry<nentries;jentry++) 
+  for (Long64_t jentry=0; jentry<nentries;jentry++)
+     
     {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEvent(jentry);   nbytes += nb;
-
       if(jentry % 100 == 0) 
 	std::cout << "[DTNtupleTPGSimAnalyzer::Loop] processed : " 
 		  << jentry << " entries\r" << std::flush;
@@ -529,9 +528,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -1; //FIXME
-     offset[1] = -193; //FIXME
-     offset[2] = -193; //FIXME
-     offset[3] = -193; //FIXME
+     offset[1] = -182; //FIXME
+     offset[2] = -210; //FIXME
+     offset[3] = -210; //FIXME
 
      bool titPrint = false; 
 
@@ -567,7 +566,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 	bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
 	bestQualTrigBXHW[indstat]=-1;IbestQualTrigBXHW[indstat]=-1;
       }
-      
+     
       for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
         {
 		
@@ -741,7 +740,6 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	bestQualTrigBXAM[indstat]=-1;IbestQualTrigBXAM[indstat]=-1;
       }
 
- 
       for (std::size_t iTrigAM = 0; iTrigAM < ph2TpgPhiEmuAm_nTrigs; ++iTrigAM) {
 		
         short myStationAM = ph2TpgPhiEmuAm_station->at(iTrigAM);
@@ -930,7 +928,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         bestQualTrigBXTM[indstat]=-1;IbestQualTrigBXTM[indstat]=-1;
       }
       for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
-
+        //break; 
         short myStationTwin = ltTwinMuxIn_station->at(iTwin);
         short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
         short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
@@ -941,16 +939,19 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
         int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
 
-        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
-        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  }
-	if (myWheelTwin == 2 && mySectorTwin == 12) {
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl; 
+        if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  
+        if (myWheelTwin == 2 && mySectorTwin == 12) {
           if (debug && !titPrint) { 
             std::cout << "====================Entry " << entryNumber << " =================="<< std::endl; 
             cout << "####################### L1A BX = " << eventoBX << " ############################" << endl;  
             titPrint = true; 
           }
-          if (debug && !printTwin) { cout << "####################### TwimMux PRIMITIVES ############################" << endl; printTwin = true;   }
-          if (debug) {
+          if (debug && !printTwin) { 
+            cout << "####################### TwimMux PRIMITIVES ############################" << endl;
+            printTwin = true;
+          }
+           if (debug) {
             cout << "Wh:" << myWheelTwin << " Se:" <<  mySectorTwin << " St:" << myStationTwin << endl;	
             cout << "Quality " << myQualityTwin << endl;	
             cout << "Phi " << myPhiTwin << endl;	
@@ -960,7 +961,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
             cout << "BX " << myBXTwin << endl;	
             cout << "-------------------------------------------------------------------------" << endl;
           }	
-	}
+	      }
 	int indstat = myStationTwin - 1;  
 	if(myQualityTwin>bestQualTrigTM[indstat]){
 	  bestQualTrigTM[indstat]=myQualityTwin;
@@ -980,7 +981,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 
             int i = myStationTwin-1; 
             int j = myQualityTwin-2; 
-	      
+
+
 	    short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
 	    short myHwSector = ph2TpgPhiHw_sector->at(bestTrigHW[i][j]);
 	    short myHwStation = ph2TpgPhiHw_station->at(bestTrigHW[i][j]);

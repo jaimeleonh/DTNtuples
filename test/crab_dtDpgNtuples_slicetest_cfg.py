@@ -3,7 +3,7 @@ config = Configuration()
 
 ##### Configuration parameters ################################
 
-runNumber = 333866
+runNumber = 334490
 inputDataset = "/Cosmics/Commissioning2019-v1/RAW"
 
 # These are the cfg parameters used to configure the 
@@ -40,7 +40,7 @@ config.Data.splitting    = 'LumiBased'
 config.Data.unitsPerJob  = 10  
 config.Data.runRange     = str(runNumber)
 config.Data.inputDBS     = 'https://cmsweb.cern.ch/dbs/prod/global/DBSReader/'
-config.Data.outLFNDirBase  = '/store/user/jleonhol/SliceTest'
+config.Data.outLFNDirBase  = '/store/user/jleonhol/SliceTest/run' + str(runNumber)
 
 config.section_('Site')
 config.Site.storageSite = 'T2_ES_CIEMAT'
