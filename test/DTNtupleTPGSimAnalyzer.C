@@ -175,6 +175,16 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
 					    "Distribution of Quality vs BX for Emul; Emul Primitive Quality; Emul Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
+        
+        
+        m_plots2["hHits"+chambTag] = new TH2F(("hHits_" +chambTag).c_str(),
+					    "Distribution of Hits; Cell Number; ",
+               100,0.5,100.5,14,0,14.5); 
+        std::vector<std::string> tagsHits = {"SL1 La1", "SL1 La2", "SL1 La3","SL1 La4", " ", "SL2 La1", "SL2 La2", "SL2 La3","SL2 La4", " ", "SL3 La1", "SL3 La2", "SL3 La3","SL3 La4"};
+
+        for (unsigned int i = 0; i < tagsHits.size(); i++){
+          m_plots2["hHits" + chambTag]->GetYaxis()->SetBinLabel(i+1, tagsHits[i].c_str());
+        }
 
 
 
@@ -528,9 +538,34 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -1; //FIXME
-     offset[1] = -182; //FIXME
-     offset[2] = -210; //FIXME
-     offset[3] = -210; //FIXME
+     offset[1] = -172; //FIXME
+     offset[2] = -195; //FIXME
+     offset[3] = -195; //FIXME
+
+
+     /* HIT PLOTS */
+
+     for (unsigned int iHit = 0; iHit < ph2Digi_nDigis; iHit++) {
+       m_plots2["hHits" + chambTags.at(ph2Digi_station -> at(iHit) - 1)]  -> Fill(ph2Digi_wire->at(iHit) , ph2Digi_layer->at(iHit) + ( ph2Digi_superLayer->at(iHit) - 1 ) * 5 );      
+     } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      bool titPrint = false; 
 
