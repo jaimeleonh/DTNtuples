@@ -175,6 +175,9 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
 					    "Distribution of Quality vs BX for Emul; Emul Primitive Quality; Emul Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
+        m_plots["hBXTM"+chambTag] = new TH1F(("hBXTM_" +chambTag).c_str(),
+					    "Distribution of BX Twinmux; BX Twinmux; Entries",
+					    21,-10.5,10.5); 
         
         
         m_plots2["hHits"+chambTag] = new TH2F(("hHits_" +chambTag).c_str(),
@@ -538,7 +541,7 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -1; //FIXME
-     offset[1] = -172; //FIXME
+     offset[1] = -195; //FIXME
      offset[2] = -195; //FIXME
      offset[3] = -195; //FIXME
 
@@ -997,16 +1000,17 @@ _plots["hQualityHW"]->Fill(myQualityHW);
             cout << "-------------------------------------------------------------------------" << endl;
           }	
 	      }
-	int indstat = myStationTwin - 1;  
-	if(myQualityTwin>bestQualTrigTM[indstat]){
-	  bestQualTrigTM[indstat]=myQualityTwin;
-	  IbestQualTrigTM[indstat]=iTwin;
-	}
-	if(myQualityTwin>bestQualTrigBXTM[indstat] && myBXTwin == 0){
-	  bestQualTrigBXTM[indstat]=myQualityTwin;
-	  IbestQualTrigBXTM[indstat]=iTwin;
-	}
+      	int indstat = myStationTwin - 1;  
+      	if(myQualityTwin>bestQualTrigTM[indstat]){
+	        bestQualTrigTM[indstat]=myQualityTwin;
+	        IbestQualTrigTM[indstat]=iTwin;
+      	}
+	      if(myQualityTwin>bestQualTrigBXTM[indstat] && myBXTwin == 1){
+	        bestQualTrigBXTM[indstat]=myQualityTwin;
+	        IbestQualTrigBXTM[indstat]=iTwin;
+      	}
 
+        m_plots["hBXTM"+ chambTags.at(indstat)] -> Fill(myBXTwin);
         // FILL TM PLOTS
 
 	if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
