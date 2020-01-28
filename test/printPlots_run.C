@@ -47,10 +47,10 @@ void printPlots_run(std::string run) {
   //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX", "hEffCorAM", "hEffCor"}; 
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
-  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM"};
-  std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM"};
+  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hBXTM"};
+  std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits"};
   //std::vector <std::string> moreSpecific1DPlots { };
-  std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hBXfromT0", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos", "hPsiSeg", "hTimeSeg","hPosSeg"};
+  std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos", "hPsiSeg", "hTimeSeg","hPosSeg"};
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D", "hTime2D","hPos2D","hPsi2DTM","hPos2DTM","hPhi2DTM","hPhiB2DTM","hPsi2DSeg", "hTime2DSeg","hPos2DSeg", "hTimeSegvsPos", "hTimeSegvsPsi"};
 
   std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware Psi (#circ)","Emulator Psi (#circ)","Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
