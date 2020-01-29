@@ -209,7 +209,6 @@ void printPlots_run(std::string run) {
           if (specificPlot == "hPsi2D" || specificPlot == "hTime2D" || specificPlot == "hPos2D") continue;
           //if (specificPlot == "hPsi2DTM" ||specificPlot == "hPos2DTM" || specificPlot == "hPhi2DTM" ||specificPlot == "hPhiB2DTM" ) continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
-          cout << nameHisto << endl; 
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
           m_plots2[name]->Draw("colz");
