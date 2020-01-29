@@ -156,19 +156,19 @@ void DTNtupleTPGSimAnalyzer::book()
         m_effs["hEffHWvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBX_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X",
 					    50,-251.5,250.5); 
-	m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
+        m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
 					    "AM Eff in Good BX vs Seg X",
 					    50,-251.5,250.5); 
-	m_effs["hEffTMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegXGoodBX_"+ chambTag).c_str(),
+        m_effs["hEffTMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegXGoodBX_"+ chambTag).c_str(),
 					    "TM Eff in Good BX vs Seg X",
 					    50,-251.5,250.5); 
         m_effs["hEffHWvsSegX"+ chambTag] = new TEfficiency(("hEffHWvsSegX_"+ chambTag).c_str(),
 					    "HW Eff vs Seg X",
 					    50,-251.5,250.5); 
-	m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
+        m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
 					    "AM Eff vs Seg X",
 					    50,-251.5,250.5); 
-	m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
+        m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
 					    "TM Eff vs Seg X",
 					    50,-251.5,250.5);
         m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
@@ -1260,11 +1260,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	short mySegStation = seg_station->at(iSeg);
    	short mySegWheel = seg_wheel->at(iSeg);
    	short mySegSector = seg_sector->at(iSeg);
-	float mySegPos = seg_posLoc_x->at(iSeg);
+	  float mySegPos = seg_posLoc_x->at(iSeg);
    	float mySegPosSL1 = seg_posLoc_x_SL1->at(iSeg);
-        float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
-        float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
-	float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
+    float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
+    float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
+  	float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
 	//cout <<"Wh:" << mySegWheel << " Se:" << mySegSector << " St:" << mySegStation << " Hits:" << seg_phi_nHits ->at(iSeg) << endl;
 
         if (mySegSector == 12 && mySegWheel == 2 && seg_phi_nHits->at(iSeg) == 8){ m_plots["hPrimsSegs" + chambTags.at(mySegStation/2 -1)] -> Fill(2);
