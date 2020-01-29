@@ -47,7 +47,7 @@ void printPlots_run(std::string run) {
   //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX", "hEffCorAM", "hEffCor"}; 
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
-  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hBXTM"};
+  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM"};
   std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits"};
   //std::vector <std::string> moreSpecific1DPlots { };
   std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos", "hPsiSeg", "hTimeSeg","hPosSeg"};
@@ -207,8 +207,9 @@ void printPlots_run(std::string run) {
       
         for (auto & specificPlot : moreSpecific2DPlots) {
           if (specificPlot == "hPsi2D" || specificPlot == "hTime2D" || specificPlot == "hPos2D") continue;
-          if (specificPlot == "hPsi2DTM" ||specificPlot == "hPos2DTM" || specificPlot == "hPhi2DTM" ||specificPlot == "hPhiB2DTM" ) continue;
+          //if (specificPlot == "hPsi2DTM" ||specificPlot == "hPos2DTM" || specificPlot == "hPhi2DTM" ||specificPlot == "hPhiB2DTM" ) continue;
           std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
+          cout << nameHisto << endl; 
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
           m_plots2[name]->Draw("colz");

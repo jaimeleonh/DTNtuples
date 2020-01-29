@@ -169,6 +169,9 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots["hQualityAM"+chambTag] = new TH1F(("hQualityAM_" +chambTag).c_str(),
 					    "Distribution of Emul qualities; Emul Qualities; Entries",
 					    9,0.5,9.5); 
+        m_plots["hQualityTM"+chambTag] = new TH1F(("hQualityTM_" +chambTag).c_str(),
+					    "Distribution of TM qualities; TM Qualities; Entries",
+					    6,1.5,7.5); 
         m_plots2["hQualityVsBXHW"+chambTag] = new TH2F(("hQualityVsBXHW_" +chambTag).c_str(),
 					    "Distribution of Quality vs BX for HW; HW Primitive Quality; HW Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
@@ -355,7 +358,19 @@ void DTNtupleTPGSimAnalyzer::book()
 					    "Firmware - Segment time vs Segment #Psi; Segment #Psi (#circ); Firmware - Segment time (ns)",
 					    160,-80,80,200,-100,100); 
        	  if (labelTag == "All" || labelTag == "Correlated") continue;
-	  for (const auto & slTag : slTags) {
+	        for (const auto & slTag : slTags) {
+            m_plots2["hPhi2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPhi2DTM_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
+					    "Firmware vs Twinmux phi; Firmware phi; Twinmux phi",
+					    nbinPhiFW,-minPhiFW,minPhiFW,nbinPhiTM,-minPhiTM,minPhiTM); 
+            m_plots2["hPhiB2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPhiB2DTM_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
+			        "Firmware vs Twinmux phiB; Firmware phiB; Twinmux phiB",
+					    nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
+            m_plots2["hPos2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPos2DTM_"+ chambTag + "_" + labelTag + "_" + slTag ).c_str(),
+					    "Firmware vs Twinmux position; Firmware position (cm); Twinmux position (cm)",
+					    600,-300,300,600,-300,300); 
+            m_plots2["hPsi2DTM" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DTM_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
+					    "Firmware vs Twinmux #Psi; Firmware #Psi (#circ); Twinmux #Psi (#circ)",
+					    160,-80,80,160,-80,80); 
             m_plots["hBX" + chambTag + labelTag + slTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 	   				    "Distribution of BX; BX; Entries",
 					    21,-10.5,10.5); 
@@ -1011,6 +1026,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
       	}
 
         m_plots["hBXTM"+ chambTags.at(indstat)] -> Fill(myBXTwin);
+        m_plots["hQualityTM"+ chambTags.at(indstat)] -> Fill(myQualityTwin);
         // FILL TM PLOTS
 
 	if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
@@ -1025,6 +1041,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	    short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
 	    short myHwSector = ph2TpgPhiHw_sector->at(bestTrigHW[i][j]);
 	    short myHwStation = ph2TpgPhiHw_station->at(bestTrigHW[i][j]);
+	    short myHwSuperlayer = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);
             float myPosHW =  ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]);
             float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]);
 	      	      
@@ -1043,6 +1060,16 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	      m_plots2["hPos2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
 	      m_plots2["hPhi2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
 	      m_plots2["hPhiB2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
+
+        short indexSL = myHwSuperlayer / 2; 
+
+	      m_plots2["hPsi2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]), myDirTwin );
+	      m_plots2["hPos2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j])  , myPosTwin );
+	      m_plots2["hPhi2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j])       , myPhiTwin );
+	      m_plots2["hPhiB2DTM"+chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j])      , myPhiBTwin);
+
+
+
 	    }	   
 	    m_plots2["hPsi2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
 	    m_plots2["hPos2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
