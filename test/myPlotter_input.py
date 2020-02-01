@@ -4,6 +4,7 @@ from copy import deepcopy
 import CMS_lumi
 import sys
 from lookForPU import lookForPU 
+from markerColors import markerColors
 r.gROOT.SetBatch(True)
 
 
@@ -230,7 +231,7 @@ def combineEffPlots(hlist, legends, plottingStuff, path, savescaffold):
     if len(hlist) == 0: raise RuntimeError("Empty list of plots")
     c   = r.TCanvas("c", "c", 800, 800)
     #hlist[0].GetPaintedGraph().GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
-    hlist[0].GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
+    #hlist[0].GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
     #hlist[0].GetPaintedGraph().GetYaxis().SetTitle(plottingStuff['yaxistitle'])
     #hlist[0].GetPaintedGraph().GetXaxis().SetTitle(plottingStuff['xaxistitle'])
 
@@ -247,7 +248,7 @@ def combineEffPlots(hlist, legends, plottingStuff, path, savescaffold):
     leg.Draw()
    
     r.gPad.Update()
-    hlist[0].GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
+    #hlist[0].GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
     #hlist[0].GetPaintedGraph().GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
     hlist[0].SetTitle("; " + plottingStuff['xaxistitle'] + "; Efficiency")
     #hlist[0].GetPaintedGraph().SetTitle("; " + plottingStuff['xaxistitle'] + "; Efficiency")
@@ -364,7 +365,8 @@ def combineRatesPerRingplots(hlist, binToUse, legends, whatToPlot, plottingStuff
     for iplot in range(len(hlist)):
         hlist[iplot].SetMarkerSize(plottingStuff['markersize'])
         hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][hlist[iplot].GetName()])
-        hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
+        hlist[iplot].SetMarkerColor( markerColors[iplot])
+        #hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
         leg.AddEntry(hlist[iplot], legends[iplot], "P")
         hlist[iplot].Draw("P,hist" + (iplot != 0) * "same")
 
@@ -525,6 +527,9 @@ def combineRateRatiosPerRingplots(hlist, hlist2, path, fil, binToUse, plottingSt
         leg.AddEntry(hratio[iplot], legends[iplot], "p")
         #leg.AddEntry(hlist[iplot], legends[iplot], "p")
         #hlist[iplot].Draw("p,hist,same")
+        hratio[iplot].SetMarkerSize(plottingStuff['markersize'])
+        hratio[iplot].SetMarkerStyle(20)
+        hratio[iplot].SetMarkerColor(r.kBlue)
         hratio[iplot].Draw("p,hist" + (iplot != 0) * "same")
         #hlist2[iplot].Draw("p,hist" + (iplot != 0) * "same")
 
@@ -647,6 +652,88 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
 
 
 
+def divideRatesPerRingplots(hlist, hlist2, path, fil, binToUse, plottingStuff, legends):
+    chambTag = ["MB1", "MB2", "MB3", "MB4"]
+    wheelTag = [ "Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
+    
+    #leg = r.TLegend(plottingStuff['legxlow'], plottingStuff['legylow'], plottingStuff['legxhigh'], plottingStuff['legyhigh'])
+    hlist.SetStats(False)
+    #hlist[0].SetTitle("L1 DT Phase 2 algorithm efficiency comparison")
+    #hlist[0].GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'][fil][binToUse-1], 1E7)
+    hlist.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'][fil][binToUse-1], 3.5)
+    #hlist.GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'][fil][binToUse-1], 1)
+    hlist.GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
+    #hlis[0].GetYaxis().SetMaxDigits(2)
+    hlist.GetXaxis().SetTitle(plottingStuff['xaxistitle'])
+    hlist.GetXaxis().SetNdivisions(120)
+    
+    c   = r.TCanvas("c", "c", 800, 800)
+    c.SetLeftMargin(0.11)
+    c.SetGrid()
+
+    hratio = []
+   # for iplot in rage(len(hlisVt)):
+    for iplot in range(1) :
+     #   for ich in range(4):
+     #       for iwh in range(-2, 3):
+     #           print (str(hlist.GetBinContent( iwh + 2 + 1 + 5 * ich )) + " , " + str(hlist2.GetBinContent( iwh + 2 + 1 + 5 * ich )) )
+        
+        
+        hratio.append(hlist.Clone())
+        hratio[iplot].Divide(hlist2)
+        #leg.AddEntry(hratio[iplot], legends, "p")
+        #leg.AddEntry(hlist[iplot], legends[iplot], "p")
+        #hlist[iplot].Draw("p,hist,same")
+        hratio[iplot].SetMarkerSize(plottingStuff['markersize'])
+        hratio[iplot].SetMarkerStyle(20)
+        hratio[iplot].SetMarkerColor(r.kBlue)
+        hratio[iplot].Draw("p,hist" + (iplot != 0) * "same")
+        #hlist2[iplot].Draw("p,hist" + (iplot != 0) * "same")
+
+    ilabel = 1
+    
+    for ich in range(4):
+        for iwh in range(-2, 3):
+     #       print (hratio[0].GetBinContent( iwh + 2 + 1 + 5 * ich ) )
+            hratio[0].GetXaxis().ChangeLabel(ilabel, -1, -1, -1, -1, -1, (iwh > 0) * "+" + str(iwh))
+            ilabel += 1
+    #leg.Draw()
+
+    textlist = []
+    linelist = []
+    for ich in range(4):
+        textlist.append(r.TText(.17 + ich * 0.1975, 0.30, chambTag[ich]))
+        textlist[-1].SetNDC(True)
+        textlist[-1].Draw("same")
+        if ich != 3:
+            linelist.append(r.TLine(0.3075 + ich * 0.1975, 0.1, 0.3075 + ich * 0.1975, 0.9))
+            linelist[-1].SetNDC(True)
+            linelist[-1].Draw("same")
+
+    firsttex = r.TLatex()
+    firsttex.SetTextSize(0.03)
+    firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{       CMS} Phase-2 Simulation")
+    firsttex.Draw("same");
+
+    secondtext = r.TLatex()
+    toDisplay = r.TString()
+    if (lookForPU(fil) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(fil))  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
+    secondtext.SetTextSize(0.035)
+    secondtext.SetTextAlign(31)
+    secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
+    secondtext.Draw("same")
+    
+    r.TGaxis.SetMaxDigits(4)
+    r.gPad.Update()
+    c.Update()
+
+    savescaffold = 'hDividedRatio' 
+    c.SaveAs(path + "/" + savescaffold + str(binToUse+1) + ".png")
+    c.SaveAs(path + "/" + savescaffold + str(binToUse+1) + ".pdf")
+    c.SaveAs(path + "/" + savescaffold + str(binToUse+1) + ".root")
+    c.Close(); del c
+    return
 
 
 
