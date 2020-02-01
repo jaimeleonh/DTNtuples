@@ -4,7 +4,7 @@ markerColors = [
     r.kBlue, 
     r.kRed, 
     r.kGreen, 
+    r.kMagenta,
     r.kOrange, 
     r.kBlack, 
-    r.kMagenta
 ]
