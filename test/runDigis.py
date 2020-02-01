@@ -12,13 +12,17 @@ from markerColors import markerColors
 import argparse
 parser = argparse.ArgumentParser(description='Plotter options')
 parser.add_argument('-n','--ntuples', action='store_true', default = False)
+parser.add_argument('-c','--compiler', action='store_true', default = False)
 my_namespace = parser.parse_args()
 
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['norpc'].append('PU250_nu_bkg9') 
+#files['norpc'].append('PU200_mu_bkg7p5') 
+files['norpc'].append('pu200_noage_norpc') 
+files['norpc'].append('nopu_noage_norpc') 
+#files['norpc'].append('PU250_nu_bkg9') 
 #files['norpc'].append('PU200_bkgHits') 
 
 #qualities = ['']
@@ -28,7 +32,7 @@ qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if my_namespace.ntuples == True : 
+if my_namespace.compiler == True : 
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Digis.C")
@@ -82,4 +86,11 @@ for cat in files :
       time.sleep(2) 
       analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_digis_' +fil + '_.root')
       analysis.Loop()
-   
+     
+    c   = r.TCanvas("c", "c", 1200, 800)
+    res = r.TFile.Open(  outputPath + 'results_digis_' +fil + '_.root' )
+    plot = res.Get("DigiDistr")
+    plot.Draw()
+    c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".png")
+    c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".pdf")
+    c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".root")

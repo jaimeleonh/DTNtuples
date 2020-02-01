@@ -86,6 +86,8 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> slTags   = { "Sl1", "Sl2", "Sl3"};
   std::vector<std::string> layerTags = { "La1", "La2", "La3", "La4"};
 
+  m_plots["DigiDistr"] = new TH1F("DigiDistr", "Distribution of phi Hits; Number of phi hits; ", 61 ,-0.5, 60.5 );
+
   for (const auto & chambTag : chambTags){
     m_plots2["hits" + chambTag] = new TH2F(("hits_"  + chambTag).c_str(),
 									(" Number of hits in " + chambTag + "; Sector ; Wheel").c_str(),
@@ -130,6 +132,8 @@ void DTNtupleTPGSimAnalyzer::fill()
   std::vector<std::string> layerTags = { "La1", "La2", "La3", "La4"};
 
 
+      std::map <std::string, int> digis; 
+
       for (std::size_t iDigi = 0; iDigi < ph2Digi_nDigis; ++iDigi){
         auto mySector = ph2Digi_sector->at(iDigi); if (mySector==13) mySector=4; if (mySector==14) mySector=10;
         auto myWheel = ph2Digi_wheel->at(iDigi);
@@ -141,6 +145,16 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots2["hits" + chambTags.at(myStation-1)] -> Fill (mySector, myWheel);
         m_plots["hits" + whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)] -> Fill (0);
         m_plots["hits" + whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)+ slTags.at(mySuperlayer-1)+ layerTags.at(myLayer-1)] -> Fill (myWire);
+        if (mySuperlayer == 2) continue; 
+        if (digis[whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)]) {
+          digis[whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)]++;
+        } else {
+          digis[whTags.at(myWheel+2) + secTags.at(mySector-1) + chambTags.at(myStation-1)]=1;
+        }
+      }
+
+      for (auto & digi : digis) {
+        m_plots["DigiDistr"] -> Fill(digi.second);
       }
 
 }
