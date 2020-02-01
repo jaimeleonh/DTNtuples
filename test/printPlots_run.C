@@ -7,6 +7,8 @@
 #include "TCanvas.h"
 #include "TAxis.h"
 #include "TStyle.h"
+#include "TLegend.h"
+#include "TEfficiency.h"
 
 void printPlots_run(std::string run) {
 
@@ -132,8 +134,54 @@ void printPlots_run(std::string run) {
     if (fileOK) cout << nameHisto << ".png" << endl;
   }
  
+  std::vector <std::string> effCats = {"GoodBX","GoodBXCorr","GoodBXQ>2"};  
+  std::map <std::string, std::string> effLeg;
+  effLeg["GoodBX"] = "Every Quality"; 
+  effLeg["GoodBXCorr"] = "Correlated Only"; 
+  effLeg["GoodBXQ>2"] = "Quality > 2"; 
+  
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
+
+
+
+    if (true) {
+      
+      
+      TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
+      std::string cat = effCats[0];
+      std::string nameHisto = "hEffHWvsSegX" + cat + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->SetLineColor(2);
+      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
+      m_effs[name]->SetTitle("HW Eff in Good BX vs Seg X");
+      m_effs[name]->Draw();
+
+      cat = effCats[1];
+      nameHisto = "hEffHWvsSegX" + cat + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->SetLineColor(3);
+      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
+      m_effs[name]->Draw("same");
+
+      cat = effCats[2];
+      nameHisto = "hEffHWvsSegX" + cat + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->SetLineColor(4);
+      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
+      m_effs[name]->Draw("same");
+
+      nameHisto = "hEffHWvsSegXGoodBX" + chambTag;       
+      leg->Draw();
+      sprintf(name,"run%s/hEffHWvsSegXGoodBX/%s_combined.png",run.c_str(),nameHisto.c_str());
+      gPad->SaveAs(name);
+      if (fileOK) cout << nameHisto << ".png" << endl;
+    } 
+
+
 
     for (auto & generalPlot : generalEffPlots) {
       std::string nameHisto = generalPlot + chambTag;

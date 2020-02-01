@@ -153,8 +153,14 @@ void DTNtupleTPGSimAnalyzer::book()
       
       for (const auto & chambTag : chambTags) {
 	
+        m_effs["hEffHWvsSegXGoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBXCorr_"+ chambTag).c_str(),
+					    "HW Eff in Good BX vs Seg X - Correlated Only",
+					    50,-251.5,250.5); 
+        m_effs["hEffHWvsSegXGoodBXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBXQ>2_"+ chambTag).c_str(),
+					    "HW Eff in Good BX vs Seg X - Quality > 2",
+					    50,-251.5,250.5); 
         m_effs["hEffHWvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBX_"+ chambTag).c_str(),
-					    "HW Eff in Good BX vs Seg X",
+					    "HW Eff in Good BX vs Seg X - Every Quality",
 					    50,-251.5,250.5); 
         m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
 					    "AM Eff in Good BX vs Seg X",
@@ -564,9 +570,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -195; //FIXME
-     offset[1] = -199; //FIXME
-     offset[2] = -199; //FIXME
-     offset[3] = -199; //FIXME
+     offset[1] = -195; //FIXME
+     offset[2] = -195; //FIXME
+     offset[3] = -195; //FIXME
 
      int smallestOffset = 9999; 
      int biggestOffset = -9999; 
@@ -627,14 +633,14 @@ void DTNtupleTPGSimAnalyzer::fill()
       for (unsigned int i = 0; i<chambTags.size(); i++){
         for (unsigned int j = 0; j<quTags.size(); j++){
           bestTrigHW[i][j] = -1; 
-	  bestTimeHW[i][j] = 999999;
+	        bestTimeHW[i][j] = 999999;
         }
       }
       int bestQualTrigHW[4];int IbestQualTrigHW[4] ; // 4 stations MB1 to MB4 
       int bestQualTrigBXHW[4];int IbestQualTrigBXHW[4] ; // 4 stations MB1 to MB4 
       for(unsigned indstat=0;indstat<4; indstat++){
-	bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
-	bestQualTrigBXHW[indstat]=-1;IbestQualTrigBXHW[indstat]=-1;
+	      bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
+	      bestQualTrigBXHW[indstat]=-1;IbestQualTrigBXHW[indstat]=-1;
       }
      
       for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
@@ -1284,6 +1290,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
 	  m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
 	  m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
+	  m_effs["hEffHWvsSegXGoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegPos);
+	  m_effs["hEffHWvsSegXGoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegPos);
 	  m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
 	  m_effs["hEffTMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegPos);
 	}
