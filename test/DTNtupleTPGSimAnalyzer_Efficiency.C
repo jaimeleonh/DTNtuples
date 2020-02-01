@@ -56,16 +56,17 @@ void DTNtupleTPGSimAnalyzer::Loop()
   Long64_t nentries = fChain->GetEntries();
 
   Long64_t nbytes = 0, nb = 0;
+  //for (Long64_t jentry = 0; jentry < 100; jentry++)
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
     {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEvent(jentry);   nbytes += nb;
 
+      //cout << jentry << endl; 
       if(jentry % 100 == 0)
   std::cout << "[DTNtupleTPGSimAnalyzer::Loop] processed : "
       << jentry << " entries\r" << std::flush;
-
       fill();
     }
 
@@ -133,6 +134,9 @@ void DTNtupleTPGSimAnalyzer::book()
           m_plots["hEffvsSlope" + algo + chamb + wheel + total] = new TH1D(("hEff_" + wheel + "_" + chamb + "_" + algo + "_" + total ).c_str(),
                                                 ("Efficiency for " + wheel + " " + chamb + " " + algo + "; Local Direction; Efficiency").c_str(),
                                                 50, -50, 50);
+          m_plots["hEffvsLxy" + algo + chamb + wheel + total] = new TH1D(("hEffLxy_" + wheel + "_" + chamb + "_" + algo + "_" + total ).c_str(),
+                                                ("Efficiency for " + wheel + " " + chamb + " " + algo + "; Gen muon Lxy; Efficiency").c_str(),
+                                                50, 0, 310);
         }
       }
     }
@@ -342,11 +346,15 @@ void DTNtupleTPGSimAnalyzer::fill()
 
       if (bestTPAM > -1 && seg_phi_t0->at(iSeg) > -500)
       {
+        //cout << "Eficiente!" << endl; 
         m_plots["Eff_" + chambTag + "_AM_matched"]->Fill(segWh);
         m_plots["EffEta_" + chambTag + "_AM_matched"]->Fill(gen_eta->at(iGenPart));
         m_plots["hEffvsSlopeAM" + chambTag + whTag + "matched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsLxyAM" + chambTag + whTag + "matched"] -> Fill( gen_lxy->at(iGenPart) );
         m_plots["hEffvsSlopeAMmatched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         if (AMRPCflag > 0) m_plots["Eff_" + chambTag + "_AM+RPC_matched"]->Fill(segWh);
+      } else if (bestTPAM  < 0 && seg_phi_t0->at(iSeg) > -500) {
+      //  cout << "No eficiente " << endl; 
       }
       if (seg_phi_t0->at(iSeg) > -500)
       {
@@ -354,6 +362,7 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["EffEta_" + chambTag + "_AM_total"]->Fill(gen_eta->at(iGenPart));
         m_plots["hEffvsSlopeAM" + chambTag + whTag + "total"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         m_plots["hEffvsSlopeAMtotal"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
+        m_plots["hEffvsLxyAM" + chambTag + whTag + "total"] -> Fill( gen_lxy->at(iGenPart) );
         m_plots["Eff_" + chambTag + "_AM+RPC_total"]->Fill(segWh);
       }
 //       if (iSeg == 0)

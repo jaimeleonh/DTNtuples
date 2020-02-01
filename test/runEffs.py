@@ -14,16 +14,17 @@ from markerColors import markerColors
 import argparse
 parser = argparse.ArgumentParser(description='Plotter options')
 parser.add_argument('-n','--ntuples', action='store_true', default = False)
+parser.add_argument('-c','--compiler', action='store_true', default = False)
 my_namespace = parser.parse_args()
 ################################# CHANGE BEFORE RUNNING #######################################
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-#files['DM'].append('PU0_DM_PT10-30_mod_2')
-files['norpc'].append('nopu_noage_norpc')
-#files['norpc'].append('PU0_bkgHits')
-#files['norpc'].append('PU200_bkgHits')
-files['norpc'].append('pu200_noage_norpc')
+files['DM'].append('PU0_DM_PT10-30_mod_2')
+files['DM'].append('DM_NOPU_10-30')
+#files['norpc'].append('nopu_noage_norpc')
+#files['norpc'].append('PU200_mu_bkg7p5')
+#files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nopu_noage_norpc')
 #files['norpc'].append('PU200_range3')
 #files['norpc'].append('pu200_age_norpc_youngseg_muonage_norpcage_fail_3000')
@@ -68,10 +69,11 @@ qualities['DM'] = ['All']
 
 ##############################################################################################
 
-if my_namespace.ntuples == True :
+if my_namespace.compiler == True :
   print ("Starting ntuplizer for every sample in input")
   time.sleep(2)
   r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Effs.C")
+if my_namespace.ntuples == True : 
   gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
   gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Efficiency_C.so")
   from ROOT import DTNtupleTPGSimAnalyzer
@@ -244,8 +246,9 @@ for ch in chambTag :
           effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
         a+=1
 
-      print "\nCombining and saving\n"
-      effplot.combineEffPlots(listofplots, myLegends, plottingStuff2[key], effPath,  savescaffold+'_0' )
+      if (len (files['norpc']) > 0 ) :
+        print "\nCombining and saving\n"
+        effplot.combineEffPlots(listofplots, myLegends, plottingStuff2[key], effPath,  savescaffold+'_0' )
 
 
 filesPU = ['nopu_noage_norpc','pu200_noage_norpc']
@@ -257,10 +260,9 @@ for ch in chambTag :
       myLegends = []
       a = 0
       for fil in filesPU :
-        plotscaffold = "h" + plot + "_PU_" + ch +"_{al}_{ty}"
-        savescaffold = "h" + plot + "_PU_" + key + "_" + ch 
-
-        for i in range (len(Qualities[key])) :         
+        plotscaffold2 = "h" + plot + "_PU_" + ch +"_{al}_{ty}"
+        savescaffold2 = "h" + plot + "_PU_" + key + "_" + ch 
+        for i in range (len(Qualities[key])) :       
           if not os.path.isfile(outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root') :
             if not Qualities[key][i] in legends :
               print (bcolors.red + "ERROR: '" +  Qualities[key][i]  + "' is not one of the possible qualities" + bcolors.reset)
@@ -270,11 +272,12 @@ for ch in chambTag :
           myLegends.append(legends[Qualities[key][i]])
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
           plottingStuff2[key]['markercolordir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = markerColors[i]
-          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold)
+          effplot.makeWhateverResplot(listofplots, "AM", fil+Qualities[key][i], outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root', plotscaffold2)
         a+=1
 
-      print "\nCombining and saving\n"
-      effplot.combineEffPlots(listofplots, myLegends, plottingStuff2[key], effPath,  savescaffold+'_0' )
+      if (len(listofplots) > 0 ) :
+        print "\nCombining and saving\n"
+        effplot.combineEffPlots(listofplots, myLegends, plottingStuff2[key], effPath,  savescaffold2+'_0' )
 
 
 
@@ -287,8 +290,9 @@ whTags    = [ "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"]
 
 
 
-for File in filesDM : 
-  res = r.TFile.Open('./ntuples/results_effis_' + File + '.root')
+#for File in filesDM : 
+for File in files['DM'] : 
+  res = r.TFile.Open(outputPath + 'results_effis_' + File + '_All' + '.root')
   plottingStuff = { 'lowlimityaxis': 0,
  	            'highlimityaxis': 1,
 	            'markersize': 1,
@@ -303,32 +307,63 @@ for File in filesDM :
 	            'markercolordir':{'AM':r.kRed, 'HB':r.kBlue}  
    		    }   
 
-  #legendsDM = ['AM']
-  legendsDM = ['AM', 'HB']
+  legendsDM = ['AM']
+  #legendsDM = ['AM', 'HB']
   plotList = []
+  i = 0
   for algo in legendsDM :
-    h_matched2 = res.Get('hEff_'  + algo +  '_matched') 
-    h_total2 = res.Get('hEff_' + algo + '_total')
-    h_Eff2 = r.TEfficiency(h_matched2, h_total2) 
-    h_Eff2.SetMarkerColor(plottingStuff['markercolordir'][algo])
-    h_Eff2.SetLineColor(plottingStuff['markercolordir'][algo])
-    h_Eff2.SetMarkerSize(plottingStuff['markersize'])
-    plotList.append(h_Eff2)
-  effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope')
+    plotscaffold2 = "hEff_{al}_{ty}"
+    #h_matched2 = res.Get('hEff_'  + algo +  '_matched') 
+    #h_total2 = res.Get('hEff_' + algo + '_total')
+    #h_Eff2 = r.TEfficiency(h_matched2, h_total2) 
+    ##h_Eff2.SetMarkerColor(plottingStuff['markercolordir'][algo])
+    #h_Eff2.SetLineColor(plottingStuff['markercolordir'][algo])
+    #h_Eff2.SetMarkerSize(plottingStuff['markersize'])
+    #plotList.append(h_Eff2)
+    plottingStuff['markertypedir']["hEff_" + algo + "_" + File ] = 20
+    plottingStuff['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
+    i+=1
+    effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
+  effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + File)
   
   for ch in chambTags :
     for wh in whTags : 
       plotList = []
+      i=0
       for algo in legendsDM :
-        h_matched = res.Get('hEff_' + wh + "_" + ch + "_" + algo +  "_matched") 
-        h_total = res.Get('hEff_' + wh + "_" + ch + "_" + algo + "_total")
-        h_Eff = r.TEfficiency(h_matched, h_total) 
-      	#h_Eff.SetMarkerColor(plottingStuff['markercolordir'][algo])
-      	#h_Eff.SetLineColor(plottingStuff['markercolordir'][algo])
- 	      #h_Eff.SetMarkerSize(plottingStuff['markersize'])
-        plotList.append(h_Eff)
-      effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + wh + '_' + ch )
+        plotscaffold2 = "hEff_" + wh + "_" + ch + "_{al}_{ty}"
+        plottingStuff['markertypedir']["hEff_" + algo + "_" + File ] = 20
+        plottingStuff['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
+        i+=1
+        effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
+      effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + wh + '_' + ch + '_' + File )
 	 
+
+  plottingStuff2 = { 'lowlimityaxis': 0,
+ 	            'highlimityaxis': 1,
+	            'markersize': 1,
+	            'yaxistitle' : 'Efficiency (adim.)',
+	            'yaxistitleoffset': 1.5,
+	            'xaxistitle': "Gen Part Lxy",
+	            'legxlow' : 0.5,
+	            'legylow': 0.3,
+	            'legxhigh': 0.9,
+	            'legyhigh': 0.35,
+	            'markertypedir':{},
+	            'markercolordir':{'AM':r.kRed, 'HB':r.kBlue}  
+   		    }   
+  
+  for ch in chambTags :
+    for wh in whTags : 
+      plotList = []
+      i=0
+      for algo in legendsDM :
+        plotscaffold2 = "hEffLxy_" + wh + "_" + ch + "_{al}_{ty}"
+        plottingStuff2['markertypedir']["hEff_" + algo + "_" + File ] = 20
+        plottingStuff2['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
+        i+=1
+        effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
+      effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsLxy_' + wh + '_' + ch + "_" + File )
 
 
 #
