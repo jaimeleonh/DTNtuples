@@ -169,7 +169,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    "TM Eff in Good BX vs Seg X",
 					    50,-251.5,250.5); 
         m_effs["hEffHWvsSegX"+ chambTag] = new TEfficiency(("hEffHWvsSegX_"+ chambTag).c_str(),
-					    "HW Eff vs Seg X",
+					    "HW Eff in All BX vs Seg X - Every Quality",
+					    50,-251.5,250.5); 
+        m_effs["hEffHWvsSegXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegXCorr_"+ chambTag).c_str(),
+					    "HW Eff in All BX vs Seg X - Correlated Only",
+					    50,-251.5,250.5); 
+        m_effs["hEffHWvsSegXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegXQ>2_"+ chambTag).c_str(),
+					    "HW Eff in All BX vs Seg X - Quality > 2",
 					    50,-251.5,250.5); 
         m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
 					    "AM Eff vs Seg X",
@@ -1287,11 +1293,16 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
 
 	  m_effs["hEffHWvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegPos);
-	  m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
-	  m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
-	  m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
+	  m_effs["hEffHWvsSegXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegPos);
+	  m_effs["hEffHWvsSegXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegPos);
+	  
+    m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
 	  m_effs["hEffHWvsSegXGoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegPos);
 	  m_effs["hEffHWvsSegXGoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegPos);
+   
+    
+    m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
+	  m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
 	  m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
 	  m_effs["hEffTMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegPos);
 	}
