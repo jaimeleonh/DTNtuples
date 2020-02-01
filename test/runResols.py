@@ -13,6 +13,7 @@ from markerColors import markerColors
 import argparse
 parser = argparse.ArgumentParser(description='Plotter options')
 parser.add_argument('-n','--ntuples', action='store_true', default = False)
+parser.add_argument('-c','--compiler', action='store_true', default = False)
 parser.add_argument('-r','--redoPlots', action='store_true', default = False)
 my_namespace = parser.parse_args()
 
@@ -29,7 +30,7 @@ qualities['norpc'].append('3h')
 
 ##############################################################################################
 
-if my_namespace.ntuples == True: 
+if my_namespace.compiler == True: 
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Res_All.C")
