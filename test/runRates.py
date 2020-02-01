@@ -14,6 +14,7 @@ from allLegends import legends as Legends
 import argparse
 parser = argparse.ArgumentParser(description='Plotter options')
 parser.add_argument('-n','--ntuples', action='store_true', default = False)
+parser.add_argument('-c','--compiler', action='store_true', default = False)
 my_namespace = parser.parse_args()
 
 ################################# CHANGE BEFORE RUNNING #######################################
@@ -29,6 +30,8 @@ files = {'norpc':[], 'rpc':[], 'DM':[]}
 
 #files['norpc'].append('PU200_nu_bkg7p5') 
 files['norpc'].append('PU250_nu_bkg9') 
+#files['norpc'].append('PU200_nu_bkg7p5') 
+files['norpc'].append('nu_pu250_noage_norpc')
 #files['norpc'].append('PU0_bkgHits')
 #files['norpc'].append('PU200_bkgHits')
 #files['rpc'].append('pu200_age_withrpc_youngseg_muonage_norpcage_fail_3000')
@@ -47,7 +50,8 @@ for i in range(len(totalQualities)) :
 legends = ['AM'] #FIXME if more than 1 algo is used (as a lot more stuff)
 
 qualities = {}
-qualities['norpc'] = ["GoodBX","GoodBX+qu>=3","GoodBX+index0", "GoodBX+index01","GoodBX+index012","GoodBX+index0123"]
+qualities['norpc'] = ["GoodBX","GoodBX+qu>=3"]
+#qualities['norpc'] = ["GoodBX","GoodBX+qu>=3","GoodBX+index0", "GoodBX+index01","GoodBX+index012","GoodBX+index0123"]
 qualities['rpc'] = ["GoodBX","GoodBX+qu>=3","GoodBX+matchedqu<3", "GoodBX+qu>=3+RPCseg", "GodBX+qu>=3+RPCseg+clus","GoodBX+matchedqu<3+RPCseg", "GoodBX+matchedqu<3+RPCseg+clus"]
 
 
@@ -60,7 +64,7 @@ plottingStuff = { 'lowlimityaxis' : 0,
 	          'legxlow' : 0.3075 + 2 * 0.1975,
 	          'legylow': 0.4,
 	          'legxhigh': 0.9,
-	          'legyhigh': 0.5,
+	          'legyhigh': 0.55,
 	          'markertypedir':{},
 	          'markercolordir':{}, 
 	          'highLimitYAxis_perSector':{},  
@@ -84,10 +88,10 @@ plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_norpc'] = 200E6;
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_withrpc'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
-plottingStuff['highLimitYAxis_perSector']['PU0_bkgHits'] = 250E6;  
-plottingStuff['highLimitYAxis_perSector']['PU200_bkgHits'] = 250E6;  
-plottingStuff['highLimitYAxis_perSector']['PU200_nu_bkg7p5'] = 250E6;  
-plottingStuff['highLimitYAxis_perSector']['PU250_nu_bkg9'] = 250E6;  
+plottingStuff['highLimitYAxis_perSector']['PU0_bkgHits'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['PU200_bkgHits'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['PU200_nu_bkg7p5'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['PU250_nu_bkg9'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nopu_noage_norpc'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['pu200_noage_norpc'] = 200E6;  
 
@@ -129,7 +133,7 @@ plottingStuffRat['lowlimityaxis']['pu200_noage_norpc'] = [0,0,0,0,0]
 
 ##############################################################################################
 
-if my_namespace.ntuples == True :
+if my_namespace.compiler == True :
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Rates.C")
@@ -146,6 +150,7 @@ ratePath = "./plotsRates/"
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'
 plotscaffold = { "rates": "ratePrims_{al}_{wh}_{se}_{st}", "bandwidths": "bandwidth_{al}_{wh}_{se}_{st}" }
 savescaffold = { "rates": "hRates", "bandwidths": "hBandwidths" }
+savescaffoldTot = { "rates": "hRatesTot", "bandwidths": "hBandwidthsTot" }
 #markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 
 if not os.path.isdir(ratePath) : rc = call('mkdir ' + ratePath, shell=True)
@@ -210,22 +215,28 @@ for cat in files :
 
   for plot in ['rates']: 
     listofplots2 = {}     
+    listofplots3 = []    
+    myLegends2 = []    
     for i in range (len(qualities[cat])) : 
       listofplots2[i] = []     
       num=0
       myLegends = []
       for fil in files[cat] :
         myLegends.append(Legends[fil])
+        myLegends2.append(Legends[fil+qualities[cat][i]])
         plottingStuff['markertypedir']["h_" + "AM" + "_" + fil] = 20
-        plottingStuff['markercolordir']["h_" + "AM" + "_" + fil] = markerColors[num]
+        plottingStuff['markercolordir'][num] = markerColors[num]
         num+=1
         effplot.makeRatesPerRingplot(listofplots2[i], "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+        effplot.makeRatesPerRingplot(listofplots3, "AM", fil, outputPath + 'results_rates_' + fil + '.root', qualities_dict[qualities[cat][i]], plotscaffold[plot])
+      if len(files[cat]) == 2 : effplot.divideRatesPerRingplots(listofplots2[i][0], listofplots2[i][1], ratePath + cat, fil, i, plottingStuffRat, myLegends)
       effplot.combineRatesPerRingplots(listofplots2[i], i, myLegends, plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
       #effplot.combineRatesPerRingplots(listofplots2[i], i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
       effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, myLegends)
       #effplot.combineRateRatiosPerRingplots(listofplots2[i], listofplots2[0], ratePath + cat, fil, i, plottingStuffRat, ['No aging','Aging 3000fb^{-1}'])
-
-
+    
+    effplot.combineRatesPerRingplots(listofplots3, 0, myLegends2, plot, plottingStuff, ratePath + cat, fil,  savescaffoldTot[plot] )
+      #effplot.combineRatesPerRingplots(listofplots2[i], i, ['No aging','Aging 3000fb^{-1}'], plot, plottingStuff, ratePath + cat, fil,  savescaffold[plot] )
 
 
 
