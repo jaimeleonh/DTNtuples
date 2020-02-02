@@ -26,6 +26,10 @@ public:
   DTNtupleTPGSimAnalyzer(const TString & inFileName,
                          const TString & outFileName,
                          const TString & quality);
+  DTNtupleTPGSimAnalyzer(const TString & inFileName,
+                         const TString & outFileName,
+                         const TString & quality,
+                         const bool & DM);
   ~DTNtupleTPGSimAnalyzer();
 
   void virtual Loop() override;
@@ -41,6 +45,7 @@ private:
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
  
   TString quality_; 
+  bool DM_; 
   TFile m_outFile;
   
   std::map<std::string, TH1*> m_plots;

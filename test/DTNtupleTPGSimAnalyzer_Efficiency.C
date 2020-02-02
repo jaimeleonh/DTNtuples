@@ -16,9 +16,10 @@
 
 DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
                                                const TString & outFileName,
-                    					       const TString & quality = ""
+                               					       const TString & quality = "",
+                               					       const bool    & DM = false
 					       ):
-  m_outFile(outFileName,"RECREATE"), DTNtupleBaseAnalyzer(inFileName), quality_(quality)
+  m_outFile(outFileName,"RECREATE"), DTNtupleBaseAnalyzer(inFileName), quality_(quality), DM_(DM)
 {
 
   m_minMuPt = 20;
@@ -119,6 +120,12 @@ void DTNtupleTPGSimAnalyzer::book()
     m_plots["hEffvsSlope" + algo + "total"] = new TH1D(("hEff_" + algo + "_total" ).c_str(),
                                                 ("Efficiency for "  + algo + "; Local Direction; Efficiency").c_str(),
                                                 50, -50, 50);
+    m_plots["hEffvsLxy" + algo + "matched"] = new TH1D(("hEffLxy_" + algo + "_matched" ).c_str(),
+                                                ("Efficiency for " + algo + "; Gen muon Lxy; Efficiency").c_str(),
+                                                50, 0, 310);
+    m_plots["hEffvsLxy" + algo + "total"] = new TH1D(("hEffLxy_" + algo + "_total" ).c_str(),
+                                                ("Efficiency for "  + algo + "; Gen muon Lxy; Efficiency").c_str(),
+                                                50, 0, 310);
     for (const auto & chamb : chambTag)
     {
       for (const auto & total : totalTag)
@@ -350,7 +357,8 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["Eff_" + chambTag + "_AM_matched"]->Fill(segWh);
         m_plots["EffEta_" + chambTag + "_AM_matched"]->Fill(gen_eta->at(iGenPart));
         m_plots["hEffvsSlopeAM" + chambTag + whTag + "matched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
-        m_plots["hEffvsLxyAM" + chambTag + whTag + "matched"] -> Fill( gen_lxy->at(iGenPart) );
+        if (DM_) m_plots["hEffvsLxyAM" + chambTag + whTag + "matched"] -> Fill( gen_lxy->at(iGenPart) );
+        if (DM_) m_plots["hEffvsLxyAMmatched"] -> Fill( gen_lxy->at(iGenPart) );
         m_plots["hEffvsSlopeAMmatched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         if (AMRPCflag > 0) m_plots["Eff_" + chambTag + "_AM+RPC_matched"]->Fill(segWh);
       } else if (bestTPAM  < 0 && seg_phi_t0->at(iSeg) > -500) {
@@ -362,7 +370,8 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["EffEta_" + chambTag + "_AM_total"]->Fill(gen_eta->at(iGenPart));
         m_plots["hEffvsSlopeAM" + chambTag + whTag + "total"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         m_plots["hEffvsSlopeAMtotal"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
-        m_plots["hEffvsLxyAM" + chambTag + whTag + "total"] -> Fill( gen_lxy->at(iGenPart) );
+        if (DM_) m_plots["hEffvsLxyAM" + chambTag + whTag + "total"] -> Fill( gen_lxy->at(iGenPart) );
+        if (DM_) m_plots["hEffvsLxyAMtotal"] -> Fill( gen_lxy->at(iGenPart) );
         m_plots["Eff_" + chambTag + "_AM+RPC_total"]->Fill(segWh);
       }
 //       if (iSeg == 0)
