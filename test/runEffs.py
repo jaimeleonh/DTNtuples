@@ -22,7 +22,7 @@ categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
 files['DM'].append('PU0_DM_PT10-30_mod_2')
 files['DM'].append('DM_NOPU_10-30')
-#files['norpc'].append('nopu_noage_norpc')
+files['norpc'].append('nopu_noage_norpc')
 #files['norpc'].append('PU200_mu_bkg7p5')
 #files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nopu_noage_norpc')
@@ -58,13 +58,14 @@ possibleQualities = ['All','correlated', 'legacy', 'index0', 'index01', 'index01
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
 #qualities['norpc'] = ['A']
-qualities['norpc'] = ['All','nothreehits','correlated','legacy']
+#qualities['norpc'] = ['All','nothreehits','correlated','legacy']
 #qualities['norpc'] = ['All']
-#qualities['norpc'] = ['','nothreehits']
+qualities['norpc'] = ['All','nothreehits']
 #qualities['norpc'] = ['legacy']
 #qualities['rpc'] = ['qualityMatchedORSegs','qualityMatchedORSegsClus']
 qualities['rpc'] = ['All','nothreehits', 'withmatchedthreehits' ,'qualityORSegs','qualityORSegsClus','qualityMatchedORSegs','qualityMatchedORSegsClus']
-qualities['DM'] = ['All']
+qualities['DM'] = ['All','nothreehits']
+#qualities['DM'] = ['All']
 
 
 ##############################################################################################
@@ -88,7 +89,10 @@ outputPath = '/eos/home-j/jleonhol/ntuplesResults/'
 
 if not os.path.isdir(effPath) : rc = call('mkdir ' + effPath, shell=True)
 
-for cat in files :  
+for cat in files : 
+  if cat == 'DM' : DM = True
+  else : DM = False
+  
   for fil in files[cat] :
     if my_namespace.ntuples == True :    
       for quality in qualities[cat] :
@@ -97,14 +101,14 @@ for cat in files :
           #print (  '\033[1;31m\033[91m' + 'ERROR: quality category not possible. It will not get considered in the ntuple production' + '\033[0m')
           print (  bcolors.red + 'ERROR: quality category does not exist. It will not get considered in the ntuple production' + bcolors.reset)
           continue
-        time.sleep(2) 
-        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality)
+        time.sleep(2)
+        analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality, DM)
         analysis.Loop()
    
 
-    plottingStuff = { 'lowlimityaxis': 0.7,
-		      'highlimityaxis': 1,
-		      'markersize': 1,
+    plottingStuff = { 'lowlimityaxis': 0.8,
+		      'highlimityaxis': 1.01,
+		      'markersize': 0.7,
 		      'yaxistitle' : 'Efficiency (adim.)',
 		      'yaxistitleoffset': 1.5,
 		      'xaxistitle': "Wheel",
@@ -135,7 +139,7 @@ for cat in files :
           continue 
         myLegends.append(legends[qualities[cat][i]])
         plottingStuff['markertypedir']["hEff_" + "AM" + "_" + qualities[cat][i]] = 20
-        plottingStuff['markercolordir']["hEff_" + "AM" + "_" + qualities[cat][i]] = i+1
+        plottingStuff['markercolordir']["hEff_" + "AM" + "_" + qualities[cat][i]] = markerColors[i]
         effplot.makeresplot(listofplots, "AM", qualities[cat][i], outputPath + 'results_effis_' + fil + '_' + qualities[cat][i] + '.root', plotscaffold)
 
 
@@ -311,21 +315,16 @@ for File in files['DM'] :
   #legendsDM = ['AM', 'HB']
   plotList = []
   i = 0
+  # FULL DETECTOR
   for algo in legendsDM :
     plotscaffold2 = "hEff_{al}_{ty}"
-    #h_matched2 = res.Get('hEff_'  + algo +  '_matched') 
-    #h_total2 = res.Get('hEff_' + algo + '_total')
-    #h_Eff2 = r.TEfficiency(h_matched2, h_total2) 
-    ##h_Eff2.SetMarkerColor(plottingStuff['markercolordir'][algo])
-    #h_Eff2.SetLineColor(plottingStuff['markercolordir'][algo])
-    #h_Eff2.SetMarkerSize(plottingStuff['markersize'])
-    #plotList.append(h_Eff2)
     plottingStuff['markertypedir']["hEff_" + algo + "_" + File ] = 20
     plottingStuff['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
     i+=1
     effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
   effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + File)
   
+  #PER WHEEL AND STATION
   for ch in chambTags :
     for wh in whTags : 
       plotList = []
@@ -353,6 +352,18 @@ for File in files['DM'] :
 	            'markercolordir':{'AM':r.kRed, 'HB':r.kBlue}  
    		    }   
   
+  # FULL DETECTOR
+  plotList = []
+  i = 0
+  for algo in legendsDM :
+    plotscaffold2 = "hEffLxy_{al}_{ty}"
+    plottingStuff2['markertypedir']["hEff_" + algo + "_" + File ] = 20
+    plottingStuff2['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
+    i+=1
+    effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
+  effplot.combineEffPlots(plotList, legendsDM, plottingStuff2, DMPath, 'hEffVsLxy_' + File)
+  
+  #PER WHEEL AND STATION
   for ch in chambTags :
     for wh in whTags : 
       plotList = []
@@ -363,7 +374,7 @@ for File in files['DM'] :
         plottingStuff2['markercolordir']["hEff_" + algo + "_" + File ] = markerColors[i]
         i+=1
         effplot.makeWhateverResplot(plotList, algo, File, outputPath + 'results_effis_' + File + '_All'  + '.root', plotscaffold2)
-      effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsLxy_' + wh + '_' + ch + "_" + File )
+      effplot.combineEffPlots(plotList, legendsDM, plottingStuff2, DMPath, 'hEffVsLxy_' + wh + '_' + ch + "_" + File )
 
 
 #
