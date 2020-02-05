@@ -109,10 +109,14 @@ void DTNtupleTPGSimAnalyzer::book()
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
  
-  int nbinPosEmuFW = 101; double minPosEmuFW = 0.01 * (0.5 + nbinPosEmuFW / 2); 
+  int nbinPosEmuFW = 101; double minPosEmuFW = 0.005 * (0.5 + nbinPosEmuFW / 2); 
   int nbinPsiEmuFW = 101; double minPsiEmuFW = 0.01 * (0.5 + nbinPsiEmuFW / 2); 
   int nbinTimeEmuFW = 101; double minTimeEmuFW = 1 * (0.5 + nbinTimeEmuFW / 2); 
 
+  int nbinPosSegFW = 101; double minPosSegFW = 0.005 * (0.5 + nbinPosSegFW / 2); 
+  int nbinPsiSegFW = 101; double minPsiSegFW = 0.01 * (0.5 + nbinPsiSegFW / 2); 
+  int nbinTimeSegFW = 101; double minTimeSegFW = 1 * (0.5 + nbinTimeSegFW / 2); 
+  
   int nbinPhiTM = 1001; double minPhiTM = 1600;  
   int nbinPhiFW = 1001; double minPhiFW = 30000; 
   int nbinPhiBTM = 1001; double minPhiBTM = 600;  
@@ -153,6 +157,7 @@ void DTNtupleTPGSimAnalyzer::book()
       
       for (const auto & chambTag : chambTags) {
 	
+        // EFFICIENCIES
         m_effs["hEffHWvsSegXGoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBXCorr_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X - Correlated Only",
 					    50,-251.5,250.5); 
@@ -162,12 +167,16 @@ void DTNtupleTPGSimAnalyzer::book()
         m_effs["hEffHWvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBX_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X - Every Quality",
 					    50,-251.5,250.5); 
-        m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
-					    "AM Eff in Good BX vs Seg X",
-					    50,-251.5,250.5); 
-        m_effs["hEffTMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegXGoodBX_"+ chambTag).c_str(),
-					    "TM Eff in Good BX vs Seg X",
-					    50,-251.5,250.5); 
+        m_effs["hEffHWvsSegT0GoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegT0GoodBXCorr_"+ chambTag).c_str(),
+					    "HW Eff in Good BX vs Seg T0 - Correlated Only",
+					    201,-100.5,100.5); 
+        m_effs["hEffHWvsSegT0GoodBXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegT0GoodBXQ>2_"+ chambTag).c_str(),
+					    "HW Eff in Good BX vs Seg T0 - Quality > 2",
+					    201,-100.5,100.5); 
+        m_effs["hEffHWvsSegT0GoodBX"+ chambTag] = new TEfficiency(("hEffHWvsSegT0GoodBX_"+ chambTag).c_str(),
+					    "HW Eff in Good BX vs Seg T0 - Every Quality",
+					    201,-100.5,100.5); 
+     
         m_effs["hEffHWvsSegX"+ chambTag] = new TEfficiency(("hEffHWvsSegX_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg X - Every Quality",
 					    50,-251.5,250.5); 
@@ -177,12 +186,43 @@ void DTNtupleTPGSimAnalyzer::book()
         m_effs["hEffHWvsSegXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegXQ>2_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg X - Quality > 2",
 					    50,-251.5,250.5); 
+        m_effs["hEffHWvsSegT0"+ chambTag] = new TEfficiency(("hEffHWvsSegT0_"+ chambTag).c_str(),
+					    "HW Eff in All BX vs Seg T0 - Every Quality",
+					    201,-100.5,100.5); 
+        m_effs["hEffHWvsSegT0Corr"+ chambTag] = new TEfficiency(("hEffHWvsSegT0Corr_"+ chambTag).c_str(),
+					    "HW Eff in All BX vs Seg T0 - Correlated Only",
+					    201,-100.5,100.5); 
+        m_effs["hEffHWvsSegT0Q>2"+ chambTag] = new TEfficiency(("hEffHWvsSegT0Q>2_"+ chambTag).c_str(),
+					    "HW Eff in All BX vs Seg T0 - Quality > 2",
+					    201,-100.5,100.5); 
+    
+        m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
+					    "AM Eff in Good BX vs Seg X",
+					    50,-251.5,250.5); 
         m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
 					    "AM Eff vs Seg X",
 					    50,-251.5,250.5); 
+        m_effs["hEffAMvsSegT0GoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegT0GoodBX_"+ chambTag).c_str(),
+					    "AM Eff in Good BX vs Seg X",
+					    201,-100.5,100.5); 
+        m_effs["hEffAMvsSegT0"+ chambTag] = new TEfficiency(("hEffAMvsSegT0_"+ chambTag).c_str(),
+					    "AM Eff vs Seg X",
+					    201,-100.5,100.5); 
+        
         m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
 					    "TM Eff vs Seg X",
 					    50,-251.5,250.5);
+        m_effs["hEffTMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegXGoodBX_"+ chambTag).c_str(),
+					    "TM Eff in Good BX vs Seg X",
+					    50,-251.5,250.5); 
+        m_effs["hEffTMvsSegT0"+ chambTag] = new TEfficiency(("hEffTMvsSegT0_"+ chambTag).c_str(),
+					    "TM Eff vs Seg X",
+					    201,-100.5,100.5); 
+        m_effs["hEffTMvsSegT0GoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegT0GoodBX_"+ chambTag).c_str(),
+					    "TM Eff in Good BX vs Seg X",
+					    201,-100.5,100.5); 
+ 
+        //QUALITY DISTRIBUTIONS
         m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
 					    "Distribution of HW qualities; HW Qualities; Entries",
 					    9,0.5,9.5); 
@@ -198,6 +238,7 @@ void DTNtupleTPGSimAnalyzer::book()
         m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
 					    "Distribution of Quality vs BX for Emul; Emul Primitive Quality; Emul Primitive BX - Offset",
 					    9,0.5,9.5,21,-10.5,10.5); 
+       
         m_plots["hBXTM"+chambTag] = new TH1F(("hBXTM_" +chambTag).c_str(),
 					    "Distribution of BX Twinmux; BX Twinmux; Entries",
 					    21,-10.5,10.5); 
@@ -339,7 +380,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
           m_plots["hPos"+ chambTag + labelTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
-					    nbinPosEmuFW,-minTimeEmuFW,minTimeEmuFW); 
+					    nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
           m_plots2["hPsi2DSeg" + chambTag + labelTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag).c_str(),
 					    "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
 					    160,-80,80,160,-80,80); 
@@ -364,13 +405,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
           m_plots["hPsiSeg"+ chambTag + labelTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
-					    40,-2,2); 
+					    nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
           m_plots["hTimeSeg"+ chambTag + labelTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Segment time; Firmware - Segment time (ns); Entries",
-					    200,-100,100); 
+					    nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
           m_plots["hPosSeg"+ chambTag + labelTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Segment position; Firmware - Segment position (cm); Entries",
-					    100,-10,10); 
+					    nbinPosSegFW,-minPosSegFW,minPosSegFW); 
           m_plots2["hTimeSegvsPos"+ chambTag + labelTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+labelTag).c_str(),
 					    "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
 					    600,-300,300,200,-100,100); 
@@ -437,7 +478,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
             m_plots["hPos"+ chambTag + labelTag + slTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
-					    nbinPosEmuFW,-minTimeEmuFW,minTimeEmuFW); 
+					    nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
             m_plots2["hPsi2DSeg" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
 					    "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
 					    160,-80,80,160,-80,80); 
@@ -449,13 +490,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    600,-300,300,600,-300,300); 
             m_plots["hPsiSeg"+ chambTag + labelTag + slTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
-					    40,-2,2); 
+					    nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
             m_plots["hTimeSeg"+ chambTag + labelTag + slTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Segment time; Firmware - Segment time (ns); Entries",
-					    200,-100,100); 
+					    nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
             m_plots["hPosSeg"+ chambTag + labelTag + slTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Segment position; Firmware - Segment position (cm); Entries",
-					    100,-10,10); 
+					    nbinPosSegFW,-minPosSegFW,minPosSegFW); 
             m_plots2["hTimeSegvsPos"+ chambTag + labelTag + slTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
 					    "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
 					    600,-300,300,200,-100,100); 
@@ -535,13 +576,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
           m_plots["hPsiSeg"+ chambTag + quTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
-					    40,-2,2); 
+					    nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
           m_plots["hTimeSeg"+ chambTag + quTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Segment time; Firmware - Segment time (ns); Entries",
-					    200,-100,100); 
+					    nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
           m_plots["hPosSeg"+ chambTag + quTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Segment position; Firmware - Segment position (cm); Entries",
-					    100,-10,10); 
+					    nbinPosSegFW,-minPosSegFW,minPosSegFW); 
           m_plots2["hTimeSegvsPos"+ chambTag + quTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+quTag).c_str(),
 					    "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
 					    600,-300,300,200,-100,100); 
@@ -576,9 +617,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
      offset[0] = -195; //FIXME
-     offset[1] = -195; //FIXME
-     offset[2] = -195; //FIXME
-     offset[3] = -195; //FIXME
+     offset[1] = -199; //FIXME
+     offset[2] = -199; //FIXME
+     offset[3] = -200; //FIXME
 
      int smallestOffset = 9999; 
      int biggestOffset = -9999; 
@@ -1295,16 +1336,27 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	  m_effs["hEffHWvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegPos);
 	  m_effs["hEffHWvsSegXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegPos);
 	  m_effs["hEffHWvsSegXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegPos);
+	  m_effs["hEffHWvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegt0);
+	  m_effs["hEffHWvsSegT0Corr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegt0);
+	  m_effs["hEffHWvsSegT0Q>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegt0);
 	  
     m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
 	  m_effs["hEffHWvsSegXGoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegPos);
 	  m_effs["hEffHWvsSegXGoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegPos);
+    m_effs["hEffHWvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegt0);
+	  m_effs["hEffHWvsSegT0GoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegt0);
+	  m_effs["hEffHWvsSegT0GoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegt0);
    
     
     m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
-	  m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
-	  m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
+    m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
+    m_effs["hEffAMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegt0);
+    m_effs["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegt0);
+
+    m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
 	  m_effs["hEffTMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegPos);
+    m_effs["hEffTMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegt0);
+	  m_effs["hEffTMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegt0);
 	}
 	
 	for (unsigned int i = 0; i<chambTags.size(); i++){
@@ -1336,9 +1388,9 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	      m_plots2["hPos2DSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos);
 	      m_plots["hPsiSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
 	      m_plots["hTimeSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset[i]*25 - mySegt0);
-   	      m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
-              m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
-              m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
+   	    m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
+        m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
+        m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
 
 	      if (j == 2 || j == 3 || j == 4) {
 	      //if (j+1 == 6 || j+1 == 8 || j+1 == 9) {

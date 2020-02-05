@@ -15,6 +15,7 @@ void printPlots_run(std::string run) {
   const bool fileOK = false; 
 
   //setTDRStyle(); 
+  //gStyle->SetOptStat(0);
   gStyle->SetOptStat(1111111);
   std::vector<std::string> stuffTags = { "Time", "Pos", "Psi"};
 
@@ -45,8 +46,14 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> categories {"perGroup","perQuality"}; 
 
-  std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX","hEffHWvsSegXGoodBX", "hEffTMvsSegXGoodBX", "hEffAMvsSegXGoodBX"}; 
-  //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX", "hEffCorAM", "hEffCor"}; 
+  std::vector <std::string> generalEffPlots {"hEffHW", "hEffTM", "hEffAM"}; 
+  //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX","hEffHWvsSegXGoodBX", "hEffTMvsSegXGoodBX", "hEffAMvsSegXGoodBX"}; 
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0"};  
+  std::vector <std::string> effWhichBX = {"","GoodBX"};  
+  
+  
+  
+  
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "Offset"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM"};
@@ -139,23 +146,66 @@ void printPlots_run(std::string run) {
   effLeg[""] = "Every Quality"; 
   effLeg["Corr"] = "Correlated Only"; 
   effLeg["Q>2"] = "Quality > 2"; 
+  effLeg["hEffHWvsSegX"] = "All BX"; 
+  effLeg["hEffHWvsSegXGoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsSegT0"] = "All BX"; 
+  effLeg["hEffHWvsSegT0GoodBX"] = "Good BX"; 
   
   
-  std::vector <std::string> effHWCats = {"hEffHWvsSegX","hEffHWvsSegXGoodBX"};  
+  
   std::map <std::string, std::string> effHWCatsTitles; 
   effHWCatsTitles["hEffHWvsSegX"] = "HW Eff in All BX vs Seg X"; 
   effHWCatsTitles["hEffHWvsSegXGoodBX"] = "HW Eff in Good BX vs Seg X"; 
+  effHWCatsTitles["hEffHWvsSegXCombi"] = "; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegT0"] = "HW Eff in All BX vs Seg t0"; 
+  effHWCatsTitles["hEffHWvsSegT0GoodBX"] = "HW Eff in Good BX vs Seg t0"; 
+  effHWCatsTitles["hEffHWvsSegT0Combi"] = "; Segment t0 (ns); Efficiency (adim)"; 
 
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
 
+    for (auto & what : effvsWhat) { 
+      
+      std::string cat = effCats[0];
+      
+      std::string HWCat = "hEffHW" + what + effWhichBX[0]; // All BX 
+      TLegend *leg = new TLegend(0.3,0.3,0.5,0.5);
+      std::string nameHisto = HWCat + cat + chambTag;
+      cout << nameHisto << endl; 
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->SetLineColor(2);
+      leg->AddEntry(m_effs[name], effLeg[HWCat].c_str(),"l" );
+      m_effs[name]->SetTitle(( effHWCatsTitles[HWCat + what + "Combi"]).c_str());
+      m_effs[name]->Draw();
+      gPad->Update();
+      auto graph =  m_effs[name]->GetPaintedGraph(); 
+      graph->SetMinimum(0);
+      graph->SetMaximum(1.2);
+      gPad->Update();
+
+      HWCat = "hEffHW" + what + effWhichBX[1]; // Good BX
+      nameHisto = HWCat + cat + chambTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_effs[name] = (TEfficiency*) data1.Get(name);
+      m_effs[name]->SetLineColor(3);
+      leg->AddEntry(m_effs[name], effLeg[HWCat].c_str(),"l" );
+      m_effs[name]->Draw("same");
+
+      nameHisto = "hEffHW" + what + chambTag;       
+      leg->Draw();
+      sprintf(name,"run%s/hEffHW/%s_AllvsGood.png",run.c_str(),nameHisto.c_str());
+      gPad->SaveAs(name);
+      if (fileOK) cout << nameHisto << ".png" << endl;
+    } 
 
 
-    for (auto & HWCat : effHWCats){
+    for (auto & what : effvsWhat) { 
+      for (auto & HWCat : effWhichBX){
             
       TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
       std::string cat = effCats[0];
-      std::string nameHisto = HWCat + cat + chambTag;
+      std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       m_effs[name] = (TEfficiency*) data1.Get(name);
       m_effs[name]->SetLineColor(2);
@@ -169,7 +219,7 @@ void printPlots_run(std::string run) {
       gPad->Update();
 
       cat = effCats[1];
-      nameHisto = HWCat + cat + chambTag;
+      nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       m_effs[name] = (TEfficiency*) data1.Get(name);
       m_effs[name]->SetLineColor(3);
@@ -177,36 +227,45 @@ void printPlots_run(std::string run) {
       m_effs[name]->Draw("same");
 
       cat = effCats[2];
-      nameHisto = HWCat + cat + chambTag;
+      nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       m_effs[name] = (TEfficiency*) data1.Get(name);
       m_effs[name]->SetLineColor(4);
       leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
       m_effs[name]->Draw("same");
 
-      nameHisto = HWCat + chambTag;       
+      //nameHisto = HWCat + chambTag;       
+      nameHisto = "hEffHW" + what + HWCat + chambTag;
       leg->Draw();
-      sprintf(name,"run%s/%s/%s_combined.png",run.c_str(),HWCat.c_str(),nameHisto.c_str());
+      sprintf(name,"run%s/hEffHW/%s_combined.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
+    }
     } 
 
 
 
     for (auto & generalPlot : generalEffPlots) {
-      std::string nameHisto = generalPlot + chambTag;
-      sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
-      m_effs[name]->Draw();
-      gPad->Update();
-      auto graph =  m_effs[name]->GetPaintedGraph(); 
-      graph->SetMinimum(0);
-      graph->SetMaximum(1.2);
-      gPad->Update();
-      sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
-      gPad->SaveAs(name);
-      if (fileOK) cout << nameHisto << ".png" << endl;
-    } 
+      for (auto & what : effvsWhat){ 
+        for (auto & whichBX : effWhichBX){ 
+          std::string nameHisto = generalPlot + what + whichBX + chambTag;
+          sprintf(name,"%s",nameHisto.c_str());
+          m_effs[name] = (TEfficiency*) data1.Get(name);
+          m_effs[name]->Draw();
+          gPad->Update();
+          auto graph =  m_effs[name]->GetPaintedGraph(); 
+          graph->SetMinimum(0);
+          graph->SetMaximum(1.2);
+          gPad->Update();
+          sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
+          gPad->SaveAs(name);
+          if (fileOK) cout << nameHisto << ".png" << endl;
+        }
+      }
+    }
+
+
+
     for (auto & specificPlot : specific1DPlots) {
       std::string nameHisto = specificPlot + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
