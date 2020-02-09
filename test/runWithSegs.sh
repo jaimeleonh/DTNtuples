@@ -1,0 +1,3 @@
+cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=-1 runNumber=$2 tTrigFilePh2=/afs/cern.ch/user/j/jleonhol/offlineShift/DTSliceTestOfflineAnalysis/production/calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=/afs/cern.ch/user/j/jleonhol/offlineShift/DTSliceTestOfflineAnalysis/production/calib/t0_run$1.db
+#cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=-1 runNumber=$2 tTrigFilePh2=/afs/cern.ch/user/j/jleonhol/offlineShift/DTSliceTestOfflineAnalysis/production/calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=/afs/cern.ch/user/j/jleonhol/offlineShift/DTSliceTestOfflineAnalysis/production/calib/t0_run$1.db correctL1A=True
+

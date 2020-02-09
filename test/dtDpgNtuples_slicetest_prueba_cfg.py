@@ -74,13 +74,15 @@ options.register('t0File',
                  "File with customised DT t0is, used only if non ''")
 
 options.register('tTrigFilePh2',
-                 '/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/calib/ttrig_phase2_Run333369.db', #default value
+                 '', #default value
+                 #'/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/calib/ttrig_phase2_Run333369.db', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "File with customised DT phase-2 tTrigs, used only if non ''")
 
 options.register('t0FilePh2',
-                 '/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/calib/t0_phase2_Run333364.db', #default value
+                 '', #default value
+                 #'/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/calib/t0_phase2_Run333364.db', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "File with customised DT phase-2 t0is, used only if non ''")
@@ -249,7 +251,10 @@ process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('EventFilter.DTRawToDigi.dtab7unpacker_cfi')
 
 process.dtAB7unpacker.channelMapping = cms.untracked.string("july2019")
-process.dtAB7unpacker.correctTPTimeToL1A = options.correctL1A;
+process.dtAB7unpacker.correctTPTimeToL1A = cms.untracked.bool(True)
+
+process.dtAB7unpackerNoCor = process.dtAB7unpacker.clone()
+process.dtAB7unpackerNoCor.correctTPTimeToL1A = options.correctL1A;
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuonCosmics_cff')
 
@@ -257,7 +262,8 @@ process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_slicetest_cfi')
 
 
 process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi")
-process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
+#process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
+process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpackerNoCor')
 
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(False)
@@ -294,13 +300,14 @@ process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False
 
 process.p = cms.Path(process.muonDTDigis
                      + process.dtAB7unpacker
+                     + process.dtAB7unpackerNoCor
                      + process.twinMuxStage2Digis
                      + process.bmtfDigis
                      + process.dtlocalrecoT0Seg
-		     + process.CalibratedDigis
-		     + process.dtTriggerPhase2PrimitiveDigis
+		                 + process.CalibratedDigis
+		                 + process.dtTriggerPhase2PrimitiveDigis
                      + process.dtNtupleProducer)
 
-if options.tTrigFilePh2 != '' and options.t0FilePh2 != '' and False:
+if options.tTrigFilePh2 != '' and options.t0FilePh2 != '':
     from DTDPGAnalysis.DTNtuples.customiseDtPhase2Reco_cff import customiseForPhase2Reco
     process = customiseForPhase2Reco(process,"p", options.tTrigFilePh2, options.t0FilePh2)

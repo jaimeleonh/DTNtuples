@@ -48,7 +48,7 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> generalEffPlots {"hEffHW", "hEffTM", "hEffAM"}; 
   //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX","hEffHWvsSegXGoodBX", "hEffTMvsSegXGoodBX", "hEffAMvsSegXGoodBX"}; 
-  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0"};  
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0"};  
   std::vector <std::string> effWhichBX = {"","GoodBX"};  
   
   
@@ -59,10 +59,10 @@ void printPlots_run(std::string run) {
   std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM"};
   std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits"};
   //std::vector <std::string> moreSpecific1DPlots { };
-  std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos", "hPsiSeg", "hTimeSeg","hPosSeg"};
-  std::vector <std::string> moreSpecific2DPlots {"hPsi2D", "hTime2D","hPos2D","hPsi2DTM","hPos2DTM","hPhi2DTM","hPhiB2DTM","hPsi2DSeg", "hTime2DSeg","hPos2DSeg", "hTimeSegvsPos", "hTimeSegvsPsi"};
+  std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos", "hPsiSeg", "hTimeSeg","hPosSeg","hPsiph2Seg", "hTimeph2Seg","hPosph2Seg"};
+  std::vector <std::string> moreSpecific2DPlots {"hPsi2D", "hTime2D","hPos2D","hPsi2DTM","hPos2DTM","hPhi2DTM","hPhiB2DTM","hPsi2DSeg", "hTime2DSeg","hPos2DSeg", "hTimeSegvsPos", "hTimeSegvsPsi","hPsi2Dph2Seg", "hTime2Dph2Seg","hPos2Dph2Seg", "hTimeph2SegvsPos", "hTimeph2SegvsPsi"};
 
-  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware Psi (#circ)","Emulator Psi (#circ)","Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)" };
+  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)", "Firmware Psi (#circ)","Emulator Psi (#circ)","Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)", "Firmware - ph2Segment Psi (#circ)", "Firmware - ph2Segment Time (ns)", "Firmware - ph2Segment Position (cm)" };
 
   std::map<std::string, TH1*> m_plots_res;
   std::map<std::string, TH1*> m_plots_mean;
@@ -141,6 +141,7 @@ void printPlots_run(std::string run) {
     if (fileOK) cout << nameHisto << ".png" << endl;
   }
  
+  //std::vector <std::string> effCats = {"","Q>2"};  
   std::vector <std::string> effCats = {"","Corr","Q>2"};  
   std::map <std::string, std::string> effLeg;
   effLeg[""] = "Every Quality"; 
@@ -150,16 +151,35 @@ void printPlots_run(std::string run) {
   effLeg["hEffHWvsSegXGoodBX"] = "Good BX"; 
   effLeg["hEffHWvsSegT0"] = "All BX"; 
   effLeg["hEffHWvsSegT0GoodBX"] = "Good BX"; 
-  
+  effLeg["hEffHWvsph2SegX"] = "All BX"; 
+  effLeg["hEffHWvsph2SegXGoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsph2SegT0"] = "All BX"; 
+  effLeg["hEffHWvsph2SegT0GoodBX"] = "Good BX"; 
+  effLeg["hEffHW"] = "HW Q>2"; 
+  effLeg["hEffTM"] = "TM"; 
   
   
   std::map <std::string, std::string> effHWCatsTitles; 
-  effHWCatsTitles["hEffHWvsSegX"] = "HW Eff in All BX vs Seg X"; 
-  effHWCatsTitles["hEffHWvsSegXGoodBX"] = "HW Eff in Good BX vs Seg X"; 
-  effHWCatsTitles["hEffHWvsSegXCombi"] = "; Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["hEffHWvsSegT0"] = "HW Eff in All BX vs Seg t0"; 
-  effHWCatsTitles["hEffHWvsSegT0GoodBX"] = "HW Eff in Good BX vs Seg t0"; 
-  effHWCatsTitles["hEffHWvsSegT0Combi"] = "; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegX"] = "HW Eff in All BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegXGoodBX"] = "HW Eff in Good BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegXCombi"] = "HW Eff All Q vs Seg Position; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegT0"] = "HW Eff in All BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegT0GoodBX"] = "HW Eff in Good BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsSegT0Combi"] = "HW Eff All Q vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegX"] = "HW Eff in All BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegXGoodBX"] = "HW Eff in Good BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegXCombi"] = "HW Eff All Q vs ph2Seg position; ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegT0"] = "HW Eff in All BX vs ph2Seg t0; ph2Segment position (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegT0GoodBX"] = "HW Eff in Good BX vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffHWvsph2SegT0Combi"] = "HW Eff All Q vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsSegX"] = "Eff in All BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsSegXGoodBX"] = "Eff in Good BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsSegT0"] = "Eff in All BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsSegT0GoodBX"] = "Eff in Good BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsph2SegX"] = "Eff in All BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsph2SegXGoodBX"] = "Eff in Good BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsph2SegT0"] = "Eff in All BX vs ph2Seg t0; ph2Segment position (ns); Efficiency (adim)"; 
+  effHWCatsTitles["hEffvsph2SegT0GoodBX"] = "Eff in Good BX vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
 
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
@@ -202,10 +222,11 @@ void printPlots_run(std::string run) {
 
     for (auto & what : effvsWhat) { 
       for (auto & HWCat : effWhichBX){
-            
+      if (true) {      
       TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
       std::string cat = effCats[0];
       std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
+      cout << nameHisto << endl;
       sprintf(name,"%s",nameHisto.c_str());
       m_effs[name] = (TEfficiency*) data1.Get(name);
       m_effs[name]->SetLineColor(2);
@@ -234,13 +255,45 @@ void printPlots_run(std::string run) {
       leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
       m_effs[name]->Draw("same");
 
-      //nameHisto = HWCat + chambTag;       
       nameHisto = "hEffHW" + what + HWCat + chambTag;
       leg->Draw();
       sprintf(name,"run%s/hEffHW/%s_combined.png",run.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
-    }
+      }
+      
+      if (true) {
+        TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
+        std::string cat = "Q>2";
+        std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
+        sprintf(name,"%s",nameHisto.c_str());
+        m_effs[name] = (TEfficiency*) data1.Get(name);
+        m_effs[name]->SetLineColor(2);
+        leg->AddEntry(m_effs[name], effLeg["hEffHW"].c_str(),"l" );
+        m_effs[name]->SetTitle(effHWCatsTitles["hEff" + what + HWCat].c_str());
+        m_effs[name]->Draw();
+        gPad->Update();
+        auto graph =  m_effs[name]->GetPaintedGraph(); 
+        graph->SetMinimum(0);
+        graph->SetMaximum(1.2);
+        gPad->Update();
+
+        cat = "";
+        nameHisto = "hEffTM" + what + HWCat + cat + chambTag;
+        sprintf(name,"%s",nameHisto.c_str());
+        m_effs[name] = (TEfficiency*) data1.Get(name);
+        m_effs[name]->SetLineColor(3);
+        leg->AddEntry(m_effs[name], effLeg["hEffTM"].c_str(),"l" );
+        m_effs[name]->Draw("same");
+        
+        nameHisto = "hEff" + what + HWCat + chambTag;
+        leg->Draw();
+        sprintf(name,"run%s/hEffHW/%s_HWTM.png",run.c_str(),nameHisto.c_str());
+        gPad->SaveAs(name);
+
+      }
+
+      }
     } 
 
 
@@ -249,6 +302,7 @@ void printPlots_run(std::string run) {
       for (auto & what : effvsWhat){ 
         for (auto & whichBX : effWhichBX){ 
           std::string nameHisto = generalPlot + what + whichBX + chambTag;
+          cout << nameHisto << endl; 
           sprintf(name,"%s",nameHisto.c_str());
           m_effs[name] = (TEfficiency*) data1.Get(name);
           m_effs[name]->Draw();
