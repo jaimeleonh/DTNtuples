@@ -164,13 +164,13 @@ void DTNtupleTPGSimAnalyzer::book()
         // EFFICIENCIES
         m_effs["hEffHWvsSegXGoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBXCorr_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X - Correlated Only",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegXGoodBXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBXQ>2_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X - Quality > 2",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffHWvsSegXGoodBX_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg X - Every Quality",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegT0GoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegT0GoodBXCorr_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs Seg T0 - Correlated Only",
 					    201,-100.5,100.5); 
@@ -182,13 +182,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    201,-100.5,100.5); 
         m_effs["hEffHWvsph2SegXGoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsph2SegXGoodBXCorr_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs ph2Seg X - Correlated Only",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegXGoodBXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsph2SegXGoodBXQ>2_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs ph2Seg X - Quality > 2",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegXGoodBX"+ chambTag] = new TEfficiency(("hEffHWvsph2SegXGoodBX_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs ph2Seg X - Every Quality",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegT0GoodBXCorr"+ chambTag] = new TEfficiency(("hEffHWvsph2SegT0GoodBXCorr_"+ chambTag).c_str(),
 					    "HW Eff in Good BX vs ph2Seg T0 - Correlated Only",
 					    201,-100.5,100.5); 
@@ -201,13 +201,13 @@ void DTNtupleTPGSimAnalyzer::book()
      
         m_effs["hEffHWvsSegX"+ chambTag] = new TEfficiency(("hEffHWvsSegX_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg X - Every Quality",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegXCorr"+ chambTag] = new TEfficiency(("hEffHWvsSegXCorr_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg X - Correlated Only",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsSegXQ>2_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg X - Quality > 2",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsSegT0"+ chambTag] = new TEfficiency(("hEffHWvsSegT0_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs Seg T0 - Every Quality",
 					    201,-100.5,100.5); 
@@ -219,13 +219,13 @@ void DTNtupleTPGSimAnalyzer::book()
 					    201,-100.5,100.5); 
         m_effs["hEffHWvsph2SegX"+ chambTag] = new TEfficiency(("hEffHWvsph2SegX_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs ph2Seg X - Every Quality",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegXCorr"+ chambTag] = new TEfficiency(("hEffHWvsph2SegXCorr_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs ph2Seg X - Correlated Only",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegXQ>2"+ chambTag] = new TEfficiency(("hEffHWvsph2SegXQ>2_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs ph2Seg X - Quality > 2",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffHWvsph2SegT0"+ chambTag] = new TEfficiency(("hEffHWvsph2SegT0_"+ chambTag).c_str(),
 					    "HW Eff in All BX vs ph2Seg T0 - Every Quality",
 					    201,-100.5,100.5); 
@@ -238,10 +238,10 @@ void DTNtupleTPGSimAnalyzer::book()
     
         m_effs["hEffAMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegXGoodBX_"+ chambTag).c_str(),
 					    "AM Eff in Good BX vs Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffAMvsSegX"+ chambTag] = new TEfficiency(("hEffAMvsSegX_"+ chambTag).c_str(),
 					    "AM Eff vs Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffAMvsSegT0GoodBX"+ chambTag] = new TEfficiency(("hEffAMvsSegT0GoodBX_"+ chambTag).c_str(),
 					    "AM Eff in Good BX vs Seg T0",
 					    201,-100.5,100.5); 
@@ -250,40 +250,40 @@ void DTNtupleTPGSimAnalyzer::book()
 					    201,-100.5,100.5); 
         m_effs["hEffAMvsph2SegXGoodBX"+ chambTag] = new TEfficiency(("hEffAMvsph2SegXGoodBX_"+ chambTag).c_str(),
 					    "AM Eff in Good BX vs ph2Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffAMvsph2SegX"+ chambTag] = new TEfficiency(("hEffAMvsph2SegX_"+ chambTag).c_str(),
 					    "AM Eff vs ph2Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffAMvsph2SegT0GoodBX"+ chambTag] = new TEfficiency(("hEffAMvsph2SegT0GoodBX_"+ chambTag).c_str(),
-					    "AM Eff in Good BX vs ph2Seg X",
+					    "AM Eff in Good BX vs ph2Seg T0",
 					    201,-100.5,100.5); 
         m_effs["hEffAMvsph2SegT0"+ chambTag] = new TEfficiency(("hEffAMvsph2SegT0_"+ chambTag).c_str(),
-					    "AM Eff vs ph2Seg X",
+					    "AM Eff vs ph2Seg T0",
 					    201,-100.5,100.5); 
         
         m_effs["hEffTMvsSegX"+ chambTag] = new TEfficiency(("hEffTMvsSegX_"+ chambTag).c_str(),
 					    "TM Eff vs Seg X",
-					    50,-251.5,250.5);
+					    50,-250.5,250.5);
         m_effs["hEffTMvsSegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegXGoodBX_"+ chambTag).c_str(),
 					    "TM Eff in Good BX vs Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffTMvsSegT0"+ chambTag] = new TEfficiency(("hEffTMvsSegT0_"+ chambTag).c_str(),
-					    "TM Eff vs Seg X",
+					    "TM Eff vs Seg T0",
 					    201,-100.5,100.5); 
         m_effs["hEffTMvsSegT0GoodBX"+ chambTag] = new TEfficiency(("hEffTMvsSegT0GoodBX_"+ chambTag).c_str(),
-					    "TM Eff in Good BX vs Seg X",
+					    "TM Eff in Good BX vs Seg T0",
 					    201,-100.5,100.5); 
         m_effs["hEffTMvsph2SegX"+ chambTag] = new TEfficiency(("hEffTMvsph2SegX_"+ chambTag).c_str(),
 					    "TM Eff vs ph2Seg X",
-					    50,-251.5,250.5);
+					    50,-250.5,250.5);
         m_effs["hEffTMvsph2SegXGoodBX"+ chambTag] = new TEfficiency(("hEffTMvsph2SegXGoodBX_"+ chambTag).c_str(),
 					    "TM Eff in Good BX vs ph2Seg X",
-					    50,-251.5,250.5); 
+					    50,-250.5,250.5); 
         m_effs["hEffTMvsph2SegT0"+ chambTag] = new TEfficiency(("hEffTMvsph2SegT0_"+ chambTag).c_str(),
-					    "TM Eff vs ph2Seg X",
+					    "TM Eff vs ph2Seg T0",
 					    201,-100.5,100.5); 
         m_effs["hEffTMvsph2SegT0GoodBX"+ chambTag] = new TEfficiency(("hEffTMvsph2SegT0GoodBX_"+ chambTag).c_str(),
-					    "TM Eff in Good BX vs ph2Seg X",
+					    "TM Eff in Good BX vs ph2Seg T0",
 					    201,-100.5,100.5); 
  
         //QUALITY DISTRIBUTIONS
@@ -329,7 +329,7 @@ void DTNtupleTPGSimAnalyzer::book()
 					    11,-0.5,10.5,11,-0.5,10.5); 
         m_plots2["hPrimTypeVsPos"+ chambTag] = new TH2F(("hPrimTypeVsPos_"+ chambTag).c_str(),
 					    "Number of each type of primitive vs Position; Position (cm); Type",
-					    50,-251.5,250.5, 3,-0.5,2.5); 
+					    50,-250.5,250.5, 3,-0.5,2.5); 
         m_plots2["hCorPrimNumber" + chambTag] = new TH2F(("hCorPrimNumber_" + chambTag).c_str(),
 					    "Distribution of number of correlated primitives; Number of Cor AM_HW; Number of Cor AM_Emul",
 					    11,-0.5,10.5,11,-0.5,10.5); 
@@ -1219,6 +1219,9 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         bestQualTrigTM[indstat]=-1;IbestQualTrigTM[indstat]=-1;
         bestQualTrigBXTM[indstat]=-1;IbestQualTrigBXTM[indstat]=-1;
       }
+
+      bool HHMB3goodBX = false; 
+
       for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
         //break; 
         short myStationTwin = ltTwinMuxIn_station->at(iTwin);
@@ -1230,6 +1233,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
         float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
         float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
         int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+
+        if ( myBXTwin == 1 && myQualityTwin == 6 && myStationTwin == 3 && mySectorTwin == 12 && myWheelTwin == 2 ) HHMB3goodBX = true; 
 
         if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 2){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl; 
         if (myQualityTwin >= 5 && myWheelTwin == 2 && mySectorTwin == 12 && myStationTwin == 4){ m_plots["hPrimsSegs" + chambTags.at(myStationTwin/2-1)] -> Fill(3); } // cout << "Habemus primitiva" << endl;  
@@ -1486,6 +1491,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
     float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
     float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
     float mySegZ = seg_posLoc_y->at(iSeg);
+    short mySegHasZ = seg_hasZed->at(iSeg);
   	float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
 	//cout <<"Wh:" << mySegWheel << " Se:" << mySegSector << " St:" << mySegStation << " Hits:" << seg_phi_nHits ->at(iSeg) << endl;
 
@@ -1498,40 +1504,43 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 
 	if(mySegWheel==2 && mySegSector==12){
 	  int indstat = mySegStation-1;
-	  m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
-	  m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
-	  m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
+    if (HHMB3goodBX && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
+	    m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
+	    m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
+	    m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
 
-	  m_effs["hEffHWvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegPos);
-	  m_effs["hEffHWvsSegXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegPos);
-	  m_effs["hEffHWvsSegXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegPos);
-	  m_effs["hEffHWvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegt0);
-	  m_effs["hEffHWvsSegT0Corr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegt0);
-	  m_effs["hEffHWvsSegT0Q>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegt0);
+	    m_effs["hEffHWvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegPos);
+	    m_effs["hEffHWvsSegXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegPos);
+	    m_effs["hEffHWvsSegXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegPos);
+	    m_effs["hEffHWvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigHW[indstat]!=-1,mySegt0);
+	    m_effs["hEffHWvsSegT0Corr"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=6,mySegt0);
+	    m_effs["hEffHWvsSegT0Q>2"+chambTags.at(indstat)]->Fill(bestQualTrigHW[indstat]>=3,mySegt0);
 	  
-    m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
-	  m_effs["hEffHWvsSegXGoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegPos);
-	  m_effs["hEffHWvsSegXGoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegPos);
-    m_effs["hEffHWvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegt0);
-	  m_effs["hEffHWvsSegT0GoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegt0);
-	  m_effs["hEffHWvsSegT0GoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegt0);
+      m_effs["hEffHWvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegPos);
+	    m_effs["hEffHWvsSegXGoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegPos);
+	    m_effs["hEffHWvsSegXGoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegPos);
+      m_effs["hEffHWvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXHW[indstat]!=-1,mySegt0);
+	    m_effs["hEffHWvsSegT0GoodBXCorr"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=6,mySegt0);
+	    m_effs["hEffHWvsSegT0GoodBXQ>2"+chambTags.at(indstat)]->Fill(bestQualTrigBXHW[indstat]>=3,mySegt0);
    
     
-    m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
-    m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
-    m_effs["hEffAMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegt0);
-    m_effs["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegt0);
+      m_effs["hEffAMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegPos);
+      m_effs["hEffAMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegPos);
+      m_effs["hEffAMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegt0);
+      m_effs["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegt0);
 
-    m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
-	  m_effs["hEffTMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegPos);
-    m_effs["hEffTMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegt0);
-	  m_effs["hEffTMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegt0); 
-	}
+      m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
+	    m_effs["hEffTMvsSegXGoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegPos);
+      m_effs["hEffTMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegt0);
+	    m_effs["hEffTMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXTM[indstat]!=-1,mySegt0); 
+	  }
+  }
 	
 	for (unsigned int i = 0; i<chambTags.size(); i++){
     for (unsigned int j = 0; j<quTags.size(); j++){
-      if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
-	      
+      if (bestTrigHW[i][j] != -1 && mySegt0 > -500 && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
+      //if (bestTrigHW[i][j] != -1 && mySegt0 > -500 && HHMB3goodBX && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
+      //if (bestTrigHW[i][j] != -1 && mySegt0 > -500){
 	      short myHwWheel = ph2TpgPhiHw_wheel->at(bestTrigHW[i][j]);
 	      short myHwSector = ph2TpgPhiHw_sector->at(bestTrigHW[i][j]);
 	      short myHwStation = ph2TpgPhiHw_station->at(bestTrigHW[i][j]);
@@ -1560,7 +1569,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	    m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
         m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
         m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
-        m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
+        if (mySegHasZ > 0) 
+          m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(0)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
 	      if (j == 2 || j == 3 || j == 4) {
 	        m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
 	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset[i]*25,mySegt0);
@@ -1570,7 +1580,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	      m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
           m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
           m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
-          m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
+          if (mySegHasZ > 0) 
+            m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(1)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
 	      } else {	   
 	        m_plots2["hPsi2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi);
 	        m_plots2["hTime2DSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset[i]*25,mySegt0);
@@ -1580,7 +1591,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	      m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
           m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
           m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
-          m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
+          if (mySegHasZ > 0) 
+            m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
 	       
       		short myHWSL = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);	
 
@@ -1593,6 +1605,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	      m_plots["hPosSeg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
           m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myPosHW,myt0HW - offset[i]*25 - mySegt0);
           m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myDirHW,myt0HW - offset[i]*25 - mySegt0);
+          if (mySegHasZ > 0) 
+            m_plots2["hTimeSegvsZ"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
           //m_plots2["hTimeSegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(mySegPos,myt0HW - eventoBX*25 - mySegt0);
           //m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(mySegPsi,myt0HW - eventoBX*25 - mySegt0);
 	      }	   
@@ -1606,7 +1620,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	    m_plots ["hPosSeg"      + chambTags.at(i) + quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos);
         m_plots2["hTimeSegvsPos"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0);
         m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + quTags.at(j)]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0);
-        m_plots2["hTimeSegvsZ"  + chambTags.at(i) + quTags.at(j)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
+        if (mySegHasZ > 0) 
+          m_plots2["hTimeSegvsZ"  + chambTags.at(i) + quTags.at(j)]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0);
 
       } 
     } //QU
@@ -1618,8 +1633,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
       float myBestPosHW     = ph2TpgPhiHw_posLoc_x  ->at(IbestQualTrigHW[i]);
       float myBestDirHW     = ph2TpgPhiHw_dirLoc_phi->at(IbestQualTrigHW[i]);
       int   myBestT0HW      = ph2TpgPhiHw_t0        ->at(IbestQualTrigHW[i]); 
+      short myBestQualityHW = ph2TpgPhiHw_quality   ->at(IbestQualTrigHW[i]); 
 	    if (correctL1A) myBestT0HW = myBestT0HW - eventoBX*25;
-	     
+	    
+//      cout << myBestQualityHW << endl;
+
       // FIXME: Position always in the center, maybe change also to SL
       m_plots2["hPsi2DSeg"    + chambTags.at(i) + "bestQ"]->Fill(myBestDirHW,mySegPsi                            );
 	    m_plots2["hTime2DSeg"   + chambTags.at(i) + "bestQ"]->Fill(myBestT0HW - offset[i]*25,mySegt0               );
@@ -1629,7 +1647,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	  m_plots ["hPosSeg"      + chambTags.at(i) + "bestQ"]->Fill(myBestPosHW - mySegPos                          );
       m_plots2["hTimeSegvsPos"+ chambTags.at(i) + "bestQ"]->Fill(mySegPos,myBestT0HW - offset[i]*25 - mySegt0    );
       m_plots2["hTimeSegvsPsi"+ chambTags.at(i) + "bestQ"]->Fill(mySegPsi,myBestT0HW - offset[i]*25 - mySegt0    );
-      m_plots2["hTimeSegvsZ"  + chambTags.at(i) + "bestQ"]->Fill(mySegZ,myBestT0HW - offset[i]*25 - mySegt0      );
+      if (mySegHasZ > 0) 
+        m_plots2["hTimeSegvsZ"  + chambTags.at(i) + "bestQ"]->Fill(mySegZ,myBestT0HW - offset[i]*25 - mySegt0      );
     } 
 
   }		//STAT
@@ -1655,6 +1674,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
     float myph2SegPosSL3 = ph2Seg_posLoc_x_SL3->at(iph2Seg);
     float myph2SegPosMid = ph2Seg_posLoc_x_midPlane->at(iph2Seg);
     float myph2SegZ = ph2Seg_posLoc_y->at(iph2Seg);
+    short myph2SegHasZ = ph2Seg_hasZed->at(iph2Seg);
   	float myph2SegPsi = 360*TMath::ATan ( ( ph2Seg_dirLoc_x->at(iph2Seg) / ph2Seg_dirLoc_z->at(iph2Seg)) ) / (2*TMath::Pi());
  
   	if(myph2SegWheel==2 && myph2SegSector==12){
@@ -1722,7 +1742,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	      m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
           m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
           m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-          m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
+          if (myph2SegHasZ > 0) 
+            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
 
 	        if (j == 2 || j == 3 || j == 4) {
 	          m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
@@ -1733,7 +1754,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
             m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
             m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
+            if (myph2SegHasZ > 0) 
+              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
 	        } else {	   
 	          m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
 	          m_plots2["hTime2Dph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset[i]*25,myph2Segt0);
@@ -1743,7 +1765,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
             m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
             m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
+            if (myph2SegHasZ > 0) 
+              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
 	       
 	      	  short myHWSL = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);	
 
@@ -1756,7 +1779,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
             m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myPosHW,myt0HW - offset[i]*25 - myph2Segt0);
             m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myDirHW,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
+            if (myph2SegHasZ > 0) 
+              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
            //m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegPos,myt0HW - eventoBX*25 - myph2Segt0);
            //m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegPsi,myt0HW - eventoBX*25 - myph2Segt0);
 	        }	   
@@ -1770,7 +1794,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	      m_plots["hPosph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
           m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
           m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-          m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
+          if (myph2SegHasZ > 0) 
+            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
         }  
       }  //QU
       if (IbestQualTrigHW[i] != -1 && myph2Segt0 > -500){ 
@@ -1791,7 +1816,8 @@ _plots["hQualityHW"]->Fill(myQualityHW);
    	    m_plots ["hPosph2Seg"      + chambTags.at(i) + "bestQ"]->Fill(myBestPosHW - myph2SegPos                          );
         m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + "bestQ"]->Fill(myph2SegPos,myBestT0HW - offset[i]*25 - myph2Segt0 );
         m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + "bestQ"]->Fill(myph2SegPsi,myBestT0HW - offset[i]*25 - myph2Segt0 );
-        m_plots2["hTimeph2SegvsZ"  + chambTags.at(i) + "bestQ"]->Fill(myph2SegZ,myBestT0HW - offset[i]*25 - myph2Segt0   );
+        if (myph2SegHasZ > 0) 
+          m_plots2["hTimeph2SegvsZ"  + chambTags.at(i) + "bestQ"]->Fill(myph2SegZ,myBestT0HW - offset[i]*25 - myph2Segt0   );
       } 
 	  }		//STAT
   } //for ph2segments
