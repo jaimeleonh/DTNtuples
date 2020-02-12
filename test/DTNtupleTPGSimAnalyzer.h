@@ -38,7 +38,9 @@ private:
   
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
   Int_t qualityGroup(Int_t quality);
-  
+  void DisplayPh2Hits () ;  
+  void DisplayPh1Segs () ;  
+  void getTheStupidPlots () ;  
   TFile m_outFile;
   
   std::map<std::string, TH1*> m_plots;
