@@ -1778,70 +1778,33 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	        if (correctL1A) myt0HW = myt0HW - eventoBX*25;
 	        //if (myt0HW < 0) myt0HW += 3564*25;	
 	       
-	        m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
-	        m_plots2["hTime2Dph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset[i]*25,myph2Segt0);
-	        m_plots2["hPos2Dph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos);
-	        m_plots["hPsiph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-	        m_plots["hTimeph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(myt0HW - offset[i]*25 - myph2Segt0);
-   	      m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
-          m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
-          m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-          if (myph2SegHasZ > 0) 
-            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(0)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
-
+          // Fill plots
+          std::vector <std::string> categories = {};
+          categories.push_back(labelTags.at(0));
 	        if (j == 2 || j == 3 || j == 4) {
-	          m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
-	          m_plots2["hTime2Dph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset[i]*25,myph2Segt0);
-	          m_plots2["hPos2Dph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos);
-	          m_plots["hPsiph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-	          m_plots["hTimeph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(myt0HW - offset[i]*25 - myph2Segt0);
-   	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
-            m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-            if (myph2SegHasZ > 0) 
-              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(1)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
-	        } else {	   
-	          m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
-	          m_plots2["hTime2Dph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset[i]*25,myph2Segt0);
-	          m_plots2["hPos2Dph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos);
-	          m_plots["hPsiph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-	          m_plots["hTimeph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(myt0HW - offset[i]*25 - myph2Segt0);
-   	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
-            m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-            if (myph2SegHasZ > 0) 
-              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
-	       
+            categories.push_back(labelTags.at(1));
+          } else {
+            categories.push_back(labelTags.at(2));
 	      	  short myHWSL = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);	
+            categories.push_back(labelTags.at(2) + slTags.at(myHWSL/2));
+            categories.push_back(quTags.at(j));
+          }
 
-		 
-	      	  m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
-	          m_plots2["hTime2Dph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - offset[i]*25,myph2Segt0);
-	          m_plots2["hPos2Dph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos);
-	          m_plots["hPsiph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-	          m_plots["hTimeph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myt0HW - offset[i]*25 - myph2Segt0);
-   	        m_plots["hPosph2Seg"+chambTags.at(i)+labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
-            m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myPosHW,myt0HW - offset[i]*25 - myph2Segt0);
-            m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myDirHW,myt0HW - offset[i]*25 - myph2Segt0);
+          for (auto & category : categories){
+	          m_plots2  ["hPsi2Dph2Seg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi  );
+	          m_plots2  ["hTime2Dph2Seg"    + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25,myph2Segt0                          );
+	          m_plots2  ["hPos2Dph2Seg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos    );
+	          m_plots   ["hPsiph2Seg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
+	          m_plots   ["hTimeph2Seg"      + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25 - myph2Segt0                        );
+   	        m_plots   ["hPosph2Seg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos  );
+            m_plots2  ["hTimeph2SegvsPos" + chambTags.at(i) + category]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0            );
+            m_plots2  ["hTimeph2SegvsPsi" + chambTags.at(i) + category]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0            );
             if (myph2SegHasZ > 0) 
-              m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
-           //m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegPos,myt0HW - eventoBX*25 - myph2Segt0);
-           //m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + labelTags.at(2)+slTags.at(myHWSL/2)]->Fill(myph2SegPsi,myt0HW - eventoBX*25 - myph2Segt0);
-	        }	   
-
- 
-	        m_plots2["hPsi2Dph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi);
-	        m_plots2["hTime2Dph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset[i],myph2Segt0);
-	        m_plots2["hPos2Dph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos);
-	        m_plots["hPsiph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-	        m_plots["hTimeph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(myt0HW - offset[i]*25 - myph2Segt0);
-   	      m_plots["hPosph2Seg"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos);
-          m_plots2["hTimeph2SegvsPos"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0);
-          m_plots2["hTimeph2SegvsPsi"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0);
-          if (myph2SegHasZ > 0) 
-            m_plots2["hTimeph2SegvsZ"+ chambTags.at(i) + quTags.at(j)]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0);
-        }  
-      }  //QU
+              m_plots2["hTimeph2SegvsZ"   + chambTags.at(i) + category]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0              );
+          }
+        }
+      }
+    
       if (IbestQualTrigHW[i] != -1 && myph2Segt0 > -500){ 
         // FIXME: Position always in the center, optimizable 
 	      short myBestHwWheel   = ph2TpgPhiHw_wheel     ->at(IbestQualTrigHW[i]);
