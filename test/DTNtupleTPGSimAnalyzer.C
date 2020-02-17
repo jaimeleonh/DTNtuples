@@ -73,6 +73,12 @@ void DTNtupleTPGSimAnalyzer::Loop()
 
   if (fChain == 0) return;
 
+  unlink( "failedEventNumbers.txt" );
+  unlink( "failedPh1Segs.txt"      );
+  unlink( "failedPh1Prims.txt"     );
+  unlink( "failedPh2Prims.txt"     );
+  unlink( "failedPh2Hits.txt"      );
+
   Long64_t nentries = fChain->GetEntries();
   totalEntries = nentries;
   book();
@@ -137,7 +143,7 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["hTMSeg" ] = new TH1F("hTMSeg",
 			  "TM - Segment time; TM - Segment time (ns); Entries",
 				 nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
-return;
+//return;
       m_effs["hEffCorAM"] = new TEfficiency("hEffCorAM",
 					    "Primitive percentage that appear in AM",
 					    10,-0.5,0.5); 
@@ -780,25 +786,25 @@ return;
 
 void DTNtupleTPGSimAnalyzer::fill()
 {
-    getTheStupidPlots();
-    return;
+    //getTheStupidPlots();
+    //return;
 
    
   std::vector<std::string> chambTags = {"MB1", "MB2", "MB3","MB4"};
-     std::vector<std::string> slTags = { "SL1", "SL3"};
-     //std::vector<std::string> quTags  = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
-     std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9","bestQ"};
-     std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
-     //int eventoBX; // = ph2TpgPhiHw_bx; //848 
-     int eventoBX = event_bunchCrossing; //848 
-     int offset[4];
+  std::vector<std::string> slTags = { "SL1", "SL3"};
+  //std::vector<std::string> quTags  = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9","bestQ"};
+  std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
+  //int eventoBX; // = ph2TpgPhiHw_bx; //848 
+  int eventoBX = event_bunchCrossing; //848 
+  int offset[4];
 
-     primitives primitivesHW [4];
-     primitives primitivesAM [4];
-     for (int i = 0; i < 4; i++) {
-	primitivesHW[i].clear();
-	primitivesAM[i].clear();
-     }
+  primitives primitivesHW [4];
+  primitives primitivesAM [4];
+  for (int i = 0; i < 4; i++) {
+	  primitivesHW[i].clear();
+	  primitivesAM[i].clear();
+  }
 
 
 
@@ -894,11 +900,11 @@ void DTNtupleTPGSimAnalyzer::fill()
         int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
         //m_plots["ht0" + chambTags.at(myStationHW/2-1)]->Fill(myt0HW);
 
- 	int indstat = myStationHW - 1; 	
-	if(myQualityHW>bestQualTrigHW[indstat]){
-	  bestQualTrigHW[indstat]=myQualityHW;
-	  IbestQualTrigHW[indstat]=iTrigHW ;
-	}
+       	int indstat = myStationHW - 1; 	
+	      if(myQualityHW>bestQualTrigHW[indstat]){
+	        bestQualTrigHW[indstat]=myQualityHW;
+	        IbestQualTrigHW[indstat]=iTrigHW ;
+      	}
 
 	if (myQualityHW >=6 && myQualityHW != 7) {
 	//  if (!printeado && debug) {cout << "----------------------------------------" << endl; printeado = true;}
@@ -1278,6 +1284,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
           }	
 	      }
       	int indstat = myStationTwin - 1;  
+      	if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
       	if(myQualityTwin>bestQualTrigTM[indstat]){
 	        bestQualTrigTM[indstat]=myQualityTwin;
 	        IbestQualTrigTM[indstat]=iTwin;
@@ -1287,7 +1294,7 @@ _plots["hQualityHW"]->Fill(myQualityHW);
 	        IbestQualTrigBXTM[indstat]=iTwin;
       	}
 
-      	if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
+      	//if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
         m_plots["hBXTM"+ chambTags.at(indstat)] -> Fill(myBXTwin);
         m_plots["hQualityTM"+ chambTags.at(indstat)] -> Fill(myQualityTwin);
         // FILL TM PLOTS
@@ -1560,9 +1567,11 @@ _plots["hQualityHW"]->Fill(myQualityHW);
       m_effs["hEffAMvsSegT0"+chambTags.at(indstat)]->Fill(IbestQualTrigAM[indstat]!=-1,mySegt0);
       m_effs["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)]->Fill(IbestQualTrigBXAM[indstat]!=-1,mySegt0);
 
-      if ( indstat == 3  && bestQualTrigTM[indstat] > 3 && IbestQualTrigHW[indstat]!=-1 ) { 
+      if ( indstat + 1 == 4  && bestQualTrigTM[indstat] > 3 && IbestQualTrigHW[indstat]==-1 ) { 
         DisplayPh2Hits(); 
+        DisplayPh2Prims(); 
         DisplayPh1Segs(); 
+        DisplayPh1Prims(); 
       }
 
       m_effs["hEffTMvsSegX"+chambTags.at(indstat)]->Fill(IbestQualTrigTM[indstat]!=-1,mySegPos);
@@ -1905,12 +1914,22 @@ Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
  
 }
 
+void DTNtupleTPGSimAnalyzer::DisplayEventNumbers () {
+
+  ofstream f2;
+  f2.open("failedEventNumbers.txt",fstream::app);
+
+  f2 << event_eventNumber << endl;
+  f2 << "-1" << endl;
+}
+
+
 void DTNtupleTPGSimAnalyzer::DisplayPh2Hits () {
 
   ofstream f2;
-  f2.open("failedHits.txt",fstream::app);
+  f2.open("failedPh2Hits.txt",fstream::app);
 
-  f2 << event_eventNumber << endl;
+//  f2 << event_eventNumber << endl;
   for (unsigned int iHit = 0; iHit < ph2Digi_nDigis; iHit++) {
     if ( ph2Digi_station -> at(iHit) != 4) continue; 
     f2 << ph2Digi_wheel -> at(iHit) << " " 
@@ -1930,11 +1949,85 @@ void DTNtupleTPGSimAnalyzer::DisplayPh2Hits () {
 
 }
 
+void DTNtupleTPGSimAnalyzer::DisplayPh2Prims () {
+
+  ofstream f2;
+  f2.open("failedPh2Prims.txt",fstream::app);
+
+  for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
+  {
+    short myStationHW = ph2TpgPhiHw_station->at(iTrigHW);
+    short mySectorHW = ph2TpgPhiHw_sector->at(iTrigHW);
+    short myWheelHW = ph2TpgPhiHw_wheel->at(iTrigHW);
+    short myQualityHW = ph2TpgPhiHw_quality->at(iTrigHW);
+    short mySLHW = ph2TpgPhiHw_superLayer->at(iTrigHW);
+    int myChiHW =  ph2TpgPhiHw_chi2->at(iTrigHW);
+    int myPhiHW = ph2TpgPhiHw_phi->at(iTrigHW);
+    int myPhiBHW =   ph2TpgPhiHw_phiB->at(iTrigHW);
+    float myPosHW =  ph2TpgPhiHw_posLoc_x->at(iTrigHW);
+    float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(iTrigHW);
+    int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW); 
+    int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
+    int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
+
+
+
+    if ( myStationHW != 4) continue; 
+    f2
+        << myQualityHW << " "  
+        << mySLHW << " "  
+        << myPosHW << " "  
+        << myDirHW << " "  
+        << myChi2HW << " "  
+        << myt0HW << " "  
+        << endl; 
+
+  }
+  
+  f2 << "-1 -1 -1 -1 -1 -1 -1" << endl; 
+  f2.close();
+  
+}  
+  
+void DTNtupleTPGSimAnalyzer::DisplayPh1Prims () {
+
+  
+  ofstream f2;
+  f2.open("failedPh1Prims.txt",fstream::app);
+  
+  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
+    short myStationTwin = ltTwinMuxIn_station->at(iTwin);
+    short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
+    short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
+    short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
+    int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
+    int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
+    float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
+    float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
+    int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+
+    if ( myStationTwin != 4 || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
+    
+    f2
+        << myQualityTwin << " "  
+        << myPosTwin << " "  
+        << myDirTwin << " "  
+        << myBXTwin << " "  
+        << endl; 
+
+  }
+  
+  f2 << "-1 -1 -1 -1" << endl; 
+  f2.close();
+
+
+}
+
 void DTNtupleTPGSimAnalyzer::DisplayPh1Segs () {
 
   
   ofstream f2;
-  f2.open("failedHits.txt",fstream::app);
+  f2.open("failedPh1Segs.txt",fstream::app);
 
   for (std::size_t iSeg = 0; iSeg <  seg_nSegments; ++iSeg) {
    	float mySegt0 = seg_phi_t0->at(iSeg);
@@ -1996,7 +2089,6 @@ void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
     int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
     float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
     float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
-    int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
 
     if ( myStationTwin != 4 || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
     if ( myQualityTwin > bestQTM ) { 
