@@ -222,6 +222,7 @@ public :
    vector<int>     *ph2TpgPhiHw_BX;
    vector<int>     *ph2TpgPhiHw_t0;
    vector<short>   *ph2TpgPhiHw_index;
+   vector<int>     *ph2TpgPhiHw_arrivalBX;
    UInt_t          ph2TpgPhiEmuHb_nTrigs;
    vector<short>   *ph2TpgPhiEmuHb_wheel;
    vector<short>   *ph2TpgPhiEmuHb_sector;
@@ -450,6 +451,7 @@ public :
    TBranch        *b_ph2TpgPhiHw_BX;   //!
    TBranch        *b_ph2TpgPhiHw_t0;   //!
    TBranch        *b_ph2TpgPhiHw_index;   //!
+   TBranch        *b_ph2TpgPhiHw_arrivalBX;   //!
    TBranch        *b_ph2TpgPhiEmuHb_nTrigs;   //!
    TBranch        *b_ph2TpgPhiEmuHb_wheel;   //!
    TBranch        *b_ph2TpgPhiEmuHb_sector;   //!

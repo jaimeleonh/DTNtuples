@@ -220,6 +220,7 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    ph2TpgPhiHw_BX = 0;
    ph2TpgPhiHw_t0 = 0;
    ph2TpgPhiHw_index = 0;
+   ph2TpgPhiHw_arrivalBX = 0;
    ph2TpgPhiEmuHb_wheel = 0;
    ph2TpgPhiEmuHb_sector = 0;
    ph2TpgPhiEmuHb_station = 0;
@@ -451,6 +452,7 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    fChain->SetBranchAddress("ph2TpgPhiHw_BX", &ph2TpgPhiHw_BX, &b_ph2TpgPhiHw_BX);
    fChain->SetBranchAddress("ph2TpgPhiHw_t0", &ph2TpgPhiHw_t0, &b_ph2TpgPhiHw_t0);
    fChain->SetBranchAddress("ph2TpgPhiHw_index", &ph2TpgPhiHw_index, &b_ph2TpgPhiHw_index);
+   fChain->SetBranchAddress("ph2TpgPhiHw_arrivalBX", &ph2TpgPhiHw_arrivalBX, &b_ph2TpgPhiHw_arrivalBX);
    fChain->SetBranchAddress("ph2TpgPhiEmuHb_nTrigs", &ph2TpgPhiEmuHb_nTrigs, &b_ph2TpgPhiEmuHb_nTrigs);
    fChain->SetBranchAddress("ph2TpgPhiEmuHb_wheel", &ph2TpgPhiEmuHb_wheel, &b_ph2TpgPhiEmuHb_wheel);
    fChain->SetBranchAddress("ph2TpgPhiEmuHb_sector", &ph2TpgPhiEmuHb_sector, &b_ph2TpgPhiEmuHb_sector);

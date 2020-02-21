@@ -324,6 +324,9 @@ void DTNtupleTPGSimAnalyzer::book()
       "Distribution of BX Twinmux; BX Twinmux; Entries",
     21,-10.5,10.5); 
     
+    m_plots["hLatenciesHW"+chambTag] = new TH1F(("hLatenciesHW_" +chambTag).c_str(),
+      "Distribution of HW Latencies; HW Latency (BX); Entries",
+    501,-0.5,500.5); 
     
     
     m_plots2["hHits"+chambTag] = new TH2F(("hHits_" +chambTag).c_str(),
@@ -876,8 +879,12 @@ void DTNtupleTPGSimAnalyzer::fill()
     int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW); 
     int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
     int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
+    int myArrivalBXHW = ph2TpgPhiHw_arrivalBX->at(iTrigHW);  
     
     int indstat = myStationHW - 1; 	
+    
+    m_plots["hLatenciesHW"+chambTags.at(indstat)]->Fill(myArrivalBXHW - myBXHW); 
+    
     if(myQualityHW>bestQualTrigHW[indstat]){
       bestQualTrigHW[indstat]=myQualityHW;
       IbestQualTrigHW[indstat]=iTrigHW ;

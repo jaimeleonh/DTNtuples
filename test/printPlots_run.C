@@ -57,7 +57,7 @@ void printPlots_run(std::string run) {
   
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "Offset"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
-  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM"};
+  std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM", "hLatenciesHW"};
   std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits"};
   //std::vector <std::string> moreSpecific1DPlots { };
   std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos"};
@@ -368,6 +368,12 @@ void printPlots_run(std::string run) {
       m_plots[name]->Draw();
       sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
+      if (specificPlot == "hLatenciesHW") {
+        gPad->SetLogy();
+        sprintf(name,"run%s/%s/%s_log.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
+        gPad->SaveAs(name);
+        gPad->SetLogy(0);
+      }
       if (fileOK) cout << nameHisto << ".png" << endl;
     }
     for (auto & specificPlot : specific2DPlots) {
