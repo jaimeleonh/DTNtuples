@@ -50,7 +50,8 @@ options.register('inputFolderCentral',
                  "Base EOS folder with input files from MiniDAQ runs with central tier0 transfer")
 
 options.register('inputFolderDT',
-                 '/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/root/', #default value
+                 '/eos/cms/store/t0streamer/Minidaq/A/', #default value
+                 #'/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2019_data/root/', #default value
                   VarParsing.VarParsing.multiplicity.singleton,
                   VarParsing.VarParsing.varType.string,
                  "Base EOS folder with input files from MiniDAQ runs with DT 'private' tier0 transfer")
@@ -175,11 +176,12 @@ if options.vDriftFile != '' :
 
     
 
-process.source = cms.Source("PoolSource",
+process.source = cms.Source(inputSourceType,
+#process.source = cms.Source("PoolSource",
                             
         fileNames = cms.untracked.vstring(),
-        secondaryFileNames = cms.untracked.vstring(),
-	skipEvents=cms.untracked.uint32(0)
+#        secondaryFileNames = cms.untracked.vstring(),
+#	skipEvents=cms.untracked.uint32(0)
 
 )
 
