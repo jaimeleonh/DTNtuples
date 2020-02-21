@@ -92,6 +92,9 @@ class DTNtuplePh2TPGPhiFiller : public DTNtupleBaseFiller
   std::vector<short> m_lt_index; // index : (short in [X:Y] range) 
                                  // tags multiple primitives per chamber per BX
                                  // ... // CB to be defined
+  
+  std::vector<int> m_lt_arrivalBX; // arrivalBX : (int with a given range) 
+                                   // ... // CB to be defined
 
 };
   

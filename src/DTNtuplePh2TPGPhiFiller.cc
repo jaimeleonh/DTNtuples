@@ -70,6 +70,7 @@ void DTNtuplePh2TPGPhiFiller::initialize()
   m_tree->Branch((m_label + "_t0").c_str(),    &m_lt_t0);
 
   m_tree->Branch((m_label + "_index").c_str(),    &m_lt_index);
+  m_tree->Branch((m_label + "_arrivalBX").c_str(),    &m_lt_arrivalBX);
   
 }
 
@@ -98,6 +99,7 @@ void DTNtuplePh2TPGPhiFiller::clear()
   m_lt_t0.clear();
 
   m_lt_index.clear();
+  m_lt_arrivalBX.clear();
 
 }
 
@@ -138,6 +140,7 @@ void DTNtuplePh2TPGPhiFiller::fill(const edm::Event & ev)
 	  m_lt_t0.push_back(trig.t0());
 	  
 	  m_lt_index.push_back(trig.index());
+	  m_lt_arrivalBX.push_back(trig.arrivalBX());
 	  
 	  m_nTrigs++;
 	
