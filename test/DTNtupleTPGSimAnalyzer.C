@@ -1544,16 +1544,16 @@ void DTNtupleTPGSimAnalyzer::fill()
           }
           
           for (auto & category : categories){
-            m_plots2  ["hPsi2DSeg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myph2SegPsi  );
-            m_plots2  ["hTime2DSeg"    + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25,myph2Segt0                          );
-            m_plots2  ["hPos2DSeg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myph2SegPos    );
-            m_plots   ["hPsiSeg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - myph2SegPsi);
-            m_plots   ["hTimeSeg"      + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25 - myph2Segt0                        );
-            m_plots   ["hPosSeg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - myph2SegPos  );
-            m_plots2  ["hTimeSegvsPos" + chambTags.at(i) + category]->Fill(myph2SegPos,myt0HW - offset[i]*25 - myph2Segt0            );
-            m_plots2  ["hTimeSegvsPsi" + chambTags.at(i) + category]->Fill(myph2SegPsi,myt0HW - offset[i]*25 - myph2Segt0            );
-            if (myph2SegHasZ > 0) 
-            m_plots2["hTimeSegvsZ"   + chambTags.at(i) + category]->Fill(myph2SegZ,myt0HW - offset[i]*25 - myph2Segt0              );
+            m_plots2  ["hPsi2DSeg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),mySegPsi  );
+            m_plots2  ["hTime2DSeg"    + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25,mySegt0                          );
+            m_plots2  ["hPos2DSeg"     + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),mySegPos    );
+            m_plots   ["hPsiSeg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]) - mySegPsi);
+            m_plots   ["hTimeSeg"      + chambTags.at(i) + category]->Fill(myt0HW - offset[i]*25 - mySegt0                        );
+            m_plots   ["hPosSeg"       + chambTags.at(i) + category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]) - mySegPos  );
+            m_plots2  ["hTimeSegvsPos" + chambTags.at(i) + category]->Fill(mySegPos,myt0HW - offset[i]*25 - mySegt0               );
+            m_plots2  ["hTimeSegvsPsi" + chambTags.at(i) + category]->Fill(mySegPsi,myt0HW - offset[i]*25 - mySegt0               );
+            if (mySegHasZ > 0) 
+            m_plots2["hTimeSegvsZ"   + chambTags.at(i) + category]->Fill(mySegZ,myt0HW - offset[i]*25 - mySegt0                   );
           }
         } 
       } //QU
