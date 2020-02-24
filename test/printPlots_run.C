@@ -10,6 +10,33 @@
 #include "TLegend.h"
 #include "TEfficiency.h"
 
+/*
+double getMeanEfficiency ( std::string effPlot, TString file ) {
+  TFile data1(file);
+  cout << file << endl;
+  char name[128];
+  sprintf(name,"%s",effPlot.c_str());
+  TEfficiency *plot = (TEfficiency*) data1.Get(name);
+  cout << effPlot << endl;
+
+  for (unsigned int i = 1; i<=plot->GetPaintedGraph()->GetXaxis()->GetNbins(); i++){
+    cout << plot->GetPaintedGraph()->GetXaxis()->GetBinCenter(i); 
+  }
+}
+*/
+
+double getMeanEfficiency(TH1 *plot1, TH1 *plot2, double initialVal, double finalVal){
+  double sumPassed = 0.;
+  double sumTotal  = 0.;
+  for (unsigned int i = 1; i<=plot1->GetXaxis()->GetNbins(); i++){
+     if ( plot1->GetXaxis()->GetBinCenter(i) < initialVal || plot1->GetXaxis()->GetBinCenter(i) > finalVal  ) continue; 
+     sumPassed = sumPassed + plot1->GetBinContent(i); 
+     sumTotal  = sumTotal  + plot2->GetBinContent(i); 
+  }
+  
+  return sumPassed/sumTotal;
+}
+
 void printPlots_run(std::string run) {
 
   const bool fileOK = false; 
@@ -58,7 +85,7 @@ void printPlots_run(std::string run) {
   std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "Offset"}; 
 //  std::vector <std::string> general1DPlots {"hQualityHW", "hQualityAM", "hBXDif"}; 
   std::vector <std::string> specific1DPlots {"hSLHW", "hSLAM", "hPrimsSegs","hQualityHW", "hQualityAM", "hQualityTM", "hBXTM", "hLatenciesHW"};
-  std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits"};
+  std::vector <std::string> specific2DPlots {"hPrimTypeVsPos","h2DHwQualSegNHits","h2DEmuQualSegNHits","h2DTMQualSegNHits","hQualityVsBXHW", "hQualityVsBXAM", "hHits","hHitsVsLatenciesHW", "hQualityVsLatenciesHW", "hPositionVsHitsHW"};
   //std::vector <std::string> moreSpecific1DPlots { };
   std::vector <std::string> moreSpecific1DPlots {"hBX","hBXDif","hBXEmul","hBXDifEmul", "hChi2FW","hChi2Emul","hPsiHW","hPsiEmul", "hPsi", "hTime","hPos"};
   std::vector <std::string> moreSpecific1DPlotsSegs {"hPsiSeg", "hTimeSeg","hPosSeg","hPsiph2Seg", "hTimeph2Seg","hPosph2Seg"};
@@ -225,20 +252,31 @@ void printPlots_run(std::string run) {
   effHWCatsTitles["hEffvsph2SegT0"] = "Eff in All BX vs ph2Seg t0; ph2Segment position (ns); Efficiency (adim)"; 
   effHWCatsTitles["hEffvsph2SegT0GoodBX"] = "Eff in Good BX vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
 
+  double mean;  
+  char meanStr[40];
+
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
 
     for (auto & what : effvsWhat) { 
-      
+      if (chambTag == "_MB2") continue; 
+      char namePassed[128]; 
+      char nameTotal[128]; 
       std::string cat = effCats[0];
       
       std::string HWCat = "hEffHW" + what + effWhichBX[0]; // All BX 
-      TLegend *leg = new TLegend(0.3,0.3,0.5,0.5);
+      TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
       std::string nameHisto = HWCat + cat + chambTag;
-      sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
+      sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+      sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+      m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+      m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+      m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(2);
-      leg->AddEntry(m_effs[name], effLeg[HWCat].c_str(),"l" );
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+      sprintf(meanStr,"%.2f", mean);
+      leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->SetTitle(( effHWCatsTitles[HWCat + what + "Combi"]).c_str());
       m_effs[name]->Draw();
       gPad->Update();
@@ -250,9 +288,19 @@ void printPlots_run(std::string run) {
       HWCat = "hEffHW" + what + effWhichBX[1]; // Good BX
       nameHisto = HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
+      sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+      sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+      m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+      m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+      m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
+      m_effs[name]->SetTitle(( effHWCatsTitles[HWCat + what + "Combi"]).c_str());
       m_effs[name]->SetLineColor(3);
-      leg->AddEntry(m_effs[name], effLeg[HWCat].c_str(),"l" );
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+      mean = ( (int) round(mean * 100) ) / 100.;
+      sprintf(meanStr,"%.2f", mean);
+      leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      m_effs[name]->SetTitle(( effHWCatsTitles[HWCat + what + "Combi"]).c_str());
       m_effs[name]->Draw("same");
 
       nameHisto = "hEffHW" + what + chambTag;       
@@ -264,16 +312,28 @@ void printPlots_run(std::string run) {
 
 
     for (auto & what : effvsWhat) { 
+      if (chambTag == "_MB2") continue; 
+      char namePassed[128]; 
+      char nameTotal[128]; 
+      TEfficiency* pEff = 0;
+      
       for (auto & HWCat : effWhichBX){
       if (true) {      
       TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
       std::string cat = effCats[0];
       std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
+      sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+      sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+      m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+      m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+      m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(2);
-      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
-      m_effs[name]->SetTitle(effHWCatsTitles[HWCat].c_str());
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+      sprintf(meanStr,"%.2f", mean);
+      leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      m_effs[name]->SetTitle(effHWCatsTitles["hEffHW"+what+HWCat].c_str());
       m_effs[name]->Draw();
       gPad->Update();
       auto graph =  m_effs[name]->GetPaintedGraph(); 
@@ -284,17 +344,34 @@ void printPlots_run(std::string run) {
       cat = effCats[1];
       nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
+      sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+      sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+      m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+      m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+      m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(3);
-      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
+      m_effs[name]->SetTitle(effHWCatsTitles[HWCat].c_str());
+      m_effs[name]->SetTitle(effHWCatsTitles["hEffHW"+what+HWCat].c_str());
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+      sprintf(meanStr,"%.2f", mean);
+      leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->Draw("same");
 
       cat = effCats[2];
       nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
-      m_effs[name] = (TEfficiency*) data1.Get(name);
+      sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+      sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+      m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+      m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+      m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
+      m_effs[name]->SetTitle(effHWCatsTitles["hEffHW"+what+HWCat].c_str());
       m_effs[name]->SetLineColor(4);
-      leg->AddEntry(m_effs[name], effLeg[cat].c_str(),"l" );
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+      sprintf(meanStr,"%.2f", mean);
+      leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->Draw("same");
 
       nameHisto = "hEffHW" + what + HWCat + chambTag;
@@ -309,9 +386,18 @@ void printPlots_run(std::string run) {
         std::string cat = "Q>2";
         std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
         sprintf(name,"%s",nameHisto.c_str());
-        m_effs[name] = (TEfficiency*) data1.Get(name);
+        sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+        sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+        m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+        m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+        m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
         m_effs[name]->SetLineColor(2);
-        leg->AddEntry(m_effs[name], effLeg["hEffHW"].c_str(),"l" );
+        
+        if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+        else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+        sprintf(meanStr,"%.2f", mean);
+        leg->AddEntry(m_effs[name], (effLeg["hEffHW"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      
         m_effs[name]->SetTitle(effHWCatsTitles["hEff" + what + HWCat].c_str());
         m_effs[name]->Draw();
         gPad->Update();
@@ -320,12 +406,24 @@ void printPlots_run(std::string run) {
         graph->SetMaximum(1.2);
         gPad->Update();
 
+
+        
+        
         cat = "";
         nameHisto = "hEffTM" + what + HWCat + cat + chambTag;
         sprintf(name,"%s",nameHisto.c_str());
-        m_effs[name] = (TEfficiency*) data1.Get(name);
+        sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+        sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+        m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+        m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+        m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
+        m_effs[name]->SetTitle(effHWCatsTitles["hEff" + what + HWCat].c_str());
         m_effs[name]->SetLineColor(3);
-        leg->AddEntry(m_effs[name], effLeg["hEffTM"].c_str(),"l" );
+        if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], 0., 50. );
+        else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], -100., 100. );
+        sprintf(meanStr,"%.2f", mean);
+        leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        //leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + mean + ")") .c_str(),"l" );
         m_effs[name]->Draw("same");
         
         nameHisto = "hEff" + what + HWCat + chambTag;
@@ -341,11 +439,18 @@ void printPlots_run(std::string run) {
 
 
     for (auto & generalPlot : generalEffPlots) {
+      if (chambTag == "_MB2") continue; 
+      char namePassed[128]; 
+      char nameTotal[128]; 
       for (auto & what : effvsWhat){ 
         for (auto & whichBX : effWhichBX){ 
           std::string nameHisto = generalPlot + what + whichBX + chambTag;
           sprintf(name,"%s",nameHisto.c_str());
-          m_effs[name] = (TEfficiency*) data1.Get(name);
+          sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
+          sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
+          m_plots[namePassed] = (TH1F*) data1.Get(namePassed);
+          m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
+          m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
           m_effs[name]->Draw();
           gPad->Update();
           auto graph =  m_effs[name]->GetPaintedGraph(); 
