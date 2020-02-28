@@ -116,7 +116,8 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9","bestQ"};
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
-  
+  std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b" };
+
   int nbinPosEmuFW = 101; double minPosEmuFW = 0.005 * (0.5 + nbinPosEmuFW / 2); 
   int nbinPsiEmuFW = 101; double minPsiEmuFW = 0.01 * (0.5 + nbinPsiEmuFW / 2); 
   int nbinTimeEmuFW = 101; double minTimeEmuFW = 1 * (0.5 + nbinTimeEmuFW / 2); 
@@ -174,138 +175,47 @@ void DTNtupleTPGSimAnalyzer::book()
   for (unsigned int ch = 0; ch < chambTags.size(); ch++) {
     m_plots["offset"]->GetXaxis()->SetBinLabel(ch+1, chambTags[ch].c_str());      
   }
+ 
+  for (const auto & obdtTag : obdtTags) {
+    m_plots["hTimeOBDT"+obdtTag] = new TH1F(("hTimeOBDT_" +  obdtTag).c_str(),
+           ("Time distribution for OBDT " + obdtTag + "; Ph2 primitive t0 (ns); Entries").c_str(),
+           201,-100.5,100.5);
+
+  }
+
+  std::vector <std::string> systems = {"HW", "TM", "AM"}; 
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0"};  
+  std::vector <std::string> effWhichBX = {"","GoodBX"};  
+  std::vector <std::string> effQualCats = {"","Q>2","Corr"};  
+  std::vector <std::string > effs = {"passed", "total"};
+ 
+  std::map <std::string, float > minXaxis, maxXaxis, nBinsX;
+  std::map <std::string, std::string > titleXaxis, qualCategory, BXtitle, unitsXaxis;
   
-  
+  minXaxis["vsSegX"] = -250.5; maxXaxis["vsSegX"] = 250.5; nBinsX["vsSegX"] = 50.; titleXaxis["vsSegX"] = "Seg Position"; unitsXaxis["vsSegX"] = "(cm)";
+  minXaxis["vsph2SegX"] = -250.5; maxXaxis["vsph2SegX"] = 250.5; nBinsX["vsph2SegX"] = 50.; titleXaxis["vsph2SegX"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegX"] = "(cm)";
+  minXaxis["vsSegT0"] = -100.5; maxXaxis["vsSegT0"] = 100.5; nBinsX["vsSegT0"] = 201.; titleXaxis["vsSegT0"] = "Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
+  minXaxis["vsph2SegT0"] = -100.5; maxXaxis["vsph2SegT0"] = 100.5; nBinsX["vsph2SegT0"] = 201.; titleXaxis["vsph2SegT0"] = "Ph2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
+ 
+  qualCategory[""] = "Every Quality";  qualCategory["Q>2"] = "Quality>3h";   qualCategory["Corr"] = "Correlated Only"; 
+  BXtitle[""] = "All BX"; BXtitle["GoodBX"] = "Good BX"; 
+
   for (const auto & chambTag : chambTags) {
-    std::vector <std::string > effs = {"passed", "total"};
 
-    for (auto & effCat : effs) {
-    // EFFICIENCIES 
-    m_plots["hEffHWvsSegXGoodBXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsSegXGoodBXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg X - Correlated Only",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegXGoodBXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsSegXGoodBXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg X - Quality > 2",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffHWvsSegXGoodBX_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg X - Every Quality",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegT0GoodBXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0GoodBXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg T0 - Correlated Only",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsSegT0GoodBXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0GoodBXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg T0 - Quality > 2",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsSegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs Seg T0 - Every Quality",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegXGoodBXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegXGoodBXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg X - Correlated Only",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegXGoodBXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegXGoodBXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg X - Quality > 2",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegXGoodBX_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg X - Every Quality",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegT0GoodBXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0GoodBXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg T0 - Correlated Only",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegT0GoodBXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0GoodBXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg T0 - Quality > 2",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "HW Eff in Good BX vs ph2Seg T0 - Every Quality",
-    201,-100.5,100.5); 
-    
-    m_plots["hEffHWvsSegX"+ chambTag + effCat] = new TH1F(("hEffHWvsSegX_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg X - Every Quality",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsSegXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg X - Correlated Only",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsSegXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg X - Quality > 2",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsSegT0"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg T0 - Every Quality",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsSegT0Corr"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0Corr_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg T0 - Correlated Only",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsSegT0Q>2"+ chambTag + effCat] = new TH1F(("hEffHWvsSegT0Q>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs Seg T0 - Quality > 2",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegX"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegX_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg X - Every Quality",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegXCorr"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegXCorr_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg X - Correlated Only",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegXQ>2"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegXQ>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg X - Quality > 2",
-    50,-250.5,250.5); 
-    m_plots["hEffHWvsph2SegT0"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg T0 - Every Quality",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegT0Corr"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0Corr_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg T0 - Correlated Only",
-    201,-100.5,100.5); 
-    m_plots["hEffHWvsph2SegT0Q>2"+ chambTag + effCat] = new TH1F(("hEffHWvsph2SegT0Q>2_"+ chambTag + effCat).c_str(),
-      "HW Eff in All BX vs ph2Seg T0 - Quality > 2",
-    201,-100.5,100.5); 
-    
-    m_plots["hEffAMvsSegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffAMvsSegXGoodBX_"+ chambTag + effCat).c_str(),
-      "AM Eff in Good BX vs Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffAMvsSegX"+ chambTag + effCat] = new TH1F(("hEffAMvsSegX_"+ chambTag + effCat).c_str(),
-      "AM Eff vs Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffAMvsSegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffAMvsSegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "AM Eff in Good BX vs Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffAMvsSegT0"+ chambTag + effCat] = new TH1F(("hEffAMvsSegT0_"+ chambTag + effCat).c_str(),
-      "AM Eff vs Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffAMvsph2SegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffAMvsph2SegXGoodBX_"+ chambTag + effCat).c_str(),
-      "AM Eff in Good BX vs ph2Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffAMvsph2SegX"+ chambTag + effCat] = new TH1F(("hEffAMvsph2SegX_"+ chambTag + effCat).c_str(),
-      "AM Eff vs ph2Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffAMvsph2SegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffAMvsph2SegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "AM Eff in Good BX vs ph2Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffAMvsph2SegT0"+ chambTag + effCat] = new TH1F(("hEffAMvsph2SegT0_"+ chambTag + effCat).c_str(),
-      "AM Eff vs ph2Seg T0",
-    201,-100.5,100.5); 
-    
-    m_plots["hEffTMvsSegX"+ chambTag + effCat] = new TH1F(("hEffTMvsSegX_"+ chambTag + effCat).c_str(),
-      "TM Eff vs Seg X",
-    50,-250.5,250.5);
-    m_plots["hEffTMvsSegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffTMvsSegXGoodBX_"+ chambTag + effCat).c_str(),
-      "TM Eff in Good BX vs Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffTMvsSegT0"+ chambTag + effCat] = new TH1F(("hEffTMvsSegT0_"+ chambTag + effCat).c_str(),
-      "TM Eff vs Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffTMvsSegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffTMvsSegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "TM Eff in Good BX vs Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffTMvsph2SegX"+ chambTag + effCat] = new TH1F(("hEffTMvsph2SegX_"+ chambTag + effCat).c_str(),
-      "TM Eff vs ph2Seg X",
-    50,-250.5,250.5);
-    m_plots["hEffTMvsph2SegXGoodBX"+ chambTag + effCat] = new TH1F(("hEffTMvsph2SegXGoodBX_"+ chambTag + effCat).c_str(),
-      "TM Eff in Good BX vs ph2Seg X",
-    50,-250.5,250.5); 
-    m_plots["hEffTMvsph2SegT0"+ chambTag + effCat] = new TH1F(("hEffTMvsph2SegT0_"+ chambTag + effCat).c_str(),
-      "TM Eff vs ph2Seg T0",
-    201,-100.5,100.5); 
-    m_plots["hEffTMvsph2SegT0GoodBX"+ chambTag + effCat] = new TH1F(("hEffTMvsph2SegT0GoodBX_"+ chambTag + effCat).c_str(),
-      "TM Eff in Good BX vs ph2Seg T0",
-    201,-100.5,100.5); 
-    } // EFF CATEGORIES : PASSED, TOTAL
-
+    for (auto & effCat : effs) { // PASSED OR TOTAL
+      for (auto & system : systems) { // TM, HW, Emul
+        for (auto & vsWhat : effvsWhat ) { // vs Position, T0
+          for (auto & whichBX : effWhichBX) { // All or Good BX
+            for (auto & qualCat : effQualCats) { // Every, Q>2, Corr
+             // cout << "hEff" << system << vsWhat << whichBX << qualCat << effCat << endl;
+              m_plots["hEff" + system + vsWhat + whichBX + qualCat + chambTag +effCat] = new TH1F(("hEff" + system + vsWhat + whichBX + qualCat + "_" +chambTag + effCat).c_str(),
+              (system + "Eff in " + BXtitle[whichBX] + " vs " + titleXaxis[vsWhat] + " - " + qualCategory[qualCat] + "; " + titleXaxis[vsWhat] + " " + unitsXaxis[vsWhat] + "; Efficiency").c_str(),
+              nBinsX[vsWhat],minXaxis[vsWhat],maxXaxis[vsWhat]); 
+            } 
+          } 
+        } 
+      } 
+    } 
 
     //QUALITY DISTRIBUTIONS
     m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
@@ -317,6 +227,7 @@ void DTNtupleTPGSimAnalyzer::book()
     m_plots["hQualityTM"+chambTag] = new TH1F(("hQualityTM_" +chambTag).c_str(),
       "Distribution of TM qualities; TM Qualities; Entries",
     6,1.5,7.5); 
+    
     m_plots2["hQualityVsBXHW"+chambTag] = new TH2F(("hQualityVsBXHW_" +chambTag).c_str(),
       "Distribution of Quality vs BX for HW; HW Primitive Quality; HW Primitive BX - Offset",
     9,0.5,9.5,21,-10.5,10.5); 
@@ -823,9 +734,9 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   
   // PLOTTING THE BX OFFSETS. W.R.T OFFLINE: Offset = GoodBX - 3564 //////////////////////
-  offset[0] = -195; //FIXME
+  offset[0] = -199; //FIXME
   offset[1] = -199; //FIXME
-  offset[2] = -199; //FIXME
+  offset[2] = -200; //FIXME
   offset[3] = -200; //FIXME
   int smallestOffset = 9999; 
   int biggestOffset = -9999; 
@@ -896,7 +807,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW); 
     int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
     int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
-    int myArrivalBXHW = ph2TpgPhiHw_arrivalBX->at(iTrigHW);  
+    //int myArrivalBXHW = ph2TpgPhiHw_arrivalBX->at(iTrigHW);  
    
     // REMOVE SL PRIMS IF COR PRIMS IS FOUND 
     if (myQualityHW <= 4){
@@ -909,10 +820,10 @@ void DTNtupleTPGSimAnalyzer::fill()
     }	
    
     int indstat = myStationHW - 1; 	
-    m_plots["hLatenciesHW"+chambTags.at(indstat)]->Fill(myArrivalBXHW - myBXHW); 
-    m_plots2["hHitsVsLatenciesHW"+chambTags.at(indstat)]->Fill(numOfDigis[indstat],myArrivalBXHW - myBXHW); 
-    m_plots2["hPositionVsHitsHW"+chambTags.at(indstat)]->Fill(myPosHW,numOfDigis[indstat]); 
-    m_plots2["hQualityVsLatenciesHW"+chambTags.at(indstat)]->Fill(myQualityHW,myArrivalBXHW - myBXHW); 
+    //m_plots["hLatenciesHW"+chambTags.at(indstat)]->Fill(myArrivalBXHW - myBXHW); 
+    //m_plots2["hHitsVsLatenciesHW"+chambTags.at(indstat)]->Fill(numOfDigis[indstat],myArrivalBXHW - myBXHW); 
+    //m_plots2["hPositionVsHitsHW"+chambTags.at(indstat)]->Fill(myPosHW,numOfDigis[indstat]); 
+    //m_plots2["hQualityVsLatenciesHW"+chambTags.at(indstat)]->Fill(myQualityHW,myArrivalBXHW - myBXHW); 
    
     
     
@@ -943,6 +854,16 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     m_plots["ht0" + chambTags.at(myStationHW-1)]->Fill(myt0HW);
     
+    if (myStationHW == 1 && mySLHW == 1) m_plots["hTimeOBDTMB1_phi1"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 1 && mySLHW == 3) m_plots["hTimeOBDTMB1_phi2"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 2 && mySLHW == 1) m_plots["hTimeOBDTMB2_phi1"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 2 && mySLHW == 3) m_plots["hTimeOBDTMB2_phi2"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 3 && mySLHW == 1) m_plots["hTimeOBDTMB3_phi1b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 3 && mySLHW == 3) m_plots["hTimeOBDTMB3_phi2b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 4 && mySLHW == 1 && myPosHW < 0) m_plots["hTimeOBDTMB4_phi1b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 4 && mySLHW == 3 && myPosHW < 0) m_plots["hTimeOBDTMB4_phi2b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 4 && mySLHW == 1 && myPosHW > 0) m_plots["hTimeOBDTMB4_phi3b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
+    else if (myStationHW == 4 && mySLHW == 3 && myPosHW > 0) m_plots["hTimeOBDTMB4_phi4b"] -> Fill(myt0HW - offset[myStationHW -1]*25);
     
     if(myQualityHW>bestQualTrigBXHW[indstat] && (myBXHW - offset[myStationHW - 1] == 0)){
       bestQualTrigBXHW[indstat]=myQualityHW;
@@ -1497,7 +1418,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     if(mySegWheel==2 && mySegSector==12){
       int indstat = mySegStation-1;
       //if ( true ) {
-      if (HHMB3goodBX && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
+      //if (HHMB3goodBX && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
+      if (fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
         m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
         m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
         m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
@@ -1530,13 +1452,30 @@ void DTNtupleTPGSimAnalyzer::fill()
         
         
         if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsSegX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+        if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsSegXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+        if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsSegXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
         if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsSegXGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
-        if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsSegT0"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
-        if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsSegXGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+        if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsSegXGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
         m_plots["hEffAMvsSegX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffAMvsSegXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffAMvsSegXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
         m_plots["hEffAMvsSegXGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffAMvsSegXGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffAMvsSegXGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        
+        if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsSegT0"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsSegT0Corr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsSegT0Q>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsSegT0GoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
         m_plots["hEffAMvsSegT0"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        m_plots["hEffAMvsSegT0Corr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        m_plots["hEffAMvsSegT0Q>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         m_plots["hEffAMvsSegT0GoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        m_plots["hEffAMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        m_plots["hEffAMvsSegT0GoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         
         if ( indstat + 1 == 4  && bestQualTrigTM[indstat] > 3 && IbestQualTrigHW[indstat]==-1 ) { 
           DisplayPh2Hits(); 
@@ -1549,10 +1488,18 @@ void DTNtupleTPGSimAnalyzer::fill()
         if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsSegXGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
         if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsSegT0"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
         if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsSegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0); 
+        if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsSegXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+        if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsSegXGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+        if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsSegT0Corr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+        if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0); 
         m_plots["hEffTMvsSegX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
         m_plots["hEffTMvsSegXGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
         m_plots["hEffTMvsSegT0"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         m_plots["hEffTMvsSegT0GoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegt0); 
+        m_plots["hEffTMvsSegXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffTMvsSegXGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+        m_plots["hEffTMvsSegT0Corr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        m_plots["hEffTMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0); 
       }
     }
     
@@ -1693,22 +1640,47 @@ void DTNtupleTPGSimAnalyzer::fill()
       
       
       if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsph2SegX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+      if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsph2SegXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+      if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsph2SegXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
       if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsph2SegXGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
-      if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
-      if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsph2SegXGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+      if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsph2SegXGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
       m_plots["hEffAMvsph2SegX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffAMvsph2SegXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffAMvsph2SegXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
       m_plots["hEffAMvsph2SegXGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffAMvsph2SegXGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffAMvsph2SegXGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      
+      if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsph2SegT0Q>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsph2SegT0Corr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsph2SegT0GoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsph2SegT0GoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
       m_plots["hEffAMvsph2SegT0"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffAMvsph2SegT0Q>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffAMvsph2SegT0Corr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       m_plots["hEffAMvsph2SegT0GoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffAMvsph2SegT0GoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffAMvsph2SegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       
       if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsph2SegX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
       if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsph2SegXGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+      if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsph2SegXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+      if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsph2SegXGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
       if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsph2SegT0"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
       if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsph2SegT0GoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsph2SegT0Corr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+      if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsph2SegT0GoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
       m_plots["hEffTMvsph2SegX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
       m_plots["hEffTMvsph2SegXGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffTMvsph2SegXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      m_plots["hEffTMvsph2SegXGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
       m_plots["hEffTMvsph2SegT0"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       m_plots["hEffTMvsph2SegT0GoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffTMvsph2SegT0Corr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      m_plots["hEffTMvsph2SegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       
     }
     
@@ -1803,7 +1775,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     m_effs["hEffCorAM"]->Fill(false,0);
   }
   
-  
+  return;  
 }
 
 void DTNtupleTPGSimAnalyzer::endJob()
@@ -1813,7 +1785,7 @@ void DTNtupleTPGSimAnalyzer::endJob()
   
   m_outFile.Write();
   m_outFile.Close();
-  
+  return;
 }
 
 Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
@@ -1831,7 +1803,7 @@ Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
   if (quality == 6) return 2; 
   if (quality == 8) return 3; 
   if (quality == 9) return 4; 
-  
+  return -1;
 }
 
 void DTNtupleTPGSimAnalyzer::DisplayEventNumbers () {
@@ -1841,6 +1813,7 @@ void DTNtupleTPGSimAnalyzer::DisplayEventNumbers () {
   
   f2 << event_eventNumber << endl;
   f2 << "-1" << endl;
+  return;
 }
 
 
@@ -1866,6 +1839,7 @@ void DTNtupleTPGSimAnalyzer::DisplayPh2Hits () {
   f2 << "-1 -1 -1 -1 -1 -1 -1" << endl; 
   
   f2.close();
+  return;  
   
 }
 
@@ -1965,6 +1939,7 @@ void DTNtupleTPGSimAnalyzer::DisplayPh1Segs () {
   f2 << "-1 -1 -1 -1 -1 -1 -1" << endl; 
   
   f2.close();
+  return;  
   
 }
 
@@ -2053,6 +2028,7 @@ void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
   }
   
   
+  return;  
   
 }
 
