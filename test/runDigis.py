@@ -43,7 +43,7 @@ else :
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
-path = '/afs/cern.ch/work/j/jleonhol/public/'
+path = '/eos/home-j/jleonhol/simulationSamples/'
 plotsPath = "./digiPlots/"
 #outputPath = './ntuples/'
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'

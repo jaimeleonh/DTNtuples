@@ -29,9 +29,10 @@ files = {'norpc':[], 'rpc':[], 'DM':[]}
 #files['rpc'].append('nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000')
 
 #files['norpc'].append('PU200_nu_bkg7p5') 
-files['norpc'].append('PU250_nu_bkg9') 
+#files['norpc'].append('PU250_nu_bkg9') 
 #files['norpc'].append('PU200_nu_bkg7p5') 
 files['norpc'].append('nu_pu250_noage_norpc')
+files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
 #files['norpc'].append('PU0_bkgHits')
 #files['norpc'].append('PU200_bkgHits')
 #files['rpc'].append('pu200_age_withrpc_youngseg_muonage_norpcage_fail_3000')
@@ -144,7 +145,7 @@ else :
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
-path = '/afs/cern.ch/work/j/jleonhol/public/'
+path = '/eos/home-j/jleonhol/simulationSamples/'
 ratePath = "./plotsRates/"
 #outputPath = './ntuples/'
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'

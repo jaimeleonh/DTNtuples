@@ -20,9 +20,10 @@ my_namespace = parser.parse_args()
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['DM'].append('PU0_DM_PT10-30_mod_2')
-files['DM'].append('DM_NOPU_10-30')
-files['norpc'].append('nopu_noage_norpc')
+files['DM'].append('DMAlberto')
+#files['DM'].append('PU0_DM_PT10-30_mod_2')
+#files['DM'].append('DM_NOPU_10-30')
+#files['norpc'].append('nopu_noage_norpc')
 #files['norpc'].append('PU200_mu_bkg7p5')
 #files['norpc'].append('pu200_noage_norpc')
 #files['norpc'].append('nopu_noage_norpc')
@@ -82,7 +83,7 @@ else :
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
   time.sleep(2)
 
-path = '/afs/cern.ch/work/j/jleonhol/public/'
+path = '/eos/home-j/jleonhol/simulationSamples/'
 effPath = "./plotsEff/"
 #outputPath = './ntuples/'
 outputPath = '/eos/home-j/jleonhol/ntuplesResults/'
@@ -338,7 +339,7 @@ for File in files['DM'] :
       effplot.combineEffPlots(plotList, legendsDM, plottingStuff, DMPath, 'hEffVsSlope_' + wh + '_' + ch + '_' + File )
 	 
 
-  plottingStuff2 = { 'lowlimityaxis': 0,
+  plottingStuff2 = { 'lowlimityaxis': 0.8,
  	            'highlimityaxis': 1,
 	            'markersize': 1,
 	            'yaxistitle' : 'Efficiency (adim.)',
