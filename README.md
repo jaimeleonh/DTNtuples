@@ -38,7 +38,7 @@ source DTNtupleMaker.sh TpRunNumber CosmicsRunNumber
 Take care when running on 2020 runs! (see disclaimer in DTNtupleMaker.sh script)
 
 ### Analysis:
-#### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```):
+#### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```)(default case):
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove.sh runNumber
