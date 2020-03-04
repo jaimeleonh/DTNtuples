@@ -44,7 +44,7 @@ options.register('inputFile',
 
 options.register('inputFolderCentral',
 		 #'',
-                 '/eos/cms/store/data/Commissioning2019/MiniDaq/RAW/v1/', #default value
+                 '/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/', #default value
                   VarParsing.VarParsing.multiplicity.singleton,
                   VarParsing.VarParsing.varType.string,
                  "Base EOS folder with input files from MiniDAQ runs with central tier0 transfer")
@@ -57,7 +57,7 @@ options.register('inputFolderDT',
                  "Base EOS folder with input files from MiniDAQ runs with DT 'private' tier0 transfer")
 
 options.register('inputGlobal',
-                 '/eos/cms/store/data/Commissioning2019/Cosmics/RAW/v1/', #default value
+                 '/eos/cms/store/data/Commissioning2020/Cosmics/RAW/v1/', #default value
                   VarParsing.VarParsing.multiplicity.singleton,
                   VarParsing.VarParsing.varType.string,
                  "Base EOS folder with input files from MiniDAQ runs with DT 'private' tier0 transfer")
