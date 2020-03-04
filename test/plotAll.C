@@ -21,7 +21,7 @@
 #include <TLatex.h>
 
 
-#include "tdrstyle.C"
+//#include "tdrstyle.C"
 
 
 void plotAll( std::string file ){
@@ -46,11 +46,13 @@ gStyle->SetOptFit(111111);
   //std::vector<std::string> magnitudes = { "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
   std::vector<std::string> magnitudes = { "TimeRes", "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
   std::vector<std::string> algos      = { "AM", "HB" };
-  std::vector<std::string> qualTags   = { "3h","4h"};
-  //std::vector<std::string> qualTags   = { "All","Correlated"};
+  //std::vector<std::string> qualTags   = { "3h","4h"};
+  std::vector<std::string> qualTags   = { "All","Correlated"};
   //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q9","Q8","Q6"};
 
-  TFile *inFile = TFile::Open(("./ntuples/results_" + file + "_.root" ).c_str());
+
+  std::string outputPath = "/eos/home-j/jleonhol/ntuplesResults/";
+  TFile *inFile = TFile::Open( (outputPath + "results_resols_" +file + "_.root").c_str() );
   gSystem->Exec("mkdir summaryPlots/"  );
   gSystem->Exec("mkdir summaryPlots/" + TString(file) );
   for (unsigned int i = 0; i < qualTags.size(); i++){
@@ -131,7 +133,7 @@ gStyle->SetOptFit(111111);
        RooGaussian gauss3("gauss3","Wide Gaussian",x, mean, sigma3);
 
        RooAddPdf twogauss("twogauss","Two Gaussians pdf",RooArgList(gauss1,gauss2,gauss3),RooArgList(fraction,fraction2));
-     //RooAddPdf twogauss("twogauss","Two Gaussians pdf",RooArgList(gauss1,gauss2),fraction);
+       //RooAddPdf twogauss("twogauss","Two Gaussians pdf",RooArgList(gauss1,gauss3),fraction);
 
        RooDataHist data("data","data",x,hResSlope4h);
 
@@ -143,7 +145,7 @@ gStyle->SetOptFit(111111);
 	 else coreSigma = sigma2.getVal();
        } else if ( sigma1.getVal() > sigma3.getVal()) coreSigma = sigma3.getVal();	
        else coreSigma = sigma1.getVal();
- 
+
        if (mag == "xRes" || mag == "TimeRes") m_plots[mag + "AM" + qual + whTag]->SetBinContent(j+1,coreSigma);
        else m_plots[mag + "AM" + qual + whTag]->SetBinContent(j+1,coreSigma*1000);
 

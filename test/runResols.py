@@ -21,12 +21,17 @@ my_namespace = parser.parse_args()
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['norpc'].append('3h4h') 
+#files['norpc'].append('3h4h') 
+#files['norpc'].append('nopu_noage_norpc') 
+files['norpc'].append('PU200_noage_norpc') 
+#files['norpc'].append('3h4h') 
 
 #qualities = ['']
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
-qualities['norpc'].append('4h')
-qualities['norpc'].append('3h')
+qualities['norpc'].append('All')
+qualities['norpc'].append('Correlated')
+#qualities['norpc'].append('4h')
+#qualities['norpc'].append('3h')
 
 ##############################################################################################
 
@@ -66,11 +71,11 @@ plottingStuff = { 'lowlimityaxis': 0,
 		      'markercolordir':{}  
    		    }
 
-plottingStuff['highlimityaxis']['Time'] = {'3h': 5, '4h': 5}
-plottingStuff['highlimityaxis']['Phi'] = {'3h': 50E-3, '4h':50E-3}
-plottingStuff['highlimityaxis']['PhiB'] = {'3h': 15,  '4h': 10}
-plottingStuff['highlimityaxis']['TanPsi'] = {'3h': 15, '4h': 10}
-plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
+plottingStuff['highlimityaxis']['Time'] = {'3h': 5, '4h': 5, 'All':5, 'Correlated':5}
+plottingStuff['highlimityaxis']['Phi'] = {'3h': 50E-3, '4h':50E-3,'All':50E-3,'Correlated':50E-3}
+plottingStuff['highlimityaxis']['PhiB'] = {'3h': 15,  '4h': 10, 'All':10, 'Correlated':10}
+plottingStuff['highlimityaxis']['TanPsi'] = {'3h': 15, '4h': 10, 'All':10, 'Correlated':10}
+plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02, 'All': 0.02, 'Correlated': 0.02}
 
 markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 
