@@ -254,6 +254,17 @@ void DTNtupleTPGSimAnalyzer::book()
     10,0.5, 10.5,501,-0.5,500.5); 
     
       
+    m_plots["hHitsPerChamber"+chambTag] = new TH1F(("hHitsPerChamber_" +chambTag).c_str(),
+      "Distribution of Hits per chamber; Number of hits; Entries",
+    50,0.5,50.5);
+    m_plots["hHitsPerChamber"+chambTag+"SL1"] = new TH1F(("hHitsPerChamber_" +chambTag + "SL1").c_str(),
+      "Distribution of Hits in SL1; Number of hits; Entries",
+    50,0.5,50.5);
+    m_plots["hHitsPerChamber"+chambTag+"SL3"] = new TH1F(("hHitsPerChamber_" +chambTag + "SL3").c_str(),
+      "Distribution of Hits in SL3; Number of hits; Entries",
+    50,0.5,50.5);
+
+
     m_plots2["hHits"+chambTag] = new TH2F(("hHits_" +chambTag).c_str(),
       "Distribution of Hits; Cell Number; ",
     100,0.5,100.5,14,0,14.5); 
@@ -751,13 +762,25 @@ void DTNtupleTPGSimAnalyzer::fill()
   /* HIT PLOTS */
  
   int numOfDigis[4];
-  for (int i = 0; i < 4; i++) numOfDigis[i] = 0;
+  int numOfDigisPerSL[4][2];
+  for (int i = 0; i < 4; i++) {
+    numOfDigis[i] = 0;
+    numOfDigisPerSL[i][0] = 0;
+    numOfDigisPerSL[i][1] = 0;
+  }
+
   for (unsigned int iHit = 0; iHit < ph2Digi_nDigis; iHit++) {
+    if (ph2Digi_superLayer->at(iHit) == 2) continue;
     m_plots2["hHits" + chambTags.at(ph2Digi_station -> at(iHit) - 1)]  -> Fill(ph2Digi_wire->at(iHit) , ph2Digi_layer->at(iHit) + ( ph2Digi_superLayer->at(iHit) - 1 ) * 5 );      
     numOfDigis[ph2Digi_station -> at(iHit) - 1]++;
+    numOfDigisPerSL[ph2Digi_station -> at(iHit) - 1][ph2Digi_superLayer->at(iHit) / 2]++;
   } 
   
-  
+  for (int i = 0; i < 4; i++) {
+    m_plots["hHitsPerChamber"+chambTags.at(i)] -> Fill (numOfDigis[i]);
+    m_plots["hHitsPerChamber"+chambTags.at(i)+"SL1"] -> Fill (numOfDigisPerSL[i][0]);
+    m_plots["hHitsPerChamber"+chambTags.at(i)+"SL3"] -> Fill (numOfDigisPerSL[i][1]);
+  }
   
   bool titPrint = false; 
   
@@ -905,44 +928,28 @@ void DTNtupleTPGSimAnalyzer::fill()
       cout << "-------------------------------------------------------------------------" << endl;
     }
     
-    m_plots["hSLHW" + chambTags.at(myStationHW-1)]->Fill(mySLHW);
-    m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myDirHW);
-    m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW - offset[myStationHW-1]);
-    m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(myBXHW);
-    m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(round(myt0HW/25));
-    m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(0)]->Fill(1.E6*myChi2HW / (1024. * 100) );
-    
-    if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
-      m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myDirHW);
-      m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW - offset[myStationHW-1]);
-      m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(myBXHW);
-      m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(round(myt0HW/25));
-      m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(1)]->Fill(1.E6*myChi2HW / (1024. * 100) );
-      } else {
-      m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myDirHW);
-      m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW - offset[myStationHW-1]);
-      m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(myBXHW);
-      m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(round(myt0HW/25));
-      m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)]->Fill(1.E6*myChi2HW/ (1024. * 100) );
-      
-      m_plots["hPsiHW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myDirHW);
-      m_plots["hBX"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW - offset[myStationHW-1]);
-      m_plots["hBXDif"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(myBXHW);
-      m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(round(myt0HW/25));
-      m_plots["hChi2FW"+chambTags.at(myStationHW-1)+labelTags.at(2)+slTags.at(mySLHW/2)]->Fill(1.E6*myChi2HW/ (1024. * 100) );
-    }
-    
-    m_plots["hPsiHW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myDirHW);
-    m_plots["hBX"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW - offset[myStationHW-1]);
-    m_plots["hBXDif"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(myBXHW);
-    m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(round(myt0HW/25));
-    
     m_plots["hQualityHW"]->Fill(myQualityHW);
     m_plots["hQualityHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW);
     m_plots2["hQualityVsBXHW"+ chambTags.at(myStationHW-1)]->Fill(myQualityHW, myBXHW-offset[myStationHW-1]);
-    m_plots["hChi2FW"+chambTags.at(myStationHW-1)+quTags.at(qualityGroup(myQualityHW))]->Fill(1.E6*myChi2HW/ (1024. * 100) );
+    m_plots["hSLHW" + chambTags.at(myStationHW-1)]->Fill(mySLHW);
     
-    
+    std::vector <std::string> categories = {};
+    categories.push_back(labelTags.at(0));
+    if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
+      categories.push_back(labelTags.at(1));
+    } else {
+      categories.push_back(labelTags.at(2));
+      categories.push_back(labelTags.at(2)+slTags.at(mySLHW/2));
+    }
+    categories.push_back(quTags.at(qualityGroup(myQualityHW)));
+
+    for (auto & category : categories){
+      m_plots["hPsiHW"+chambTags.at(myStationHW-1)+category]->Fill(myDirHW);
+      m_plots["hBX"+chambTags.at(myStationHW-1)+category]->Fill(myBXHW - offset[myStationHW-1]);
+      m_plots["hBXDif"+chambTags.at(myStationHW-1)+category]->Fill(myBXHW);
+      m_plots["hBXfromT0"+chambTags.at(myStationHW-1)+category]->Fill(round(myt0HW/25));
+      m_plots["hChi2FW"+chambTags.at(myStationHW-1)+category]->Fill(1.E6*myChi2HW / (1024. * 100) );
+    } 
   } // end HW
   
   if (debug && ph2TpgPhiEmuAm_nTrigs!=0 && !titPrint) { 

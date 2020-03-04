@@ -268,6 +268,19 @@ void printPlots_run(std::string run) {
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
 
+    // HIT PLOTS 
+    std::vector <std::string> slTags2 = {"","SL1","SL3"};
+    for (auto & slTag : slTags2) {
+      std::string nameHisto = "hHitsPerChamber" + chambTag + slTag;
+      sprintf(name,"%s",nameHisto.c_str());
+      m_plots[name] = (TH1F*) data1.Get(name);
+      m_plots[name]->Draw();
+      sprintf(name,"run%s/hHits/%s.png",run.c_str(),nameHisto.c_str());
+      gPad->SaveAs(name);
+      if (fileOK) cout << nameHisto << ".png" << endl;
+    } 
+
+
 
     ////////////////////////// EFFICIENCY PLOTS ////////////////////////////
 
