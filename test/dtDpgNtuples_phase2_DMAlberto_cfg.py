@@ -65,12 +65,6 @@ options.register('ageingTag',
                  VarParsing.VarParsing.varType.string,
                  "Tag for customised ageing")
 
-options.register('applyRandomBkg',
-                 False, #default value
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.bool,
-                 "If True applies random background to phase-2 digis and emulator")
-
 options.register('ntupleName',
                  './DTDPGNtuple_10_6_0_Phase2_Simulation.root', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
@@ -101,14 +95,13 @@ if options.ageingInput != "" :
                                )
 
 process.source = cms.Source("PoolSource",
-                            
-        fileNames = cms.untracked.vstring(),
+                            fileNames = cms.untracked.vstring("/store/user/escalant/HTo2LongLivedTo4mu_MH-200_MFF-50_CTau-2000mm_TuneCP5_13TeV_pythia8/MC2018_Benchmark_2mu2jets_June2019-GSR-testForL1-v2/190607_155139/0000/EXO-RunIIAutumn18DRPremix_GSR_HTo2LongLivedTo2mu2jets_MH-200_MFF-50_CTau-200mm_TuneCP5_13TeV_pythia8_8.root"),
         secondaryFileNames = cms.untracked.vstring()
 
 )
 
 files = subprocess.check_output(["ls", options.inputFolder])
-process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split()]
+#process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split()]
 
 if options.secondaryInputFolder != "" :
     files = subprocess.check_output(["ls", options.secondaryInputFolder])
@@ -128,11 +121,12 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi") 
 process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 
-process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
+#process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
+process.CalibratedDigis.dtDigiTag = "muonDTDigis"
 process.CalibratedDigis.scenario = 0
 process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
-process.dtTriggerPhase2AmPrimitiveDigis.useRPC = False
+#process.dtTriggerPhase2AmPrimitiveDigis.useRPC = True
 
 process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
 
@@ -140,13 +134,18 @@ process.dtTriggerPhase2HbPrimitiveDigis = process.DTTPG.clone()
 process.dtTriggerPhase2HbPrimitiveDigis.FirstBX = cms.untracked.int32(20)
 process.dtTriggerPhase2HbPrimitiveDigis.LastBX = cms.untracked.int32(20)
 
+
+process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
+
 process.load('RecoLocalMuon.Configuration.RecoLocalMuon_cff')
-process.dt1DRecHits.dtDigiLabel = "simMuonDTDigis"
-process.rpcRecHits.rpcDigiLabel = "simMuonRPCDigis"
+process.dt1DRecHits.dtDigiLabel = "muonDTDigis"
+process.rpcRecHits.rpcDigiLabel = "muonRPCDigis"
 
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_phase2_cfi')
 
-process.p = cms.Path(process.rpcRecHits
+process.p = cms.Path(
+#process.rpcRecHits
+    process.muonDTDigis
                      + process.dt1DRecHits
                      + process.dt4DSegments
                      + process.CalibratedDigis
@@ -154,14 +153,7 @@ process.p = cms.Path(process.rpcRecHits
                      + process.dtTriggerPhase2HbPrimitiveDigis
                      + process.dtNtupleProducer)
 
-from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRandomBkg, customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing
-
+from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing
+customiseForAgeing(process,"p",options.applySegmentAgeing,options.applyTriggerAgeing,options.applyRpcAgeing)
 customiseForRunningOnMC(process,"p")
 customiseForFakePhase2Info(process)
-
-if options.applyRandomBkg : 
-    customiseForRandomBkg(process,"p")
-
-customiseForAgeing(process,"p",options.applySegmentAgeing,options.applyTriggerAgeing,options.applyRpcAgeing)
-
- 

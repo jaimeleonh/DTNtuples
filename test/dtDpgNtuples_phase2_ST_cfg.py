@@ -43,33 +43,11 @@ options.register('applyTriggerAgeing',
                  VarParsing.VarParsing.varType.bool,
                  "If True applies ageing to trigger emulators")
 
-options.register('applyRpcAgeing',
-                 False, #default value
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.bool,
-                 "If True applies ageing to RPCs")
-
 options.register('ageingInput',
                  '', #default value
-                 #'MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db', #default value
-                 #'sqlite_file:MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Input with customised ageing, used only if non ''")
-
-options.register('ageingTag',
-                 '', #default value
-                 #'MuonAgeingAndFailures_3000fbm1_DT_L1T', #default value
-                 #'MuonSystemAging', #default value
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.string,
-                 "Tag for customised ageing")
-
-options.register('applyRandomBkg',
-                 False, #default value
-                 VarParsing.VarParsing.multiplicity.singleton,
-                 VarParsing.VarParsing.varType.bool,
-                 "If True applies random background to phase-2 digis and emulator")
 
 options.register('ntupleName',
                  './DTDPGNtuple_10_6_0_Phase2_Simulation.root', #default value
@@ -79,7 +57,7 @@ options.register('ntupleName',
 
 options.parseArguments()
 
-process = cms.Process("DTNTUPLES",eras.Phase2C8_timing_layer_bar)
+process = cms.Process("DTNTUPLES",eras.Run2_2018)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -96,7 +74,7 @@ if options.ageingInput != "" :
     process.GlobalTag.toGet = cms.VPSet()
     process.GlobalTag.toGet.append(cms.PSet(record  = cms.string("MuonSystemAgingRcd"),
                                             connect = cms.string(options.ageingInput),
-                                            tag     = cms.string(options.ageingTag)
+                                            tag     = cms.string("MuonSystemAging")
                                         )
                                )
 
@@ -131,8 +109,36 @@ process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
 process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
 process.CalibratedDigis.scenario = 0
 process.dtTriggerPhase2PrimitiveDigis.scenario = 0
+
+####################### SliceTest specials ##############################
+
+#process.dtTriggerPhase2PrimitiveDigis.debug = True
+
+#Chi2 -> Changing a lot lately
+process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.01)
+process.dtTriggerPhase2PrimitiveDigis.chi2corTh = cms.untracked.double(9999.)
+
+
+#LSB -> Position 0.00625 cm instead of 0.004 cm
+process.dtTriggerPhase2PrimitiveDigis.use_LSB = True
+process.dtTriggerPhase2PrimitiveDigis.x_precision = cms.untracked.double(1./160.)
+process.dtTriggerPhase2PrimitiveDigis.tanPsi_precision = cms.untracked.double(1./4096.)
+
+#Correlate with BX
+process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = True
+process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = 1
+
+#Correlate with tanPsi
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(99999./4096.)
+
+#Confirmation forbidden
+process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False
+
+#SL TanPsi cut
+process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.)
+
+
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
-process.dtTriggerPhase2AmPrimitiveDigis.useRPC = False
 
 process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
 
@@ -142,26 +148,21 @@ process.dtTriggerPhase2HbPrimitiveDigis.LastBX = cms.untracked.int32(20)
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuon_cff')
 process.dt1DRecHits.dtDigiLabel = "simMuonDTDigis"
-process.rpcRecHits.rpcDigiLabel = "simMuonRPCDigis"
 
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_phase2_cfi')
 
-process.p = cms.Path(process.rpcRecHits
-                     + process.dt1DRecHits
+process.p = cms.Path(process.dt1DRecHits
                      + process.dt4DSegments
                      + process.CalibratedDigis
                      + process.dtTriggerPhase2AmPrimitiveDigis
                      + process.dtTriggerPhase2HbPrimitiveDigis
                      + process.dtNtupleProducer)
 
-from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRandomBkg, customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing
-
+from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing
+customiseForAgeing(process,"p",options.applySegmentAgeing,options.applyTriggerAgeing)
 customiseForRunningOnMC(process,"p")
 customiseForFakePhase2Info(process)
 
-if options.applyRandomBkg : 
-    customiseForRandomBkg(process,"p")
 
-customiseForAgeing(process,"p",options.applySegmentAgeing,options.applyTriggerAgeing,options.applyRpcAgeing)
 
- 
+

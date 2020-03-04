@@ -39,7 +39,7 @@ DTNtupleSegmentFiller::~DTNtupleSegmentFiller()
 { 
 
 };
-
+//
 void DTNtupleSegmentFiller::initialize()
 {
 
@@ -89,6 +89,8 @@ void DTNtupleSegmentFiller::initialize()
   m_tree->Branch((m_label + "_posLoc_x_midPlane").c_str(), &m_seg4D_posLoc_x_midPlane);
 
   m_tree->Branch((m_label + "_posGlb_phi").c_str(), &m_seg4D_posGlb_phi);
+  m_tree->Branch((m_label + "_posGlb_phi_SL1").c_str(), &m_seg4D_posGlb_phi_SL1);
+  m_tree->Branch((m_label + "_posGlb_phi_SL3").c_str(), &m_seg4D_posGlb_phi_SL3);
   m_tree->Branch((m_label + "_posGlb_eta").c_str(), &m_seg4D_posGlb_eta);
 
   m_tree->Branch((m_label + "_dirGlb_phi").c_str(), &m_seg4D_dirGlb_phi);
@@ -155,6 +157,8 @@ void DTNtupleSegmentFiller::clear()
   m_seg4D_posLoc_x_midPlane.clear(); 
 
   m_seg4D_posGlb_phi.clear();
+  m_seg4D_posGlb_phi_SL1.clear();
+  m_seg4D_posGlb_phi_SL3.clear();
   m_seg4D_posGlb_eta.clear();
   m_seg4D_dirGlb_phi.clear();
   m_seg4D_dirGlb_eta.clear();
@@ -235,6 +239,8 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      m_seg4D_hasZed.push_back(hasZed);
 	      
 	      auto pos = segment4D->localPosition();
+	      //auto posSL1 = new LocalPoint (pos.x(), pos.y(), pos.z()+11.75);
+              //auto posSL3 = new LocalPoint (pos.x(), pos.y(), pos.z()-11.75);
 	      auto dir = segment4D->localDirection();
 	      
 	      m_seg4D_posLoc_x.push_back(pos.x());
@@ -246,6 +252,8 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      m_seg4D_dirLoc_z.push_back(dir.z());
 	      
 	      float xPosLocSL[2] = { DTNtupleBaseFiller::DEFAULT_DOUBLE_VAL,
+				     DTNtupleBaseFiller::DEFAULT_DOUBLE_VAL };
+	      float phiLocSL[2] = { DTNtupleBaseFiller::DEFAULT_DOUBLE_VAL,
 				     DTNtupleBaseFiller::DEFAULT_DOUBLE_VAL };
 	      bool hasPptSL[2] = { false, false };
 	      float xPosLocMidPlane = DTNtupleBaseFiller::DEFAULT_DOUBLE_VAL;
@@ -290,6 +298,7 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 			      GlobalPoint segExrapolationToSL(pptSL.second);
 			      LocalPoint  segPosAtSLChamber = chamb->toLocal(segExrapolationToSL);
 			      xPosLocSL[iSL] = segPosAtSLChamber.x();
+			      phiLocSL[iSL] = segExrapolationToSL.phi();
 			    }
 			}
 		      
@@ -364,6 +373,8 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
 	      
 	      m_seg4D_posGlb_phi.push_back(posGlb.phi());
+              m_seg4D_posGlb_phi_SL1.push_back(phiLocSL[0]);
+              m_seg4D_posGlb_phi_SL3.push_back(phiLocSL[1]);
 	      m_seg4D_posGlb_eta.push_back(posGlb.eta());
 
 	      m_seg4D_dirGlb_phi.push_back(dirGlb.phi());

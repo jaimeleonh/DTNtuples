@@ -54,6 +54,8 @@ class DTNtupleGenFiller : public DTNtupleBaseFiller
   std::vector<float> m_gen_phi;    // gen particle phi (float in [-pi:pi] range) // CB check range
   std::vector<float> m_gen_eta;    // gen particle eta
   std::vector<short> m_gen_charge; // gen particle charge
+  std::vector<double> m_gen_lxy; // gen particle lxy
+  std::vector<double> m_gen_dxy; // gen particle lxy
   
 };
   

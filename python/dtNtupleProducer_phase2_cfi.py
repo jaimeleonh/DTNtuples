@@ -9,12 +9,17 @@ dtNtupleProducer = cms.EDAnalyzer("DTNtupleProducer",
 
                                   ph1DtDigiTag = cms.untracked.InputTag("simMuonDTDigis"),
                                   ph2DtDigiTag = cms.untracked.InputTag("simMuonDTDigis"),
+                                  #ph1DtDigiTag = cms.untracked.InputTag("muonDTDigis"),
+                                  #ph2DtDigiTag = cms.untracked.InputTag("muonDTDigis"),
 
                                   ph1TwinMuxInTag = cms.untracked.InputTag("simDtTriggerPrimitiveDigis"),
                                   ph1TwinMuxOutTag = cms.untracked.InputTag("simDtTriggerPrimitiveDigis"),
+                                  #ph1TwinMuxInTag = cms.untracked.InputTag("none"),
+                                  #ph1TwinMuxOutTag = cms.untracked.InputTag("none"),
                                   ph1BmtfInTag = cms.untracked.InputTag("none"),
 
                                   ph1TwinMuxInThTag = cms.untracked.InputTag("simDtTriggerPrimitiveDigis"),
+                                  #ph1TwinMuxInThTag = cms.untracked.InputTag("none"),
                                   ph1BmtfInThTag = cms.untracked.InputTag("none"),
 
                                   ph2TPGPhiHwTag = cms.untracked.InputTag("dtTriggerPhase2AmPrimitiveDigis"),
