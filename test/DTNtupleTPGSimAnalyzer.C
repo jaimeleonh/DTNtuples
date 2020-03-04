@@ -1118,6 +1118,9 @@ void DTNtupleTPGSimAnalyzer::fill()
 
 
 
+  /************************************************************************************************************************************************************
+   *                                                                  TWINMUX
+  ************************************************************************************************************************************************************/
   bool printTwin = false; 
   
   int bestQualTrigTM[4];int IbestQualTrigTM[4] ; // 4 stations MB1 to MB4 
@@ -1196,39 +1199,34 @@ void DTNtupleTPGSimAnalyzer::fill()
       float myPosHW =  ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]);
       float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]);
       
-      m_plots2["hPsi2DTM"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
-      m_plots2["hPos2DTM"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
-      m_plots2["hPhi2DTM"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
-      m_plots2["hPhiB2DTM"+chambTags.at(i)+labelTags.at(0)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
+      std::vector <std::string> categories = {};
+      categories.push_back(labelTags.at(0));
+      if (j == 2 || j == 3 || j == 4){	
+        categories.push_back(labelTags.at(1));
+      } else {
+        categories.push_back(labelTags.at(2));
+        categories.push_back(labelTags.at(2)+slTags.at(myHwSuperlayer/2));
+      }
+      categories.push_back(quTags.at(j));
+
+      for (auto & category : categories){
+        m_plots2["hPsi2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
+        m_plots2["hPos2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
+        m_plots2["hPhi2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
+        m_plots2["hPhiB2DTM"+chambTags.at(i)+category]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
+      }        
       
-      if (j == 2 || j == 3 || j == 4) {
-        m_plots2["hPsi2DTM"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
-        m_plots2["hPos2DTM"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
-        m_plots2["hPhi2DTM"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
-        m_plots2["hPhiB2DTM"+chambTags.at(i)+labelTags.at(1)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
-        } else {	   
-        m_plots2["hPsi2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
-        m_plots2["hPos2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
-        m_plots2["hPhi2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
-        m_plots2["hPhiB2DTM"+chambTags.at(i)+labelTags.at(2)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
-        
-        short indexSL = myHwSuperlayer / 2; 
-        
-        m_plots2["hPsi2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]), myDirTwin );
-        m_plots2["hPos2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j])  , myPosTwin );
-        m_plots2["hPhi2DTM" +chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j])       , myPhiTwin );
-        m_plots2["hPhiB2DTM"+chambTags.at(i) + labelTags.at(2) + slTags.at(indexSL)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j])      , myPhiBTwin);
-        
-      }	   
-      m_plots2["hPsi2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
-      m_plots2["hPos2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
-      m_plots2["hPhi2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
-      m_plots2["hPhiB2DTM"+chambTags.at(i)+quTags.at(j)]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
       
     }
     
     
-  }
+  } 
+
+  /************************************************************************************************************************************************************
+  ************************************************************************************************************************************************************/
+
+
+
   /***********************************************************************************************************************************************
     *
     * 							  FIRMWARE - EMULATOR
