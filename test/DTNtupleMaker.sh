@@ -13,6 +13,13 @@ repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThr
 
 calibFile=t0i_run$1.txt
 
+
+##### DISCLAIMER
+# Calibration will only work if in /CMSSW_10_6_5_patch1/python/CalibMuon/DTCalibration/Workflow/DTWorkflow.py
+# Line 135 the folder is set to /eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1 for newer runs.
+
+
+
 if [ -f "$calibFile" ] 
 then
 echo "Found t0i file. Remove file in order to rerun the T0 calibration"
