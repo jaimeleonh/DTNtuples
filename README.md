@@ -10,22 +10,10 @@ In the present days this code is evolving fast, hence the installation recipe ma
 cmsrel CMSSW_10_6_5_patch1
 cd CMSSW_10_6_5_patch1/src/
 cmsenv
-git cms-merge-topic jaimeleonh:newUnpacker # phase-2 unpacker
+git cms-merge-topic jaimeleonh:unpacker_with_arrivalBX # phase-2 unpacker
 git cms-merge-topic battibass:Phase2_DTRecoAndCalib
-git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
-git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
-scramv1 b -j 5
-```
-
-#### With last emulator version
-```
-cmsrel CMSSW_10_6_5_patch1
-cd CMSSW_10_6_5_patch1/src/
-cmsenv
-git cms-merge-topic jaimeleonh:newUnpacker # phase-2 unpacker
-git cms-merge-topic battibass:Phase2_DTRecoAndCalib
-git cms-merge-topic -u jaimeleonh:EmulFW # AM emulator
-git clone --single-branch --branch correctL1 https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
+git cms-merge-topic -u dtp2-tpg-am:AM_with_arrivalBX # AM emulator
+git clone --single-branch --branch correctL1_bis https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
 scramv1 b -j 5
 ```
 
@@ -35,13 +23,19 @@ git remote set-url origin git@github.com:jaimeleonh/DTNtuples.git
 ```
 
 
-### Ntuple prduction:
+### Ntuple production:
 ```
 cd DTDPGAnalysis/DTNtuples/test/
 cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNumber=330848
 ```
 By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 with the L1A BX. 
 
+To also run the calibration (in order to obtain the Ph2 segments): 
+```
+source DTNtupleMaker.sh tpRunNumber CosmicsRunNumber
+```
+
+Take care when running on 2020 runs! (see disclaimer in DTNtupleMaker.sh script)
 
 ### Analysis:
 #### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```):
