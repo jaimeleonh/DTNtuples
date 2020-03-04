@@ -4,8 +4,8 @@ from samples import samples
 
 
 ################### MODIFY THESE TWO PARAMETERS ###############
-bkgUsed = "9"
-sampleUsed = "mu_PU0"
+bkgUsed = "0" ## This one just sets filenames, need to modify it in plugins/DTRandomDigiGenerator.cc and recompile
+sampleUsed = "nu_PU200" ## This alias can be found in test/samples.py
 
 
 
