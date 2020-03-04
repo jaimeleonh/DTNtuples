@@ -32,7 +32,7 @@ By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 wit
 
 To also run the calibration (in order to obtain the Ph2 segments): 
 ```
-source DTNtupleMaker.sh tpRunNumber CosmicsRunNumber
+source DTNtupleMaker.sh TpRunNumber CosmicsRunNumber
 ```
 
 Take care when running on 2020 runs! (see disclaimer in DTNtupleMaker.sh script)
