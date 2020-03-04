@@ -1048,33 +1048,28 @@ void DTNtupleTPGSimAnalyzer::fill()
       cout << "t0 " << myt0AM << endl;	
       cout << "-------------------------------------------------------------------------" << endl;
     }	
-    m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myDirAM);
-    m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myBXAM - offset[myStationAM-1]);
-    m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myBXAM);
+    
     m_plots["hQualityAM"]->Fill(myQualityAM);
     m_plots["hQualityAM"+ chambTags.at(myStationAM-1)]->Fill(myQualityAM);
     m_plots2["hQualityVsBXAM"+ chambTags.at(myStationAM-1)]->Fill(myQualityAM, myBXAM-offset[myStationAM-1]);
     m_plots["hSLAM" + chambTags.at(myStationAM-1)]->Fill(mySLAM);
-    m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(0)]->Fill(myChi2AM);
+    
+    std::vector <std::string> categories = {};
+    categories.push_back(labelTags.at(0));
     if (myQualityAM == 6 || myQualityAM == 8 || myQualityAM == 9){	
-      m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myDirAM);
-      m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myChi2AM);  
-      m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myBXAM - offset[myStationAM-1]);
-      m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(1)]->Fill(myBXAM);
-      } else {
-      m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myDirAM);
-      m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myDirAM);
-      m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myChi2AM);  
-      m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myChi2AM);  
-      m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myBXAM - offset[myStationAM-1]);
-      m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)]->Fill(myBXAM);
-      m_plots["hBXEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myBXAM - offset[myStationAM-1]);
-      m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+labelTags.at(2)+slTags.at(mySLAM/2)]->Fill(myBXAM);
+      categories.push_back(labelTags.at(1));
+    } else {
+      categories.push_back(labelTags.at(2));
+      categories.push_back(labelTags.at(2)+slTags.at(mySLAM/2));
     }
-    m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myChi2AM);
-    m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myDirAM);
-    m_plots["hBXEmul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myBXAM - offset[myStationAM-1]);
-    m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+quTags.at(qualityGroup(myQualityAM))]->Fill(myBXAM);
+    categories.push_back(quTags.at(qualityGroup(myQualityAM)));
+
+    for (auto & category : categories){
+      m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+category]->Fill(myDirAM);
+      m_plots["hBXEmul"+chambTags.at(myStationAM-1)+category]->Fill(myBXAM - offset[myStationAM-1]);
+      m_plots["hBXDifEmul"+chambTags.at(myStationAM-1)+category]->Fill(myBXAM);
+      m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+category]->Fill(myChi2AM);
+    } 
   } // end AM
   
   for (unsigned int i = 0; i<chambTags.size(); i++){
