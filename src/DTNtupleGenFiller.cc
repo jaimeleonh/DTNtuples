@@ -42,6 +42,8 @@ void DTNtupleGenFiller::initialize()
   m_tree->Branch((m_label + "_phi").c_str(),    &m_gen_phi);
   m_tree->Branch((m_label + "_eta").c_str(),    &m_gen_eta);
   m_tree->Branch((m_label + "_charge").c_str(), &m_gen_charge);
+  m_tree->Branch((m_label + "_lxy").c_str(),    &m_gen_lxy);
+  m_tree->Branch((m_label + "_dxy").c_str(),    &m_gen_dxy);
   
 }
 
@@ -56,6 +58,8 @@ void DTNtupleGenFiller::clear()
   m_gen_phi.clear();
   m_gen_eta.clear();
   m_gen_charge.clear();
+  m_gen_lxy.clear();
+  m_gen_dxy.clear();
 
 }
 
@@ -81,6 +85,12 @@ void DTNtupleGenFiller::fill(const edm::Event & ev)
 	  m_gen_eta.push_back(genPart.eta());
 	  m_gen_phi.push_back(genPart.phi());
 	  m_gen_charge.push_back(genPart.charge());
+
+          double LXY = sqrt( genPart.vertex().x()*genPart.vertex().x() + genPart.vertex().y()*genPart.vertex().y() );
+          double DXY = -genPart.vertex().x()*sin(genPart.phi()) + genPart.vertex().y()*cos(genPart.phi()) ;
+	  m_gen_lxy.push_back(LXY);
+	  m_gen_dxy.push_back(DXY);
+
 	  
 	  ++m_nGenParts;
 	}
