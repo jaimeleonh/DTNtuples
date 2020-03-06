@@ -43,6 +43,9 @@ protected:
 private:
   
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
+  void printMPs(int iTrig);
+  void printHits();
+  void printPh2Hits();
  
   TString quality_; 
   bool DM_; 
@@ -66,10 +69,13 @@ private:
   Double_t m_maxSegTrigDPhi;
   Double_t m_maxMuTrigDPhi;
 
+  Int_t thisEntry; 
   Int_t numberOfEntries; 
   Int_t m_maxSegT0;
 
   bool unique; 
+  
+
 
 };
 

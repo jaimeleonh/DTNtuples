@@ -24,10 +24,12 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
 
   m_minMuPt = 20;
 
-  //m_maxMuSegDPhi = 20;
-  m_maxMuSegDPhi = 0.1;
+  m_maxMuSegDPhi = 0.3;
+ // m_maxMuSegDPhi = 20;
+  //m_maxMuSegDPhi = 0.1;
+  m_maxMuSegDEta = 0.4;
   //m_maxMuSegDEta = 20;
-  m_maxMuSegDEta = 0.15;
+  //m_maxMuSegDEta = 0.15;
 
   m_minSegHits = 4;
   m_minZSegHits = 4;
@@ -60,6 +62,8 @@ void DTNtupleTPGSimAnalyzer::Loop()
   //for (Long64_t jentry = 0; jentry < 100; jentry++)
   for (Long64_t jentry = 0; jentry < nentries; jentry++)
     {
+//      if (jentry != 12619) continue;
+      thisEntry = jentry;
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
       nb = fChain->GetEvent(jentry);   nbytes += nb;
@@ -95,10 +99,20 @@ void DTNtupleTPGSimAnalyzer::book()
                           200, -50, +50, 200, -100, 100);
   m_plots["hGenSegDeltaPhi"] = new TH1D("hGenSegDeltaPhi",
                           "Gen Muon - Segment Delta Phi distribution ; Delta Phi; Entries",
-                          600, 0, 0.5);
+                          600, 0, 10);
   m_plots["hGenSegDeltaEta"] = new TH1D("hGenSegDeltaEta",
                           "Gen Muon - Segment Delta Eta distribution ; Delta Eta; Entries",
-                          600, 0, 0.5);
+                          600, 0, 3);
+  for (const auto & chamb : chambTag) {
+    for (const auto & wheel : wheelTag) {
+      m_plots["hGenSegDeltaPhi"+wheel+chamb] = new TH1D(("hGenSegDeltaPhi"+wheel+chamb).c_str(),
+                          "Gen Muon - Segment Delta Phi distribution ; Delta Phi; Entries",
+                          600, 0, 10);
+      m_plots["hGenSegDeltaEta"+wheel+chamb] = new TH1D(("hGenSegDeltaEta"+wheel+chamb).c_str(),
+                          "Gen Muon - Segment Delta Eta distribution ; Delta Eta; Entries",
+                          600, 0, 3);
+    }
+  }
 
   for (const auto & algo : algoTag)
   {
@@ -158,6 +172,8 @@ void DTNtupleTPGSimAnalyzer::fill()
   std::vector<std::string> whTags    = { "Wh.-2", "Wh.-1", "Wh.0", "Wh.+1", "Wh.+2"};
   std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
 
+  //printHits();
+
   for (std::size_t iGenPart = 0; iGenPart < gen_nGenParts; ++iGenPart)
   {
     if (std::abs(gen_pdgId->at(iGenPart)) != 13 || gen_pt->at(iGenPart) < m_minMuPt) continue;
@@ -180,9 +196,12 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hSegmentPsi"] -> Fill( atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi())  );
       m_plots2["hSegmentPsiVST0"] -> Fill( atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , seg_phi_t0->at(iSeg) );
       m_plots["hGenSegDeltaPhi"] -> Fill( muSegDPhi );
+      m_plots["hGenSegDeltaPhi"+whTags.at(seg_wheel->at(iSeg)+2)+chambTags.at(segSt-1)] -> Fill( muSegDPhi );
       m_plots["hGenSegDeltaEta"] -> Fill( muSegDEta );
+      m_plots["hGenSegDeltaEta"+whTags.at(seg_wheel->at(iSeg)+2)+chambTags.at(segSt-1)] -> Fill( muSegDEta );
 
       if (abs(seg_phi_t0->at(iSeg)) > m_maxSegT0 ) continue;
+// if (abs(seg_wheel->at(iSeg))==2 && segSt==4) cout << "Found! muSegDPhi=" << muSegDPhi<< " genPhi="<< gen_phi->at(iGenPart) << " seg_posGlb_phi=" << seg_posGlb_phi->at(iSeg)  << " muSegDEta=" << muSegDEta << " segNHits=" << segNHits << " segZNHits=" << segZNHits  << endl;
 
       if (muSegDPhi < m_maxMuSegDPhi &&
           muSegDEta < m_maxMuSegDEta &&
@@ -192,6 +211,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       {
         bestSegNHits[segSt - 1] = segNHits;
         bestSegIndex[segSt - 1] = iSeg;
+     //   if (abs(seg_wheel->at(iSeg))==2 && segSt==4) cout << "Found!" << endl;
       }
     }
 
@@ -248,7 +268,8 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (segSec == 13) segSec = 4;
       if (segSec == 14) segSec = 10;
       Int_t segSt  = seg_station->at(iSeg);
-      
+     
+
       std::string chambTag = chambTags.at(segSt - 1);
       std::string whTag    = whTags.at(segWh + 2);
       std::string secTag   = secTags.at(segSec - 1);
@@ -353,6 +374,8 @@ void DTNtupleTPGSimAnalyzer::fill()
 
       if (bestTPAM > -1 && seg_phi_t0->at(iSeg) > -500)
       {
+//        cout << "Efficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) <<endl;
+        //cout << "Efficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) << " Primitive iTrig " << bestTPAM << " out of " <<  ph2TpgPhiEmuAm_nTrigs  <<endl;
         //cout << "Eficiente!" << endl; 
         m_plots["Eff_" + chambTag + "_AM_matched"]->Fill(segWh);
         m_plots["EffEta_" + chambTag + "_AM_matched"]->Fill(gen_eta->at(iGenPart));
@@ -362,7 +385,8 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["hEffvsSlopeAMmatched"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         if (AMRPCflag > 0) m_plots["Eff_" + chambTag + "_AM+RPC_matched"]->Fill(segWh);
       } else if (bestTPAM  < 0 && seg_phi_t0->at(iSeg) > -500) {
-      //  cout << "No eficiente " << endl; 
+       // cout << "Inefficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) <<endl;
+        //cout << "Inefficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) << " Primitive iTrig " << bestTPAM << " out of " <<  ph2TpgPhiEmuAm_nTrigs  <<endl;
       }
       if (seg_phi_t0->at(iSeg) > -500)
       {
@@ -391,7 +415,13 @@ void DTNtupleTPGSimAnalyzer::fill()
 //       }
 
     }
+
+
   }
+  //for (unsigned int iTrig = 0; iTrig < ph2TpgPhiEmuAm_nTrigs; iTrig++)  {
+  //  printMPs(iTrig);
+  //  cout << "-------------------------------------------------" <<endl;
+  //}
 }
 
 
@@ -404,7 +434,31 @@ void DTNtupleTPGSimAnalyzer::endJob()
   m_outFile.Close();
 }
 
+void DTNtupleTPGSimAnalyzer::printMPs(int iTrig)
+{
+  cout << "iTrig " << iTrig
+       << " Wh:" << ph2TpgPhiEmuAm_wheel->at(iTrig) 
+       << " Se:" << ph2TpgPhiEmuAm_sector->at(iTrig) 
+       << " St:" << ph2TpgPhiEmuAm_station->at(iTrig) << endl 
+       << "Position :" << ph2TpgPhiEmuAm_posLoc_x->at(iTrig) << endl 
+       << "Direction :" << ph2TpgPhiEmuAm_dirLoc_phi->at(iTrig) << endl 
+       << "Time :" << ph2TpgPhiEmuAm_t0->at(iTrig) << endl 
+       << "Quality :" << ph2TpgPhiEmuAm_quality->at(iTrig) << endl; 
+}
 
+void DTNtupleTPGSimAnalyzer::printHits () 
+{
+  for (unsigned int i = 0; i < digi_nDigis; i++){
+    cout << "Wh: " << digi_wheel->at(i) << " Se:" << digi_sector->at(i) << " St:" << digi_station->at(i) << " Sl:" << digi_superLayer->at(i) << " La:" << digi_layer->at(i) << " Wi:" << digi_wire->at(i) << " Time: " << digi_time->at(i) << endl;      
+  }
+}
+
+void DTNtupleTPGSimAnalyzer::printPh2Hits () 
+{
+  for (unsigned int i = 0; i < ph2Digi_nDigis; i++){
+    cout << "Wh: " << ph2Digi_wheel->at(i) << " Se:" << ph2Digi_sector->at(i) << " St:" << ph2Digi_station->at(i) << " Sl:" << ph2Digi_superLayer->at(i) << " La:" << ph2Digi_layer->at(i) << " Wi:" << ph2Digi_wire->at(i) << " Time: " << ph2Digi_time->at(i) << endl;      
+  }
+}
 
 Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
 {

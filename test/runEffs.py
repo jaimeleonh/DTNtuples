@@ -20,7 +20,12 @@ my_namespace = parser.parse_args()
 
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
-files['DM'].append('DMAlberto')
+#files['DM'].append('DMAlberto')
+#files['DM'].append('DMAlberto_20')
+files['DM'].append('DMAlberto_200')
+#files['norpc'].append('mu_pu0_ov_nobkg')
+#files['norpc'].append('mu_pu0_ov_bkg7p5')
+#files['norpc'].append('mu_bkg7p5_557')
 #files['DM'].append('PU0_DM_PT10-30_mod_2')
 #files['DM'].append('DM_NOPU_10-30')
 #files['norpc'].append('nopu_noage_norpc')
@@ -60,8 +65,8 @@ possibleQualities = ['All','correlated', 'legacy', 'index0', 'index01', 'index01
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
 #qualities['norpc'] = ['A']
 #qualities['norpc'] = ['All','nothreehits','correlated','legacy']
-#qualities['norpc'] = ['All']
-qualities['norpc'] = ['All','nothreehits']
+qualities['norpc'] = ['All']
+#qualities['norpc'] = ['All','nothreehits']
 #qualities['norpc'] = ['legacy']
 #qualities['rpc'] = ['qualityMatchedORSegs','qualityMatchedORSegsClus']
 qualities['rpc'] = ['All','nothreehits', 'withmatchedthreehits' ,'qualityORSegs','qualityORSegsClus','qualityMatchedORSegs','qualityMatchedORSegsClus']
@@ -93,7 +98,10 @@ if not os.path.isdir(effPath) : rc = call('mkdir ' + effPath, shell=True)
 for cat in files : 
   if cat == 'DM' : DM = True
   else : DM = False
-  
+ 
+  if DM == True : 
+    print bcolors.green +  "Warning!: If you run over DM samples, you may consider matching with seg_dirGlb instead of seg_posGlb avoiding eta matching" + bcolors.reset
+
   for fil in files[cat] :
     if my_namespace.ntuples == True :    
       for quality in qualities[cat] :
@@ -106,7 +114,6 @@ for cat in files :
         analysis = DTNtupleTPGSimAnalyzer(path + fil + '.root', outputPath + 'results_effis_' +fil + '_' + quality + '.root', quality, DM)
         analysis.Loop()
    
-
     plottingStuff = { 'lowlimityaxis': 0.8,
 		      'highlimityaxis': 1.01,
 		      'markersize': 0.7,
@@ -243,7 +250,7 @@ for ch in chambTag :
             if not Qualities[key][i] in legends :
               print (bcolors.red + "ERROR: '" +  Qualities[key][i]  + "' is not one of the possible qualities" + bcolors.reset)
             else :
-              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps') 
+              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps' + bcolors.reset) 
             continue 
           myLegends.append(legends[Qualities[key][i]])
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
@@ -272,7 +279,7 @@ for ch in chambTag :
             if not Qualities[key][i] in legends :
               print (bcolors.red + "ERROR: '" +  Qualities[key][i]  + "' is not one of the possible qualities" + bcolors.reset)
             else :
-              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps') 
+              print (bcolors.red + 'ERROR: ' + outputPath + 'results_effis_' + fil + '_' + Qualities[key][i] + '.root + does not exist, maybe running the ntuple production helps' + bcolors.reset) 
             continue 
           myLegends.append(legends[Qualities[key][i]])
           plottingStuff2[key]['markertypedir']["hEff_" + "AM" + "_" + fil+Qualities[key][i]] = 20 + a*6
