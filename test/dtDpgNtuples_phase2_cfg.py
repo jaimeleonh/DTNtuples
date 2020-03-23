@@ -31,6 +31,12 @@ options.register('secondaryInputFolder',
                  VarParsing.VarParsing.varType.string,
                  "EOS folder with input files for secondary files")
 
+options.register('useRPC',
+                 False, #default value
+                 VarParsing.VarParsing.multiplicity.singleton,
+                 VarParsing.VarParsing.varType.bool,
+                 "If True uses RPC information")
+
 options.register('applySegmentAgeing',
                  False, #default value
                  VarParsing.VarParsing.multiplicity.singleton,
@@ -132,7 +138,9 @@ process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
 process.CalibratedDigis.scenario = 0
 process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
-process.dtTriggerPhase2AmPrimitiveDigis.useRPC = False
+process.dtTriggerPhase2AmPrimitiveDigis.useRPC = options.useRPC
+process.dtTriggerPhase2AmPrimitiveDigis.max_quality_to_overwrite_t0 = 10
+
 
 process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
 
