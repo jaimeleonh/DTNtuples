@@ -91,7 +91,7 @@ void DTNtupleProducer::beginRun(const edm::Run & run, const edm::EventSetup & en
 void DTNtupleProducer::endJob() 
 {
 
-  m_tree->Write();
+  m_tree->GetCurrentFile()->Write();
 
 }
 
