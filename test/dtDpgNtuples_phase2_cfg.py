@@ -5,6 +5,9 @@ from Configuration.StandardSequences.Eras import eras
 import subprocess
 import sys
 
+#process = cms.Process("DTNTUPLES",eras.Phase2C8_timing_layer_bar)
+process = cms.Process("DTNTUPLES",eras.Phase2C9)
+
 options = VarParsing.VarParsing()
 
 options.register('globalTag',
@@ -85,7 +88,6 @@ options.register('ntupleName',
 
 options.parseArguments()
 
-process = cms.Process("DTNTUPLES",eras.Phase2C8_timing_layer_bar)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -96,7 +98,11 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEven
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = cms.string(options.globalTag)
+#process.GlobalTag.globaltag = cms.string(options.globalTag)
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
+
+
 
 if options.ageingInput != "" :
     process.GlobalTag.toGet = cms.VPSet()
@@ -124,15 +130,17 @@ process.TFileService = cms.Service('TFileService',
         fileName = cms.string(options.ntupleName)
     )
 
-process.load('Configuration.Geometry.GeometryExtended2023D41Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023D41_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+#process.load('Configuration.Geometry.GeometryExtended2023D41Reco_cff')
+#process.load('Configuration.Geometry.GeometryExtended2023D41_cff')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 # process.DTGeometryESModule.applyAlignment = False
 # process.DTGeometryESModule.fromDDD = False
 
-process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi") 
-process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
+process.load("L1Trigger.DTTriggerPhase2.CalibratedDigis_cfi") 
+process.load("L1Trigger.DTTriggerPhase2.dtTriggerPhase2PrimitiveDigis_cfi")
 
 process.CalibratedDigis.dtDigiTag = "simMuonDTDigis"
 process.CalibratedDigis.scenario = 0
@@ -142,11 +150,11 @@ process.dtTriggerPhase2AmPrimitiveDigis.useRPC = options.useRPC
 process.dtTriggerPhase2AmPrimitiveDigis.max_quality_to_overwrite_t0 = 10
 
 
-process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
+#process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
 
-process.dtTriggerPhase2HbPrimitiveDigis = process.DTTPG.clone()
-process.dtTriggerPhase2HbPrimitiveDigis.FirstBX = cms.untracked.int32(20)
-process.dtTriggerPhase2HbPrimitiveDigis.LastBX = cms.untracked.int32(20)
+#process.dtTriggerPhase2HbPrimitiveDigis = process.DTTPG.clone()
+#process.dtTriggerPhase2HbPrimitiveDigis.FirstBX = cms.untracked.int32(20)
+#process.dtTriggerPhase2HbPrimitiveDigis.LastBX = cms.untracked.int32(20)
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuon_cff')
 process.dt1DRecHits.dtDigiLabel = "simMuonDTDigis"
@@ -159,7 +167,7 @@ process.p = cms.Path(process.rpcRecHits
                      + process.dt4DSegments
                      + process.CalibratedDigis
                      + process.dtTriggerPhase2AmPrimitiveDigis
-                     + process.dtTriggerPhase2HbPrimitiveDigis
+#                     + process.dtTriggerPhase2HbPrimitiveDigis
                      + process.dtNtupleProducer)
 
 from DTDPGAnalysis.DTNtuples.customiseDtNtuples_cff import customiseForRandomBkg, customiseForRunningOnMC, customiseForFakePhase2Info, customiseForAgeing

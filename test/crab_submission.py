@@ -6,7 +6,7 @@ from samples import samples
 ################### MODIFY THESE TWO PARAMETERS ###############
 bkgUsed = "0" ## This one just sets filenames, need to modify it in plugins/DTRandomDigiGenerator.cc and recompile
 useRPC = False
-ageing = True
+ageing = False
 sampleUsed = "mu_PU200" ## This alias can be found in test/samples.py
 
 
@@ -34,7 +34,7 @@ if ageing :
 
 # These are the additional input files (e.g. sqlite .db) 
 # needed by dtDpgNtuples_slicetest_cfg.py to run
-if not useRPC : inputFiles = [] 
+if not ageing : inputFiles = [] 
 else : inputFiles = ['./MuonAgeingAndFailures_3000fbm1_DT_L1TTDR_v1_mc.db']
 # E.g. use dedicated tTrigs
 # inputFiles = ['./calib/TTrigDB_cosmics_ttrig.db'] 
@@ -50,7 +50,7 @@ else : requestName += '_noRPC'
 if ageing: requestName += '_withAgeing'
 else : requestName += '_noAgeing'
 if bkgUsed != "0" : requestName += '_bkg' + bkgUsed
-config.General.requestName = requestName
+config.General.requestName = requestName+"_newAnalyzer"
 
 config.General.transferOutputs = True
 
@@ -78,7 +78,7 @@ else : outName += '_noRPC'
 if ageing: outName += '_withAgeing'
 else : outName += '_noAgeing'
 if bkgUsed != "0" : outName += '_bkg' + bkgUsed
-config.Data.outLFNDirBase  = outName
+config.Data.outLFNDirBase  = outName+"_newAnalyzer"
 
 config.section_('Site')
 config.Site.storageSite = 'T2_ES_CIEMAT'
