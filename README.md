@@ -9,8 +9,8 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 For simulation: 
 ```
-cmsrel CMSSW_11_1_0_patch6
-cd CMSSW_11_1_0_patch6/src/
+cmsrel CMSSW_11_1_0_pre6
+cd CMSSW_11_1_0_pre6/src/
 cmsenv
 git cms-merge-topic -u dtp2-tpg-am:AM_111X_dev # AM emulator
 git clone https://github.com/dtp2-tpg-am/L1Trigger-DTPhase2Trigger.git L1Trigger/DTTriggerPhase2/data
