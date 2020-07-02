@@ -81,13 +81,17 @@ void DTNtupleTPGSimAnalyzer::Loop()
   
   Long64_t nentries = fChain->GetEntries();
   totalEntries = nentries;
+  //cout << "Creating histograms ";
   book();
+  //cout << " -> Finished" << endl;
   Long64_t nbytes = 0, nb = 0;
   // for (Long64_t jentry=0; jentry<50000;jentry++) 
   for (Long64_t jentry=0; jentry<nentries;jentry++)
   
   {
+    //cout << "Loading entry " << jentry; 
     Long64_t ientry = LoadTree(jentry);
+    //cout << " -> Finished" << endl;
     if (ientry < 0) break;
     nb = fChain->GetEvent(jentry);   nbytes += nb;
     if(jentry % 100 == 0) 
@@ -95,8 +99,9 @@ void DTNtupleTPGSimAnalyzer::Loop()
     << jentry << " entries\r" << std::flush;
     
     entryNumber = jentry; 
+    //cout << "Filling histograms " << endl;
     fill();
-    
+    //cout << " -> Finished filling histograms" << endl;
   }
   
   std::cout << std::endl; 
@@ -106,8 +111,7 @@ void DTNtupleTPGSimAnalyzer::Loop()
 }
 
 void DTNtupleTPGSimAnalyzer::book()
-{
-  
+{  
   m_outFile.cd();
   
   std::vector<std::string> chambTags = {"MB1","MB2","MB3", "MB4"};
@@ -760,7 +764,8 @@ void DTNtupleTPGSimAnalyzer::fill()
   ////////////////////////////////////////////////////////////////////////////////////////
   
   /* HIT PLOTS */
- 
+
+  //cout << "Filling hit plots";  
   int numOfDigis[4];
   int numOfDigisPerSL[4][2];
   for (int i = 0; i < 4; i++) {
@@ -781,7 +786,9 @@ void DTNtupleTPGSimAnalyzer::fill()
     m_plots["hHitsPerChamber"+chambTags.at(i)+"SL1"] -> Fill (numOfDigisPerSL[i][0]);
     m_plots["hHitsPerChamber"+chambTags.at(i)+"SL3"] -> Fill (numOfDigisPerSL[i][1]);
   }
-  
+ 
+  //cout << " -> Finished" << endl;
+
   bool titPrint = false; 
   
   m_plots["hBXtotal"]->Fill(eventoBX);
@@ -814,7 +821,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
     bestQualTrigBXHW[indstat]=-1;IbestQualTrigBXHW[indstat]=-1;
   }
-  
+ 
+  //cout << "Filling HW prims";  
   for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW) {
     
     short myStationHW = ph2TpgPhiHw_station->at(iTrigHW);
@@ -951,7 +959,10 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hChi2FW"+chambTags.at(myStationHW-1)+category]->Fill(1.E6*myChi2HW / (1024. * 100) );
     } 
   } // end HW
-  
+  //cout << " -> Finished" << endl;  
+
+  //cout << "Filling AM prims";  
+
   if (debug && ph2TpgPhiEmuAm_nTrigs!=0 && !titPrint) { 
     std::cout << "====================Entry " << entryNumber << " =================="<< std::endl; 
     cout << "####################### L1A BX = " << eventoBX << " ############################" << endl;  
@@ -1071,11 +1082,14 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hChi2Emul"+chambTags.at(myStationAM-1)+category]->Fill(myChi2AM);
     } 
   } // end AM
+  //cout << " -> Finished" << endl;  
 
   /************************************************************************************************************************************************************
    *                                                OBTAINING FW - EMULATOR RESOLUIONS
   ************************************************************************************************************************************************************/
 
+
+  //cout << "FW-Emu resolutions";
   for (unsigned int i = 0; i<chambTags.size(); i++){
     for (unsigned int j = 0; j<quTags.size(); j++){
       if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
@@ -1112,12 +1126,14 @@ void DTNtupleTPGSimAnalyzer::fill()
       }
     }
   }
+  //cout << " -> Finished" << endl;  
 
   /************************************************************************************************************************************************************
   ************************************************************************************************************************************************************/
 
 
 
+  //cout << "Fill TM plots" << endl;
   /************************************************************************************************************************************************************
    *                                                                  TWINMUX
   ************************************************************************************************************************************************************/
@@ -1132,17 +1148,17 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   bool HHMB3goodBX = false; 
   
-  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
+  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxOut_nTrigs; ++iTwin) {
     //break; 
-    short myStationTwin = ltTwinMuxIn_station->at(iTwin);
-    short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
-    short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
-    short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
-    int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
-    int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
-    float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
-    float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
-    int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+    short myStationTwin = ltTwinMuxOut_station->at(iTwin);
+    short mySectorTwin = ltTwinMuxOut_sector->at(iTwin);
+    short myWheelTwin = ltTwinMuxOut_wheel->at(iTwin);
+    short myQualityTwin = ltTwinMuxOut_quality->at(iTwin);
+    int myPhiTwin = ltTwinMuxOut_phi->at(iTwin);
+    int myPhiBTwin =   ltTwinMuxOut_phiB->at(iTwin);
+    float myPosTwin =  ltTwinMuxOut_posLoc_x->at(iTwin);
+    float myDirTwin =  ltTwinMuxOut_dirLoc_phi->at(iTwin);
+    int myBXTwin = ltTwinMuxOut_BX->at(iTwin);
     
     if ( myBXTwin == 1 && myQualityTwin == 6 && myStationTwin == 3 && mySectorTwin == 12 && myWheelTwin == 2 ) HHMB3goodBX = true; 
     
@@ -1171,6 +1187,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     }
     int indstat = myStationTwin - 1;  
     if (myWheelTwin != 2 || mySectorTwin != 12) continue; 
+    //cout << "Before filling qualities" << endl;
     if(myQualityTwin>bestQualTrigTM[indstat]){
       bestQualTrigTM[indstat]=myQualityTwin;
       IbestQualTrigTM[indstat]=iTwin;
@@ -1179,6 +1196,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       bestQualTrigBXTM[indstat]=myQualityTwin;
       IbestQualTrigBXTM[indstat]=iTwin;
     }
+    //cout << "After filling qualities" << endl;
     
     m_plots["hBXTM"+ chambTags.at(indstat)] -> Fill(myBXTwin);
     m_plots["hQualityTM"+ chambTags.at(indstat)] -> Fill(myQualityTwin);
@@ -1186,7 +1204,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     //cout << "before if " << myStationTwin << " " << myQualityTwin-2 << endl; 
     if (bestTrigHW[myStationTwin-1][myQualityTwin-2] != -1){
-      //cout << "after if " << myStationTwin << " " << myQualityTwin-2 << endl; 
+
+     // cout << "after if " << myStationTwin << " " << myQualityTwin-2 << endl; 
       
       int i = myStationTwin-1; 
       int j = myQualityTwin-2; 
@@ -1198,7 +1217,9 @@ void DTNtupleTPGSimAnalyzer::fill()
       short myHwSuperlayer = ph2TpgPhiHw_superLayer->at(bestTrigHW[i][j]);
       float myPosHW =  ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]);
       float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]);
-      
+     
+   //   cout << "After declalaring variables" << endl; 
+
       std::vector <std::string> categories = {};
       categories.push_back(labelTags.at(0));
       if (j == 2 || j == 3 || j == 4){	
@@ -1221,6 +1242,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     
   } 
+  //cout << " -> Finished" << endl;  
 
   /************************************************************************************************************************************************************
   ************************************************************************************************************************************************************/
@@ -1232,7 +1254,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     * 							  FIRMWARE - EMULATOR
     * 
   ************************************************************************************************************************************************/
-  
+ 
+  //cout << "Comparing fw-emu";
   int counterHW [4][2]; 
   int counterAM [4][2]; 
   for (int i = 0; i < 4; i++) {
@@ -1372,7 +1395,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     
   }   
-  
+ 
+  //cout << " -> Finished" << endl;
   
   /***********************************************************************************************************************************************
     *
@@ -1875,16 +1899,16 @@ void DTNtupleTPGSimAnalyzer::DisplayPh1Prims () {
   ofstream f2;
   f2.open("failedPh1Prims.txt",fstream::app);
   
-  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
-    short myStationTwin = ltTwinMuxIn_station->at(iTwin);
-    short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
-    short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
-    short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
-    int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
-    int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
-    float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
-    float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
-    int myBXTwin = ltTwinMuxIn_BX->at(iTwin);
+  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxOut_nTrigs; ++iTwin) {
+    short myStationTwin = ltTwinMuxOut_station->at(iTwin);
+    short mySectorTwin = ltTwinMuxOut_sector->at(iTwin);
+    short myWheelTwin = ltTwinMuxOut_wheel->at(iTwin);
+    short myQualityTwin = ltTwinMuxOut_quality->at(iTwin);
+    int myPhiTwin = ltTwinMuxOut_phi->at(iTwin);
+    int myPhiBTwin =   ltTwinMuxOut_phiB->at(iTwin);
+    float myPosTwin =  ltTwinMuxOut_posLoc_x->at(iTwin);
+    float myDirTwin =  ltTwinMuxOut_dirLoc_phi->at(iTwin);
+    int myBXTwin = ltTwinMuxOut_BX->at(iTwin);
     
     if ( myStationTwin != 4 || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
     
@@ -1961,15 +1985,15 @@ void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
   
   if (bestISeg < 0) return;
   
-  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxIn_nTrigs; ++iTwin) {
-    short myStationTwin = ltTwinMuxIn_station->at(iTwin);
-    short mySectorTwin = ltTwinMuxIn_sector->at(iTwin);
-    short myWheelTwin = ltTwinMuxIn_wheel->at(iTwin);
-    short myQualityTwin = ltTwinMuxIn_quality->at(iTwin);
-    int myPhiTwin = ltTwinMuxIn_phi->at(iTwin);
-    int myPhiBTwin =   ltTwinMuxIn_phiB->at(iTwin);
-    float myPosTwin =  ltTwinMuxIn_posLoc_x->at(iTwin);
-    float myDirTwin =  ltTwinMuxIn_dirLoc_phi->at(iTwin);
+  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxOut_nTrigs; ++iTwin) {
+    short myStationTwin = ltTwinMuxOut_station->at(iTwin);
+    short mySectorTwin = ltTwinMuxOut_sector->at(iTwin);
+    short myWheelTwin = ltTwinMuxOut_wheel->at(iTwin);
+    short myQualityTwin = ltTwinMuxOut_quality->at(iTwin);
+    int myPhiTwin = ltTwinMuxOut_phi->at(iTwin);
+    int myPhiBTwin =   ltTwinMuxOut_phiB->at(iTwin);
+    float myPosTwin =  ltTwinMuxOut_posLoc_x->at(iTwin);
+    float myDirTwin =  ltTwinMuxOut_dirLoc_phi->at(iTwin);
     
     if ( myStationTwin != 4 || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
     if ( myQualityTwin > bestQTM ) { 
@@ -1979,7 +2003,7 @@ void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
   }
   
   if (bestITM > -1 ){
-    m_plots["hTMSeg"]->Fill(   ltTwinMuxIn_BX->at( bestITM  )*25  -   seg_phi_t0->at(bestISeg) );
+    m_plots["hTMSeg"]->Fill(   ltTwinMuxOut_BX->at( bestITM  )*25  -   seg_phi_t0->at(bestISeg) );
   }
   
   for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)

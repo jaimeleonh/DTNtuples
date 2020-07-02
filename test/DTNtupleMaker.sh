@@ -3,7 +3,7 @@
 #GlobalRun=$3
 
 #source configForSliceTestAnalysis.sh
-
+export DTSAMPLEDIR=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1
 cd ./calib/
 
 let firstThreeTP=$1/1000
