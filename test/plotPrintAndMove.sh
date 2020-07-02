@@ -6,7 +6,4 @@ DTNtupleTPGSimAnalyzer analysis("/eos/home-j/jleonhol/ntuplesST/DTDPGNtuple_run$
 analysis.Loop()
 EOF
 
-root -b << EOF
-gROOT->ProcessLine(".x printPlots_run.C(\"$1\")");
-EOF
-./print_run.sh $1
+./printAndMove.sh $1

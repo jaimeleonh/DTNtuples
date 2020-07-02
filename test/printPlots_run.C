@@ -250,8 +250,10 @@ void printPlots_run(std::string run) {
   char meanStr[40];
   double limitInfPos = -100.;
   double limitSupPos = 100.;
-  double limitInfTime = 12.5;
-  double limitSupTime = 37.5;
+  double limitInfTimePh1 = 12.5;
+  double limitInfTimePh2 = -20;
+  double limitSupTimePh1 = 37.5;
+  double limitSupTimePh2 = 10;
 
   gSystem->Exec("mkdir run" + runNumber + "/" + "hTimeOBDT");
   std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b" };
@@ -323,7 +325,8 @@ void printPlots_run(std::string run) {
       m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
       m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(3);
-      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
+      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTimePh1, limitSupTimePh1);
+      if      (what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTimePh2, limitSupTimePh2);
       else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
       mean = ( (int) round(mean * 100) ) / 100.;
       sprintf(meanStr,"%.2f", mean);
