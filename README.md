@@ -7,8 +7,8 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 ### Installation:
 ```
-cmsrel CMSSW_10_6_5_patch1
-cd CMSSW_10_6_5_patch1/src/
+cmsrel CMSSW_11_0_1
+cd CMSSW_11_0_1/src/
 cmsenv
 git cms-merge-topic jaimeleonh:Phase2_DTAB7Unpacker_v9.2 # phase-2 unpacker
 git cms-merge-topic battibass:Phase2_DTRecoAndCalib
