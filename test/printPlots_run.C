@@ -32,6 +32,7 @@ double getMeanEfficiency(TH1 *plot1, TH1 *plot2, double initialVal, double final
      if ( plot1->GetXaxis()->GetBinCenter(i) < initialVal || plot1->GetXaxis()->GetBinCenter(i) > finalVal  ) continue; 
      sumPassed = sumPassed + plot1->GetBinContent(i); 
      sumTotal  = sumTotal  + plot2->GetBinContent(i); 
+  //   cout << plot1->GetXaxis()->GetBinCenter(i) << " " <<sumPassed << "/" << sumTotal << endl;  
   }
   
   return sumPassed/sumTotal;
@@ -76,7 +77,7 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> generalEffPlots {"hEffHW", "hEffTM", "hEffAM"}; 
   //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX","hEffHWvsSegXGoodBX", "hEffTMvsSegXGoodBX", "hEffAMvsSegXGoodBX"}; 
-  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0"};  
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0","vsSegXLim","vsSegT0Lim","vsph2SegXLim","vsph2SegT0Lim"};  
   std::vector <std::string> effWhichBX = {"","GoodBX"};  
   
   
@@ -227,6 +228,14 @@ void printPlots_run(std::string run) {
   effLeg["hEffHWvsph2SegXGoodBX"] = "Good BX"; 
   effLeg["hEffHWvsph2SegT0"] = "All BX"; 
   effLeg["hEffHWvsph2SegT0GoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsSegXLim"] = "All BX"; 
+  effLeg["hEffHWvsSegXLimGoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsSegT0Lim"] = "All BX"; 
+  effLeg["hEffHWvsSegT0LimGoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsph2SegXLim"] = "All BX"; 
+  effLeg["hEffHWvsph2SegXLimGoodBX"] = "Good BX"; 
+  effLeg["hEffHWvsph2SegT0Lim"] = "All BX"; 
+  effLeg["hEffHWvsph2SegT0LimGoodBX"] = "Good BX"; 
   effLeg["hEffHW"] = "HW Q>2"; 
   effLeg["hEffTM"] = "TM"; 
   
@@ -245,16 +254,43 @@ void printPlots_run(std::string run) {
   effHWCatsTitles["vsph2SegT0"] = "Eff in All BX vs ph2Seg t0; ph2Segment position (ns); Efficiency (adim)"; 
   effHWCatsTitles["vsph2SegT0GoodBX"] = "Eff in Good BX vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
   effHWCatsTitles["vsph2SegT0Combi"] = "Eff All Q vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
+  
+  effHWCatsTitles["vsSegXLim"] = "Eff in All BX vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegXLimGoodBX"] = "Eff in Good BX vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegXLimCombi"] = "Eff All Q vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegT0Lim"] = "Eff in All BX vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegT0LimGoodBX"] = "Eff in Good BX vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegT0LimCombi"] = "Eff All Q vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegXLim"] = "Eff in All BX vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegXLimGoodBX"] = "Eff in Good BX vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegXLimCombi"] = "Eff All Q vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegT0Lim"] = "Eff in All BX vs ph2Seg t0 (Limiting X); ph2Segment position (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegT0LimGoodBX"] = "Eff in Good BX vs ph2Seg t0 (Limiting X); ph2Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsph2SegT0LimCombi"] = "Eff All Q vs ph2Seg t0 (Limiting X); ph2Segment t0 (ns); Efficiency (adim)"; 
 
   double mean;  
   char meanStr[40];
-  double limitInfPos = -100.;
-  double limitSupPos = 100.;
-  double limitInfTimePh1 = 12.5;
-  double limitInfTimePh2 = -20;
-  double limitSupTimePh1 = 37.5;
-  double limitSupTimePh2 = 10;
-
+  std::map<std::string, float> limit_inf; 
+  std::map<std::string, float> limit_sup;
+  limit_inf["vsSegX"]=-100;
+  limit_inf["vsph2SegX"]=-100;
+  limit_sup["vsSegX"]=100;
+  limit_sup["vsph2SegX"]=100;
+  limit_inf["vsSegT0"]=12.5;
+  limit_inf["vsph2SegT0"]=-17.5;
+  limit_sup["vsSegT0"]=37.5;
+  limit_sup["vsph2SegT0"]=7.5;
+  
+  limit_inf["vsSegXLim"]=-100;
+  limit_inf["vsph2SegXLim"]=-100;
+  limit_sup["vsSegXLim"]=100;
+  limit_sup["vsph2SegXLim"]=100;
+  limit_inf["vsSegT0Lim"]=12.5;
+  limit_inf["vsph2SegT0Lim"]=-17.5;
+  limit_sup["vsSegT0Lim"]=37.5;
+  limit_sup["vsph2SegT0Lim"]=7.5;
+  float limitInf, limitSup; 
+  
   gSystem->Exec("mkdir run" + runNumber + "/" + "hTimeOBDT");
   std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b" };
   for (auto & obdtTag : obdtTags) {
@@ -304,9 +340,10 @@ void printPlots_run(std::string run) {
       m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
       m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(2);
-      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
-      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+      limitInf = limit_inf[what]; limitSup = limit_sup[what];
+      mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
+      
       leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->SetTitle(( system + " " + effHWCatsTitles[what + "Combi"]).c_str());
       m_effs[name]->Draw();
@@ -325,14 +362,17 @@ void printPlots_run(std::string run) {
       m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
       m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(3);
-      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTimePh1, limitSupTimePh1);
-      if      (what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTimePh2, limitSupTimePh2);
-      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
-      mean = ( (int) round(mean * 100) ) / 100.;
+      limitInf = limit_inf[what]; limitSup = limit_sup[what];
+      mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
       leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what + "Combi"]).c_str());
       m_effs[name]->Draw("same");
+      
+      TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
+      TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
+      l1.Draw("same");
+      l2.Draw("same");
 
       nameHisto = "hEff" + system + what + chambTag;       
       leg->Draw();
@@ -362,8 +402,9 @@ void printPlots_run(std::string run) {
       m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
       m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(2);
-      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
-      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+      
+      limitInf = limit_inf[what]; limitSup = limit_sup[what];
+      mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
       leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what+HWCat]).c_str());
@@ -383,8 +424,8 @@ void printPlots_run(std::string run) {
       m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
       m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
       m_effs[name]->SetLineColor(3);
-      if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime);
-      else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+      limitInf = limit_inf[what]; limitSup = limit_sup[what];
+      mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
       leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       m_effs[name]->Draw("same");
@@ -399,14 +440,18 @@ void printPlots_run(std::string run) {
         m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
         m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
         m_effs[name]->SetLineColor(4);
-        if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
-        else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+        limitInf = limit_inf[what]; limitSup = limit_sup[what];
+        mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
         leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
         m_effs[name]->Draw("same");
       }
       nameHisto = "hEff" + system + what + HWCat + chambTag;
       leg->Draw();
+      TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
+      TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
+      l1.Draw("same");
+      l2.Draw("same");
       sprintf(name,"run%s/hEff%s/%s_combined.png",run.c_str(),system.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (fileOK) cout << nameHisto << ".png" << endl;
@@ -423,9 +468,8 @@ void printPlots_run(std::string run) {
         m_plots[nameTotal] = (TH1F*) data1.Get(nameTotal);
         m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
         m_effs[name]->SetLineColor(2);
-        
-        if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
-        else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+        limitInf = limit_inf[what]; limitSup = limit_sup[what];
+        mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
         leg->AddEntry(m_effs[name], (effLeg["hEffHW"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
       
@@ -450,12 +494,17 @@ void printPlots_run(std::string run) {
         m_effs[name] = new TEfficiency( *m_plots[namePassed], *m_plots[nameTotal]);
         m_effs[name]->SetTitle(effHWCatsTitles["hEff" + what + HWCat].c_str());
         m_effs[name]->SetLineColor(3);
-        if      (what == "vsSegT0" || what == "vsph2SegT0") mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfTime, limitSupTime );
-        else if (what == "vsSegX"  || what == "vsph2SegX" ) mean = getMeanEfficiency ( m_plots[namePassed], m_plots[nameTotal], limitInfPos, limitSupPos );
+        limitInf = limit_inf[what]; limitSup = limit_sup[what];
+        mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
         leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
         //leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + mean + ")") .c_str(),"l" );
         m_effs[name]->Draw("same");
+        
+        TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
+        TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
+        l1.Draw("same");
+        l2.Draw("same"); 
         
         nameHisto = "hEff" + what + HWCat + chambTag;
         leg->Draw();

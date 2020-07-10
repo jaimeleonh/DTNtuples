@@ -188,7 +188,7 @@ void DTNtupleTPGSimAnalyzer::book()
   }
 
   std::vector <std::string> systems = {"HW", "TM", "AM"}; 
-  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0"};  
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0", "vsSegXLim","vsSegT0Lim","vsph2SegXLim","vsph2SegT0Lim",};  
   std::vector <std::string> effWhichBX = {"","GoodBX"};  
   std::vector <std::string> effQualCats = {"","Q>2","Corr"};  
   std::vector <std::string > effs = {"passed", "total"};
@@ -201,6 +201,11 @@ void DTNtupleTPGSimAnalyzer::book()
   minXaxis["vsSegT0"] = -100.5; maxXaxis["vsSegT0"] = 100.5; nBinsX["vsSegT0"] = 201.; titleXaxis["vsSegT0"] = "Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
   minXaxis["vsph2SegT0"] = -100.5; maxXaxis["vsph2SegT0"] = 100.5; nBinsX["vsph2SegT0"] = 201.; titleXaxis["vsph2SegT0"] = "Ph2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
  
+  minXaxis["vsSegXLim"] = -250.5; maxXaxis["vsSegXLim"] = 250.5; nBinsX["vsSegXLim"] = 50.; titleXaxis["vsSegXLim"] = "Seg PositionLim"; unitsXaxis["vsSegXLim"] = "(cm)";
+  minXaxis["vsph2SegXLim"] = -250.5; maxXaxis["vsph2SegXLim"] = 250.5; nBinsX["vsph2SegXLim"] = 50.; titleXaxis["vsph2SegXLim"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegXLim"] = "(cm)";
+  minXaxis["vsSegT0Lim"] = -100.5; maxXaxis["vsSegT0Lim"] = 100.5; nBinsX["vsSegT0Lim"] = 201.; titleXaxis["vsSegT0Lim"] = "Segment t0"; unitsXaxis["vsSegT0Lim"] = "(ns)";
+  minXaxis["vsph2SegT0Lim"] = -100.5; maxXaxis["vsph2SegT0Lim"] = 100.5; nBinsX["vsph2SegT0Lim"] = 201.; titleXaxis["vsph2SegT0Lim"] = "Ph2 Segment t0Lim"; unitsXaxis["vsph2SegT0Lim"] = "(ns)";
+  
   qualCategory[""] = "Every Quality";  qualCategory["Q>2"] = "Quality>3h";   qualCategory["Corr"] = "Correlated Only"; 
   BXtitle[""] = "All BX"; BXtitle["GoodBX"] = "Good BX"; 
 
@@ -750,9 +755,9 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   // PLOTTING THE BX OFFSETS. W.R.T OFFLINE: Offset = GoodBX - 3564 //////////////////////
   offset[0] = -199; //FIXME
-  offset[1] = -199; //FIXME
-  offset[2] = -200; //FIXME
-  offset[3] = -200; //FIXME
+  offset[1] = -198; //FIXME
+  offset[2] = -199; //FIXME
+  offset[3] = -199; //FIXME
   int smallestOffset = 9999; 
   int biggestOffset = -9999; 
   for (int i = 0; i < 4; i++) {
@@ -1509,6 +1514,90 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["hEffTMvsSegXGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
         m_plots["hEffTMvsSegT0Corr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         m_plots["hEffTMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0); 
+        
+        float limInfT0 = 12.5;
+        float limSupT0 = 37.5;
+      
+        float limInfPos = -100;
+        float limSupPos = 100;
+      
+        if (mySegt0 >= limInfT0 && mySegt0 <= limSupT0){
+          if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsSegXLim"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsSegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigHW[indstat]>=3) m_plots["hEffHWvsSegXLimQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLim"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLimQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          
+          if (IbestQualTrigBXHW[indstat]!=-1) m_plots["hEffHWvsSegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigBXHW[indstat]>=6) m_plots["hEffHWvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigBXHW[indstat]>=3) m_plots["hEffHWvsSegXLimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffHWvsSegXLimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          
+          
+          if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsSegXLim"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsSegXLimQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsSegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsSegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsSegXLimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLim"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLimQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffAMvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          
+          if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsSegXLim"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsSegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsSegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
+          m_plots["hEffTMvsSegXLim"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffTMvsSegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffTMvsSegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+          m_plots["hEffTMvsSegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegPos);
+      }
+      
+      if (mySegPos >= limInfPos && mySegPos <= limSupPos){
+          if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsSegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsSegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigHW[indstat]>=3) m_plots["hEffHWvsSegT0LimQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0Lim"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0LimQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          
+          if (IbestQualTrigBXHW[indstat]!=-1) m_plots["hEffHWvsSegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigBXHW[indstat]>=6) m_plots["hEffHWvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigBXHW[indstat]>=3) m_plots["hEffHWvsSegT0LimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffHWvsSegT0LimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          
+          
+          if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsSegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsSegT0LimQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsSegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsSegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsSegT0LimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0Lim"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0LimQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0LimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffAMvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          
+          if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsSegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsSegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsSegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegt0);
+          m_plots["hEffTMvsSegT0Lim"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffTMvsSegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffTMvsSegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+          m_plots["hEffTMvsSegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
+        
       }
     }
     
@@ -1691,6 +1780,91 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hEffTMvsph2SegT0Corr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       m_plots["hEffTMvsph2SegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
       
+
+      float limInfT0 = -17.5;
+      float limSupT0 = 7.5;
+      
+      float limInfPos = -100;
+      float limSupPos = 100;
+      
+      if (myph2Segt0 >= limInfT0 && myph2Segt0 <= limSupT0){
+          if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsph2SegXLim"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsph2SegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigHW[indstat]>=3) m_plots["hEffHWvsph2SegXLimQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLim"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLimQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          
+          if (IbestQualTrigBXHW[indstat]!=-1) m_plots["hEffHWvsph2SegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigBXHW[indstat]>=6) m_plots["hEffHWvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigBXHW[indstat]>=3) m_plots["hEffHWvsph2SegXLimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffHWvsph2SegXLimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          
+          
+          if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsph2SegXLim"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsph2SegXLimQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsph2SegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsph2SegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsph2SegXLimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLim"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLimQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffAMvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          
+          if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsph2SegXLim"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsph2SegXLimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsph2SegXLimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
+          m_plots["hEffTMvsph2SegXLim"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffTMvsph2SegXLimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffTMvsph2SegXLimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+          m_plots["hEffTMvsph2SegXLimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2SegPos);
+      }
+      
+      if (myph2SegPos >= limInfPos && myph2SegPos <= limSupPos){
+          if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsph2SegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsph2SegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigHW[indstat]>=3) m_plots["hEffHWvsph2SegT0LimQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0Lim"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0LimQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          
+          if (IbestQualTrigBXHW[indstat]!=-1) m_plots["hEffHWvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigBXHW[indstat]>=6) m_plots["hEffHWvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigBXHW[indstat]>=3) m_plots["hEffHWvsph2SegT0LimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffHWvsph2SegT0LimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          
+          
+          if (IbestQualTrigAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigAM[indstat]>=3) m_plots["hEffAMvsph2SegT0LimQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigAM[indstat]>=6) m_plots["hEffAMvsph2SegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (IbestQualTrigBXAM[indstat]!=-1) m_plots["hEffAMvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigBXAM[indstat]>=3) m_plots["hEffAMvsph2SegT0LimGoodBXQ>2"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigBXAM[indstat]>=6) m_plots["hEffAMvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0Lim"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0LimQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0LimGoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffAMvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          
+          if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsph2SegT0Lim"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (IbestQualTrigBXTM[indstat]!=-1) m_plots["hEffTMvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigTM[indstat]>=4) m_plots["hEffTMvsph2SegT0LimCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          if (bestQualTrigBXTM[indstat]>=4) m_plots["hEffTMvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2Segt0);
+          m_plots["hEffTMvsph2SegT0Lim"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffTMvsph2SegT0LimGoodBX"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffTMvsph2SegT0LimCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+          m_plots["hEffTMvsph2SegT0LimGoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(myph2Segt0);
+      }
+      
     }
     
     for (unsigned int i = 0; i<chambTags.size(); i++){
@@ -1782,6 +1956,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     m_effs["hEffCor"]->Fill(false,0);
     m_effs["hEffCorHW"]->Fill(true,0);
     m_effs["hEffCorAM"]->Fill(false,0);
+    }
   }
   
   return;  
