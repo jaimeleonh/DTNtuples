@@ -140,7 +140,7 @@ void DTNtuplePh2TPGPhiFiller::fill(const edm::Event & ev)
 	  m_lt_t0.push_back(trig.t0());
 	  
 	  m_lt_index.push_back(trig.index());
-	  m_lt_arrivalBX.push_back(trig.arrivalBX());
+	  // m_lt_arrivalBX.push_back(trig.arrivalBX());
 	  
 	  m_nTrigs++;
 	
