@@ -12,7 +12,7 @@ cd CMSSW_10_6_5_patch1/src/
 cmsenv
 git cms-merge-topic jaimeleonh:Phase2_DTAB7Unpacker_v9.2 # phase-2 unpacker
 git cms-merge-topic battibass:Phase2_DTRecoAndCalib
-git cms-merge-topic -u dtp2-tpg-am:AM_with_arrivalBX # AM emulator
+git cms-merge-topic -u dtp2-tpg-am/AM_106X_11_0_1_noDF # AM emulator
 git clone --single-branch --branch correctL1_bis https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
 scramv1 b -j 5
 ```
