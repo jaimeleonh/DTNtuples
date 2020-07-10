@@ -26,6 +26,7 @@ git remote set-url origin git@github.com:jaimeleonh/DTNtuples.git
 ### Ntuple production:
 To run calibration (in order to obtain the Ph2 segments) and ntuplize: 
 ```
+cd DTDPGAnalysis/DTNtuples/test/
 source DTNtupleMaker.sh TpRunNumber CosmicsRunNumber
 ```
 By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 with the L1A BX. 
