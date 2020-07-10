@@ -24,18 +24,19 @@ git remote set-url origin git@github.com:jaimeleonh/DTNtuples.git
 
 
 ### Ntuple production:
+To run calibration (in order to obtain the Ph2 segments) and ntuplize: 
+```
+source DTNtupleMaker.sh TpRunNumber CosmicsRunNumber
+```
+By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 with the L1A BX. 
+
+To just obtain the ntuple (w/o Ph2 segments):
 ```
 cd DTDPGAnalysis/DTNtuples/test/
 cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNumber=330848
 ```
-By default, ```correctL1A=False```, so it DOES NOT correct the BX and the t0 with the L1A BX. 
 
-To also run the calibration (in order to obtain the Ph2 segments): 
-```
-source DTNtupleMaker.sh TpRunNumber CosmicsRunNumber
-```
-
-Take care when running on 2020 runs! (see disclaimer in DTNtupleMaker.sh script)
+Take care when running on 2019 runs! (see disclaimer in DTNtupleMaker.sh script)
 
 ### Analysis:
 #### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```)(default case):
