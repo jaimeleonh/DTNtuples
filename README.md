@@ -40,7 +40,7 @@ cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=10000 correctL1A=True runNum
 Take care when running on 2019 runs! (see disclaimer in DTNtupleMaker.sh script)
 
 ### Analysis:
-#### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```)(default case):
+#### To run over a ntuple w/o L1A substraction (when choosing ```correctL1A=False```) (default case):
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove.sh runNumber
@@ -49,7 +49,7 @@ W/o copying to eos
 ```
 ./plotAndPrint.sh runNumber
 ```
-#### Or, to run over a ntuple w/ L1A substraction (when choosing ```correctL1A=True```):
+#### Or, to run over a ntuple w/ L1A substraction (when choosing ```correctL1A=True```) (DEPRECATED):
 Fill the plots, print in png and copy to eos: 
 ```
 ./plotPrintAndMove_cor.sh  runNumber
