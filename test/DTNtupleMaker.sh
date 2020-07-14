@@ -9,7 +9,15 @@ cd ./calib/
 let firstThreeTP=$1/1000
 let lastThreeTP=$1%1000
 
+if (( $lastThreeTP < 100 )) 
+then
+repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/0$lastThreeTP
+else
 repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/$lastThreeTP
+fi
+
+echo $repackedDirTP
+return
 
 calibFile=t0i_run$1.txt
 
