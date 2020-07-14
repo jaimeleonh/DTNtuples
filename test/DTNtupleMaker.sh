@@ -16,9 +16,6 @@ else
 repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/$lastThreeTP
 fi
 
-echo $repackedDirTP
-return
-
 calibFile=t0i_run$1.txt
 
 
