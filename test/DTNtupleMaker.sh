@@ -53,7 +53,13 @@ ntupleFile=./DTDPGNtuple_run$2.root
 let firstThree=$2/1000
 let lastThree=$2%1000
 
+if (( $lastThree < 100 )) 
+then
+repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/0$lastThree
+else
 repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/$lastThree
+fi
+
 echo $repackedDir
 
 if [ -f "$ntupleFile" ]
