@@ -755,9 +755,9 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   // PLOTTING THE BX OFFSETS. W.R.T OFFLINE: Offset = GoodBX - 3564 //////////////////////
   offset[0] = -199; //FIXME
-  offset[1] = -198; //FIXME
-  offset[2] = -199; //FIXME
-  offset[3] = -199; //FIXME
+  offset[1] = -191; //FIXME
+  offset[2] = -192; //FIXME
+  offset[3] = -192; //FIXME
   int smallestOffset = 9999; 
   int biggestOffset = -9999; 
   for (int i = 0; i < 4; i++) {
