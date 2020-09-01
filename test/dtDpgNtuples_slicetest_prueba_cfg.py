@@ -263,11 +263,11 @@ process.load('RecoLocalMuon.Configuration.RecoLocalMuonCosmics_cff')
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_slicetest_cfi')
 
 
-process.load("Phase2L1Trigger.CalibratedDigis.CalibratedDigis_cfi")
+process.load("L1Trigger.DTTriggerPhase2.CalibratedDigis_cfi")
 #process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpacker')
 process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpackerNoCor')
 
-process.load("L1Trigger.DTPhase2Trigger.dtTriggerPhase2PrimitiveDigis_cfi")
+process.load("L1Trigger.DTTriggerPhase2.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(False)
 process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(False)
 
