@@ -12,6 +12,7 @@ cd CMSSW_11_1_3/src/
 cmsenv
 git cms-merge-topic jaimeleonh:Phase2_DTAB7Unpacker_v9.3 # phase-2 unpacker
 git cms-merge-topic battibass:Phase2_DTReco_111X
+git cms-merge-topic swiedenb:DTCalibOfflineSlice_11_1_X_v2
 git cms-merge-topic -u jaimeleonh:AM_111X_wdebug # AM emulator
 git clone --single-branch --branch 111X_debug https://github.com/jaimeleonh/DTNtuples.git DTDPGAnalysis/DTNtuples 
 scramv1 b -j 5
