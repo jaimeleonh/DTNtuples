@@ -60,3 +60,5 @@ W/o copying to eos
 ./plotAndPrint_cor.sh runNumber
 ```
 
+### To run plots that compare same hits and lateralities:
+python comparer.py -r runNumber
