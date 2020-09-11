@@ -257,6 +257,11 @@ process.dtAB7unpacker.correctTPTimeToL1A = cms.untracked.bool(True)
 
 process.dtAB7unpackerNoCor = process.dtAB7unpacker.clone()
 process.dtAB7unpackerNoCor.correctTPTimeToL1A = options.correctL1A;
+process.dtAB7unpackerNoCor.print_prims = True
+prims_debug = "/eos/home-j/jleonhol/ntuplesST/run" + str(options.runNumber) + "_fw.txt"
+if os.path.isfile(prims_debug):
+    os.remove(prims_debug)
+process.dtAB7unpackerNoCor.file_to_print = cms.untracked.string(prims_debug)
 
 process.load('RecoLocalMuon.Configuration.RecoLocalMuonCosmics_cff')
 
@@ -270,6 +275,12 @@ process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpackerNoCor')
 process.load("L1Trigger.DTTriggerPhase2.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(False)
 process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(False)
+process.dtTriggerPhase2PrimitiveDigis.printPython = cms.untracked.bool(True)
+process.dtTriggerPhase2PrimitiveDigis.print_prims = True
+prims_debug = "/eos/home-j/jleonhol/ntuplesST/run" + str(options.runNumber) + "_emu.txt"
+if os.path.isfile(prims_debug):
+    os.remove(prims_debug)
+process.dtTriggerPhase2PrimitiveDigis.file_to_print = cms.untracked.string(prims_debug)
 
 ####################### SliceTest specials ##############################
 
@@ -278,7 +289,8 @@ process.CalibratedDigis.scenario = 2
 process.dtTriggerPhase2PrimitiveDigis.scenario = 2
 
 #SL TanPhi cut
-process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.)
+process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.5)
+#process.dtTriggerPhase2PrimitiveDigis.tanPhiTh = cms.untracked.double(1.)
 
 #Chi2 -> Changing a lot lately
 process.dtTriggerPhase2PrimitiveDigis.chi2Th = cms.untracked.double(0.01)
@@ -294,7 +306,8 @@ process.dtTriggerPhase2PrimitiveDigis.useBX_correlation = True
 process.dtTriggerPhase2PrimitiveDigis.dBX_correlate_TP = 1
 
 #Correlate with tanPsi
-process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(99999./4096.)
+process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(620./4096.)
+#process.dtTriggerPhase2PrimitiveDigis.dTanPsi_correlate_TP = cms.untracked.double(99999./4096.)
 
 #Confirmation forbidden
 process.dtTriggerPhase2PrimitiveDigis.allow_confirmation = False

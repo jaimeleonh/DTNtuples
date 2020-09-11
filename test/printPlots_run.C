@@ -168,30 +168,31 @@ void printPlots_run(std::string run) {
     }
   }
 
-
+  std::string cmd = "mkdir run" + std::string(runNumber); // + "/" + generalPlot;
   for (auto & generalPlot : general1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + generalPlot);
+    gSystem->Exec((cmd + "/" + generalPlot).c_str());
   }
   for (auto & generalPlot : generalEffPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + generalPlot);
+    gSystem->Exec((cmd + "/" + generalPlot).c_str());
   }
   for (auto & specificPlot : specific1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
   }
   for (auto & specificPlot : specific2DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
   }
   for (auto & specificPlot : moreSpecific1DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
   }
   for (auto & specificPlot : moreSpecific1DPlotsSegs) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
   }
   for (auto & specificPlot : moreSpecific2DPlots) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
   }
   for (auto & specificPlot : moreSpecific2DPlotsSegs) {
-    gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
+    gSystem->Exec((cmd + "/" + specificPlot).c_str());
+    //gSystem->Exec("mkdir run" + runNumber + "/" + specificPlot);
   }
 /*
   for (auto & generalPlot : generalEffPlots) {
@@ -236,6 +237,22 @@ void printPlots_run(std::string run) {
   effLeg["hEffHWvsph2SegXLimGoodBX"] = "Good BX"; 
   effLeg["hEffHWvsph2SegT0Lim"] = "All BX"; 
   effLeg["hEffHWvsph2SegT0LimGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsSegX"] = "All BX"; 
+  effLeg["hEffAMvsSegXGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsSegT0"] = "All BX"; 
+  effLeg["hEffAMvsSegT0GoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsph2SegX"] = "All BX"; 
+  effLeg["hEffAMvsph2SegXGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsph2SegT0"] = "All BX"; 
+  effLeg["hEffAMvsph2SegT0GoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsSegXLim"] = "All BX"; 
+  effLeg["hEffAMvsSegXLimGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsSegT0Lim"] = "All BX"; 
+  effLeg["hEffAMvsSegT0LimGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsph2SegXLim"] = "All BX"; 
+  effLeg["hEffAMvsph2SegXLimGoodBX"] = "Good BX"; 
+  effLeg["hEffAMvsph2SegT0Lim"] = "All BX"; 
+  effLeg["hEffAMvsph2SegT0LimGoodBX"] = "Good BX"; 
   effLeg["hEffHW"] = "HW Q>2"; 
   effLeg["hEffTM"] = "TM"; 
   
