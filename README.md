@@ -60,3 +60,7 @@ W/o copying to eos
 ./plotAndPrint_cor.sh runNumber
 ```
 
+### To obtain plots that compare only primitives with same hits and lateralities:
+```
+python comparer.py -r runNumber
+```
