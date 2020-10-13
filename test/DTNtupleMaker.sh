@@ -3,6 +3,7 @@
 #GlobalRun=$3
 
 #source configForSliceTestAnalysis.sh
+# if running on 2019 runs, modify next line
 export DTSAMPLEDIR=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1
 cd ./calib/
 
@@ -17,12 +18,6 @@ repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThr
 fi
 
 calibFile=t0i_run$1.txt
-
-
-##### DISCLAIMER
-# Calibration will only work if in /CMSSW_10_6_5_patch1/python/CalibMuon/DTCalibration/Workflow/DTWorkflow.py
-# Line 135 the folder is set to /eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1 for newer runs.
-
 
 
 if [ -f "$calibFile" ] 
@@ -62,6 +57,8 @@ fi
 
 echo $repackedDir
 
+ph1_calib_folder=/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2020_data/calib/phase1
+
 if [ -f "$ntupleFile" ]
 then 
 echo "Found ntuple. Remove file in order to rerun the ntuple production"
@@ -69,10 +66,10 @@ else
   if [ -d "$repackedDir" ]
   then
   echo "Running the ntuple production with the rootfile..."
-  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=-1 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db
+  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
   else 
   echo "Running the ntuple production with the datfiles..."
-  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py runOnDat=True  inputFolderCentral=/eos/cms/store/t0streamer/Minidaq/A/ nEvents=-1 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db
+  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py runOnDat=True  inputFolderCentral=/eos/cms/store/t0streamer/Minidaq/A/ nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
   fi
 fi
 

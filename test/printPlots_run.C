@@ -293,19 +293,19 @@ void printPlots_run(std::string run) {
   limit_inf["vsph2SegX"]=-100;
   limit_sup["vsSegX"]=100;
   limit_sup["vsph2SegX"]=100;
-  limit_inf["vsSegT0"]=12.5;
-  limit_inf["vsph2SegT0"]=-17.5;
-  limit_sup["vsSegT0"]=37.5;
-  limit_sup["vsph2SegT0"]=7.5;
+  limit_inf["vsSegT0"]=-12.5;
+  limit_inf["vsph2SegT0"]=-12.5;
+  limit_sup["vsSegT0"]=12.5;
+  limit_sup["vsph2SegT0"]=12.5;
   
   limit_inf["vsSegXLim"]=-100;
   limit_inf["vsph2SegXLim"]=-100;
   limit_sup["vsSegXLim"]=100;
   limit_sup["vsph2SegXLim"]=100;
-  limit_inf["vsSegT0Lim"]=12.5;
-  limit_inf["vsph2SegT0Lim"]=-17.5;
-  limit_sup["vsSegT0Lim"]=37.5;
-  limit_sup["vsph2SegT0Lim"]=7.5;
+  limit_inf["vsSegT0Lim"]=-12.5;
+  limit_inf["vsph2SegT0Lim"]=-12.5;
+  limit_sup["vsSegT0Lim"]=12.5;
+  limit_sup["vsph2SegT0Lim"]=12.5;
   float limitInf, limitSup; 
   
   gSystem->Exec("mkdir run" + runNumber + "/" + "hTimeOBDT");

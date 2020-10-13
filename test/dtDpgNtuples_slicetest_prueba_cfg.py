@@ -2,6 +2,24 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as VarParsing
 from Configuration.StandardSequences.Eras import eras
 
+def appendToGlobalTag(process, rcd, tag, fileName, label) :
+
+    if  not fileName :
+        return process
+
+    if not hasattr(process.GlobalTag,"toGet") :
+        process.GlobalTag.toGet = cms.VPSet()
+
+    process.GlobalTag.toGet.append(
+        cms.PSet(tag = cms.string(tag),
+                 record = cms.string(rcd),
+                 connect = cms.string("sqlite_file:" + fileName),
+                 label = cms.untracked.string(label)
+             )
+    )
+
+    return process
+
 import subprocess
 import sys
 import os
@@ -9,7 +27,7 @@ import os
 options = VarParsing.VarParsing()
 
 options.register('globalTag',
-                 '106X_dataRun3_Express_v2', #default value
+                 '111X_dataRun3_Prompt_v2', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Global Tag")
@@ -126,6 +144,14 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEven
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
 process.GlobalTag.globaltag = cms.string(options.globalTag)
+
+process = appendToGlobalTag(process, "DTTtrigRcd", "ttrig", options.tTrigFile, "cosmics")
+process = appendToGlobalTag(process, "DTT0Rcd", "t0", options.t0File, "")
+
+process = appendToGlobalTag(process, "DTTtrigRcd", "ttrig", options.tTrigFilePh2, "cosmics_ph2")
+process = appendToGlobalTag(process, "DTT0Rcd", "t0", options.t0FilePh2, "ph2")
+
+process = appendToGlobalTag(process, "DTMtimeRcd", "vDrift", options.vDriftFile, "")
 
 if options.tTrigFile    != '' or \
    options.t0File       != '' or \

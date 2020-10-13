@@ -100,6 +100,9 @@ void DTNtupleTPGSimAnalyzer::Loop()
     
     entryNumber = jentry; 
     //cout << "Filling histograms " << endl;
+    if (abs(jentry - 6383) <= 0){
+        std::cout << event_eventNumber << std::endl;
+    }
     fill();
     //cout << " -> Finished filling histograms" << endl;
   }
@@ -198,13 +201,13 @@ void DTNtupleTPGSimAnalyzer::book()
   
   minXaxis["vsSegX"] = -250.5; maxXaxis["vsSegX"] = 250.5; nBinsX["vsSegX"] = 50.; titleXaxis["vsSegX"] = "Seg Position"; unitsXaxis["vsSegX"] = "(cm)";
   minXaxis["vsph2SegX"] = -250.5; maxXaxis["vsph2SegX"] = 250.5; nBinsX["vsph2SegX"] = 50.; titleXaxis["vsph2SegX"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegX"] = "(cm)";
-  minXaxis["vsSegT0"] = -100.5; maxXaxis["vsSegT0"] = 100.5; nBinsX["vsSegT0"] = 201.; titleXaxis["vsSegT0"] = "Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
-  minXaxis["vsph2SegT0"] = -100.5; maxXaxis["vsph2SegT0"] = 100.5; nBinsX["vsph2SegT0"] = 201.; titleXaxis["vsph2SegT0"] = "Ph2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
+  minXaxis["vsSegT0"] = -25.5; maxXaxis["vsSegT0"] = 25.5; nBinsX["vsSegT0"] = 51.; titleXaxis["vsSegT0"] = "Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
+  minXaxis["vsph2SegT0"] = -25.5; maxXaxis["vsph2SegT0"] = 25.5; nBinsX["vsph2SegT0"] = 51.; titleXaxis["vsph2SegT0"] = "Ph2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
  
   minXaxis["vsSegXLim"] = -250.5; maxXaxis["vsSegXLim"] = 250.5; nBinsX["vsSegXLim"] = 50.; titleXaxis["vsSegXLim"] = "Seg PositionLim"; unitsXaxis["vsSegXLim"] = "(cm)";
   minXaxis["vsph2SegXLim"] = -250.5; maxXaxis["vsph2SegXLim"] = 250.5; nBinsX["vsph2SegXLim"] = 50.; titleXaxis["vsph2SegXLim"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegXLim"] = "(cm)";
-  minXaxis["vsSegT0Lim"] = -100.5; maxXaxis["vsSegT0Lim"] = 100.5; nBinsX["vsSegT0Lim"] = 201.; titleXaxis["vsSegT0Lim"] = "Segment t0"; unitsXaxis["vsSegT0Lim"] = "(ns)";
-  minXaxis["vsph2SegT0Lim"] = -100.5; maxXaxis["vsph2SegT0Lim"] = 100.5; nBinsX["vsph2SegT0Lim"] = 201.; titleXaxis["vsph2SegT0Lim"] = "Ph2 Segment t0Lim"; unitsXaxis["vsph2SegT0Lim"] = "(ns)";
+  minXaxis["vsSegT0Lim"] = -25.5; maxXaxis["vsSegT0Lim"] = 25.5; nBinsX["vsSegT0Lim"] = 51.; titleXaxis["vsSegT0Lim"] = "Segment t0"; unitsXaxis["vsSegT0Lim"] = "(ns)";
+  minXaxis["vsph2SegT0Lim"] = -25.5; maxXaxis["vsph2SegT0Lim"] = 25.5; nBinsX["vsph2SegT0Lim"] = 51.; titleXaxis["vsph2SegT0Lim"] = "Ph2 Segment t0Lim"; unitsXaxis["vsph2SegT0Lim"] = "(ns)";
   
   qualCategory[""] = "Every Quality";  qualCategory["Q>2"] = "Quality>3h";   qualCategory["Corr"] = "Correlated Only"; 
   BXtitle[""] = "All BX"; BXtitle["GoodBX"] = "Good BX"; 
@@ -754,9 +757,9 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   
   // PLOTTING THE BX OFFSETS. W.R.T OFFLINE: Offset = GoodBX - 3564 //////////////////////
-  offset[0] = -199; //FIXME
-  offset[1] = -191; //FIXME
-  offset[2] = -191; //FIXME
+  offset[0] = -190; //FIXME
+  offset[1] = -190; //FIXME
+  offset[2] = -190; //FIXME
   offset[3] = -190; //FIXME
   int smallestOffset = 9999; 
   int biggestOffset = -9999; 
@@ -1492,10 +1495,10 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["hEffAMvsSegT0GoodBXQ>2"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         
         if ( indstat + 1 == 4  && bestQualTrigTM[indstat] > 3 && IbestQualTrigHW[indstat]==-1 ) { 
-          DisplayPh2Hits(); 
-          DisplayPh2Prims(); 
-          DisplayPh1Segs(); 
-          DisplayPh1Prims(); 
+          //DisplayPh2Hits(); 
+          //DisplayPh2Prims(); 
+          //DisplayPh1Segs(); 
+          //DisplayPh1Prims(); 
         }
         
         if (IbestQualTrigTM[indstat]!=-1) m_plots["hEffTMvsSegX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
@@ -1515,8 +1518,8 @@ void DTNtupleTPGSimAnalyzer::fill()
         m_plots["hEffTMvsSegT0Corr"+chambTags.at(indstat)+"total"]->Fill(mySegt0);
         m_plots["hEffTMvsSegT0GoodBXCorr"+chambTags.at(indstat)+"total"]->Fill(mySegt0); 
         
-        float limInfT0 = 12.5;
-        float limSupT0 = 37.5;
+        float limInfT0 = -12.5;
+        float limSupT0 = 12.5;
       
         float limInfPos = -100;
         float limSupPos = 100;
