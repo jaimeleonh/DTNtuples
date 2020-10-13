@@ -301,7 +301,7 @@ process.CalibratedDigis.dtDigiTag = cms.InputTag('dtAB7unpackerNoCor')
 process.load("L1Trigger.DTTriggerPhase2.dtTriggerPhase2PrimitiveDigis_cfi")
 process.dtTriggerPhase2PrimitiveDigis.debug = cms.untracked.bool(False)
 process.dtTriggerPhase2PrimitiveDigis.dump = cms.untracked.bool(False)
-process.dtTriggerPhase2PrimitiveDigis.printPython = cms.untracked.bool(True)
+# process.dtTriggerPhase2PrimitiveDigis.printPython = cms.untracked.bool(True)
 process.dtTriggerPhase2PrimitiveDigis.print_prims = True
 prims_debug = "/eos/home-j/jleonhol/ntuplesST/run" + str(options.runNumber) + "_emu.txt"
 if os.path.isfile(prims_debug):
