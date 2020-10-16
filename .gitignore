@@ -41,3 +41,5 @@ __init__.py
 
 # Intermediate files
 *~
+
+*/calib/*

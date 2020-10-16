@@ -43,7 +43,15 @@ private:
   void DisplayPh1Prims () ;  
   void DisplayPh1Segs () ;  
   void DisplayEventNumbers () ;  
-  void getTheStupidPlots () ;  
+  void getTheStupidPlots () ; 
+  int get_quality_group(int quality){
+    if (quality == 1 || quality == 2) return 1;
+    if (quality == 3 || quality == 4) return 2;
+    if (quality == 6) return 3;
+    if (quality == 8) return 4;
+    if (quality == 9) return 5;
+    return -1; 
+  }
   TFile m_outFile;
   
   std::map<std::string, TH1*> m_plots;

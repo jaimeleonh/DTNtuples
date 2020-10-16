@@ -30,16 +30,19 @@ TCanvas* CreateCanvas(TString CanvasName = "myPlot", bool LogY = false, bool Gri
   return c;
 }
 
-void DrawPrelimLabel(TCanvas* c)
+void DrawPrelimLabel(TCanvas* c, TString station = "MB4")
 {
   c->cd();
 
   TLatex tex;
-  tex.SetTextSize(0.03);
-  //sil  tex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{CMS} Phase-2 Simulation");//typically for Phase-2
-  tex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{CMS}, DT SliceTest");//typically for Phase-2
-  // tex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{CMS}");//typically for Phase-1
+  tex.SetTextSize(0.045);
+  tex.DrawLatexNDC(0.11,0.91,"CMS #font[12]{Preliminary, } #scale[0.7]{DT SliceTest,}");//typically for Phase-2
   tex.Draw("same");
+
+  TLatex tex2;
+  tex2.SetTextSize(0.03);
+  tex2.DrawLatexNDC(0.14,0.86, "Wh+2 Se12 " + station );
+  tex2.Draw("same");
 
   return;
 }
@@ -49,10 +52,10 @@ void DrawLumiLabel(TCanvas* c, TString Lumi = "35.9")
   c->cd();
 
   TLatex tex;
-  tex.SetTextSize(0.035);
+  tex.SetTextSize(0.0315);
   tex.SetTextAlign(31);
   //sil  TString toDisplay = "14 TeV, 3000 fb^{-1}, 200 PU";//typically for Phase-2
-  TString toDisplay = "Cosmics";//typically for Phase-2
+  TString toDisplay = "Cosmic Data (2020)";//typically for Phase-2
   //TString toDisplay = Lumi + " fb^{-1} (13 TeV)";//typically for Phase-1
   tex.DrawLatexNDC(0.90,0.91,toDisplay.Data());
   tex.Draw("same");
@@ -63,8 +66,7 @@ void DrawLumiLabel(TCanvas* c, TString Lumi = "35.9")
 void SaveCanvas(TCanvas* c, TString PlotName = "myPlotName")
 {
   c->cd();
-  c->SaveAs(PlotName + ".pdf");
-  c->SaveAs(PlotName + ".root");
+  c->SaveAs(PlotName );
 
   return;
 }

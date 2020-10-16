@@ -9,6 +9,7 @@
 #include "TStyle.h"
 #include "TLegend.h"
 #include "TEfficiency.h"
+#include "PlotTemplate.C"
 
 /*
 double getMeanEfficiency ( std::string effPlot, TString file ) {
@@ -42,26 +43,21 @@ void printPlots_run(std::string run) {
 
   const bool fileOK = false; 
 
-  //setTDRStyle(); 
-  //gStyle->SetOptStat(0);
-  gStyle->SetOptStat(1111111);
-  std::vector<std::string> stuffTags = { "Time", "Pos", "Psi"};
+  gStyle->SetOptStat(0);
+  std::vector<std::string> stuffTags = {"Time", "Pos", "Psi"};
 
-  //std::string run = "331025";
-  //std::string run = "330848";
   TString runNumber = run; 
   TString file = "results_run" + runNumber + ".root";
   gSystem->Exec("mkdir run" + runNumber);
 
   TFile data1(file);
-  //TFile data1("results_run330792.root");
-  //TFile data1("results_new_index.root");
+  
+  TString Lumi = "35.9";
+  
   int a = 0;
 
-  std::vector<std::string> chambTags = { "_MB2","_MB3", "_MB4"};
+  std::vector<std::string> chambTags = { "MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
-  //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
   std::vector<std::string> quTagsSegs = {"3h","4h","Q6","Q8","Q9","bestQ"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
@@ -75,9 +71,8 @@ void printPlots_run(std::string run) {
 
   std::vector <std::string> categories {"perGroup","perQuality"}; 
 
-  std::vector <std::string> generalEffPlots {"hEffHW", "hEffTM", "hEffAM"}; 
-  //std::vector <std::string> generalEffPlots {"hEffHWvsSegX", "hEffTMvsSegX", "hEffAMvsSegX","hEffHWvsSegXGoodBX", "hEffTMvsSegXGoodBX", "hEffAMvsSegXGoodBX"}; 
-  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0","vsSegXLim","vsSegT0Lim","vsph2SegXLim","vsph2SegT0Lim"};  
+  std::vector <std::string> generalEffPlots {"hEffHW", "hEffTM", "hEffAM"};
+  std::vector <std::string> effvsWhat = {"vsSegX","vsSegT0","vsph2SegX","vsph2SegT0","vsSegXLim","vsSegT0Lim","vsph2SegXLim","vsph2SegT0Lim"};
   std::vector <std::string> effWhichBX = {"","GoodBX"};  
   
   
@@ -93,8 +88,8 @@ void printPlots_run(std::string run) {
   std::vector <std::string> moreSpecific2DPlots {"hPsi2D", "hTime2D","hPos2D","hPsi2DTM","hPos2DTM","hPhi2DTM","hPhiB2DTM"};
   std::vector <std::string> moreSpecific2DPlotsSegs {"hPsi2DSeg", "hTime2DSeg","hPos2DSeg", "hTimeSegvsPos", "hTimeSegvsPsi","hTimeSegvsSegZ","hPsi2Dph2Seg", "hTime2Dph2Seg","hPos2Dph2Seg", "hTimeph2SegvsPos", "hTimeph2SegvsPsi", "hTimeph2Segvsph2SegZ"};
 
-  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "HW Psi (#circ)", "Emulator Psi (#circ)","Firmware - Emulator Psi (#circ)", "Firmware - Emulator Time (ns)", "Firmware - Emulator Position (cm)"};
-  std::vector <std::string> axisAndUnitsSegs {"Firmware - Segment Psi (#circ)", "Firmware - Segment Time (ns)", "Firmware - Segment Position (cm)", "Firmware - ph2Segment Psi (#circ)", "Firmware - ph2Segment Time (ns)", "Firmware - ph2Segment Position (cm)" };
+  std::vector <std::string> axisAndUnits {"BX (BX units)", "BX (BX units)","BX (BX units)", "BX (BX units)", "FW chi2 (U.A)", "Emul chi2 (U.A)", "HW Psi (#circ)", " Phase-2 Emulator Psi (#circ)","Phase-2 Primitive -  Phase-2 Emulator Psi (#circ)", "Phase-2 Primitive -  Phase-2 Emulator Time (ns)", "Phase-2 Primitive - Phase-2 Emulator Position (cm)"};
+  std::vector <std::string> axisAndUnitsSegs {"Phase-2 Primitive - Phase-1 Segment Psi (#circ)", "Phase-2 Primitive - Phase-1 Segment Time (ns)", "Phase-2 Primitive - Phase-1 Segment Position (cm)", "Phase-2 Primitive -  Phase-2 Segment Psi (#circ)", "Phase-2 Primitive -  Phase-2 Segment Time (ns)", "Phase-2 Primitive -  Phase-2 Segment Position (cm)" };
 
   std::map<std::string, TH1*> m_plots_res;
   std::map<std::string, TH1*> m_plots_mean;
@@ -206,12 +201,17 @@ void printPlots_run(std::string run) {
   } */ 
   for (auto & generalPlot : general1DPlots) {
     std::string nameHisto = generalPlot;
+    TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
     sprintf(name,"%s",nameHisto.c_str());
     m_plots[name] = (TH1F*) data1.Get(name);
+    m_plots[name]->SetTitle("");
     m_plots[name]->Draw();
     sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
-    gPad->SaveAs(name);
-    if (fileOK) cout << nameHisto << ".png" << endl;
+    DrawPrelimLabel(myCanvas);
+    DrawLumiLabel(myCanvas, Lumi);
+    SaveCanvas(myCanvas, name);
+    delete myCanvas;
+    // gPad->SaveAs(name);
   }
  
   //std::vector <std::string> effCats = {"","Q>2"};  
@@ -219,8 +219,8 @@ void printPlots_run(std::string run) {
   std::vector <std::string> effCats = {"","Corr","Q>2"};  
   std::map <std::string, std::string> effLeg;
   effLeg[""] = "Every Quality"; 
-  effLeg["Corr"] = "Correlated Only"; 
-  effLeg["Q>2"] = "Quality > 2"; 
+  effLeg["Corr"] = "Quality #geq 6/8"; 
+  effLeg["Q>2"] = "Quality #geq 4/8"; 
   effLeg["hEffHWvsSegX"] = "All BX"; 
   effLeg["hEffHWvsSegXGoodBX"] = "Good BX"; 
   effLeg["hEffHWvsSegT0"] = "All BX"; 
@@ -259,31 +259,57 @@ void printPlots_run(std::string run) {
   
   std::map <std::string, std::string> effHWCatsTitles; 
   
-  effHWCatsTitles["vsSegX"] = "Eff in All BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegXGoodBX"] = "Eff in Good BX vs Seg X; Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegXCombi"] = "Eff All Q vs Seg Position; Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0"] = "Eff in All BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0GoodBX"] = "Eff in Good BX vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0Combi"] = "Eff All Q vs Seg t0; Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegX"] = "Eff in All BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegXGoodBX"] = "Eff in Good BX vs ph2Seg X; ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegXCombi"] = "Eff All Q vs ph2Seg position; ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0"] = "Eff in All BX vs ph2Seg t0; ph2Segment position (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0GoodBX"] = "Eff in Good BX vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0Combi"] = "Eff All Q vs ph2Seg t0; ph2Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegX"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegXGoodBX"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegXCombi"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegT0"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsSegT0GoodBX"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsSegT0Combi"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegXGoodBX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegXCombi"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0"] = "; Phase-2 Segment Position (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0GoodBX"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0Combi"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   
-  effHWCatsTitles["vsSegXLim"] = "Eff in All BX vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegXLimGoodBX"] = "Eff in Good BX vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegXLimCombi"] = "Eff All Q vs Seg X (Limiting t0); Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0Lim"] = "Eff in All BX vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0LimGoodBX"] = "Eff in Good BX vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsSegT0LimCombi"] = "Eff All Q vs Seg t0 (Limiting X); Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegXLim"] = "Eff in All BX vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegXLimGoodBX"] = "Eff in Good BX vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegXLimCombi"] = "Eff All Q vs ph2Seg X (Limiting t0); ph2Segment position (cm); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0Lim"] = "Eff in All BX vs ph2Seg t0 (Limiting X); ph2Segment position (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0LimGoodBX"] = "Eff in Good BX vs ph2Seg t0 (Limiting X); ph2Segment t0 (ns); Efficiency (adim)"; 
-  effHWCatsTitles["vsph2SegT0LimCombi"] = "Eff All Q vs ph2Seg t0 (Limiting X); ph2Segment t0 (ns); Efficiency (adim)"; 
+  effHWCatsTitles["vsSegXLim"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegXLimGoodBX"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegXLimCombi"] = "; Phase-1 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsSegT0Lim"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsSegT0LimGoodBX"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsSegT0LimCombi"] = "; Phase-1 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegXLim"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegXLimGoodBX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegXLimCombi"] = "; Phase-2 Segment Position (cm); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0Lim"] = "; Phase-2 Segment Position (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0LimGoodBX"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0LimCombi"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
+  
+  // effHWCatsTitles["vsSegX"] = "Eff in All BX vs Seg X; Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegXGoodBX"] = "Eff in Good BX vs Seg X; Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegXCombi"] = "Eff All Q vs Seg Position; Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegT0"] = "Eff in All BX vs Seg t0; Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsSegT0GoodBX"] = "Eff in Good BX vs Seg t0; Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsSegT0Combi"] = "Eff All Q vs Seg t0; Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegX"] = "Eff in All BX vs ph2Seg X;  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegXGoodBX"] = "Eff in Good BX vs ph2Seg X;  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegXCombi"] = "Eff All Q vs ph2Seg Position;  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0"] = "Eff in All BX vs ph2Seg t0;  Phase-2 Segment Position (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0GoodBX"] = "Eff in Good BX vs ph2Seg t0;  Phase-2 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0Combi"] = "Eff All Q vs ph2Seg t0;  Phase-2 Segment t0 (ns); Efficiency"; 
+  
+  // effHWCatsTitles["vsSegXLim"] = "Eff in All BX vs Seg X (Limiting t0); Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegXLimGoodBX"] = "Eff in Good BX vs Seg X (Limiting t0); Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegXLimCombi"] = "Eff All Q vs Seg X (Limiting t0); Phase-1 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsSegT0Lim"] = "Eff in All BX vs Seg t0 (Limiting X); Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsSegT0LimGoodBX"] = "Eff in Good BX vs Seg t0 (Limiting X); Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsSegT0LimCombi"] = "Eff All Q vs Seg t0 (Limiting X); Phase-1 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegXLim"] = "Eff in All BX vs ph2Seg X (Limiting t0);  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegXLimGoodBX"] = "Eff in Good BX vs ph2Seg X (Limiting t0);  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegXLimCombi"] = "Eff All Q vs ph2Seg X (Limiting t0);  Phase-2 Segment Position (cm); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0Lim"] = "Eff in All BX vs ph2Seg t0 (Limiting X);  Phase-2 Segment Position (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0LimGoodBX"] = "Eff in Good BX vs ph2Seg t0 (Limiting X);  Phase-2 Segment t0 (ns); Efficiency"; 
+  // effHWCatsTitles["vsph2SegT0LimCombi"] = "Eff All Q vs ph2Seg t0 (Limiting X);  Phase-2 Segment t0 (ns); Efficiency"; 
 
   double mean;  
   char meanStr[40];
@@ -309,32 +335,92 @@ void printPlots_run(std::string run) {
   float limitInf, limitSup; 
   
   gSystem->Exec("mkdir run" + runNumber + "/" + "hTimeOBDT");
-  std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b" };
+  std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b"};
   for (auto & obdtTag : obdtTags) {
     std::string nameHisto = "hTimeOBDT_"  + obdtTag;
+    TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
     sprintf(name,"%s",nameHisto.c_str());
     m_plots[name] = (TH1F*) data1.Get(name);
+    m_plots[name]->SetTitle("");
     m_plots[name]->Draw();
     sprintf(name,"run%s/hTimeOBDT/%s.png",run.c_str(),nameHisto.c_str());
-    gPad->SaveAs(name);
-    if (fileOK) cout << nameHisto << ".png" << endl;
+    // gPad->SaveAs(name);
+    DrawPrelimLabel(myCanvas);
+    DrawLumiLabel(myCanvas, Lumi);
+    SaveCanvas(myCanvas, name);
+    delete myCanvas;
   }
-
+  
+  gSystem->Exec("mkdir run" + runNumber + "/" + "hSegmentHits");
+  
   for (int i = 0; i<chambTags.size(); i++) {
     auto chambTag = chambTags.at(i);
 
     // HIT PLOTS 
     std::vector <std::string> slTags2 = {"","SL1","SL3"};
     for (auto & slTag : slTags2) {
-      std::string nameHisto = "hHitsPerChamber" + chambTag + slTag;
+      std::string nameHisto = "hHitsPerChamber_" + chambTag + slTag;          
+      TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
       sprintf(name,"%s",nameHisto.c_str());
       m_plots[name] = (TH1F*) data1.Get(name);
+      m_plots[name]->SetTitle("");
       m_plots[name]->Draw();
       sprintf(name,"run%s/hHits/%s.png",run.c_str(),nameHisto.c_str());
-      gPad->SaveAs(name);
-      if (fileOK) cout << nameHisto << ".png" << endl;
+      // gPad->SaveAs(name);
+      DrawPrelimLabel(myCanvas, chambTag);
+      DrawLumiLabel(myCanvas, Lumi);
+      SaveCanvas(myCanvas, name);
+      delete myCanvas;
     } 
-
+    
+    // Segment hits plots
+    std::vector <std::vector <std::string>> system_groups = {{"Hw", "Emu", "TM"}, {"Hw", "Emu"}, {"Hw", "TM"}};
+    std::map <std::string, std::string> legends = {};
+    legends["Hw"] = "Phase-2 Primitives";
+    legends["Emu"] = "Phase-2 Emulator";
+    legends["TM"] = "Phase-1 Primitives";
+    
+    std::vector <std::string> quality_groups = {"High", "Low"};
+    std::vector <std::string> segment_types = {"", "ph2"};
+    int system_group_number = 0;
+    for (auto &system_group: system_groups){
+      for (auto &segment: segment_types){
+        for (auto &quality: quality_groups){
+          std::string nameHisto = segment + "SegmentHits_" + chambTag + "_" + quality + "_" + to_string(i);
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
+          int system_num = 2;
+          TLegend *leg = new TLegend(0.7,0.8,0.9,0.9);
+          int max_val = -999;
+          for (auto &system: system_group){
+            nameHisto = "h" + system + quality + "Qual" + segment + "SegNHits_" + chambTag;
+            sprintf(name,"%s",nameHisto.c_str());
+            m_plots[name] = (TH1F*) data1.Get(name);
+            if (m_plots[name] -> GetMaximum() > max_val){
+              max_val = m_plots[name] -> GetMaximum();
+            }
+          }
+          for (auto &system: system_group){
+            nameHisto = "h" + system + quality + "Qual" + segment + "SegNHits_" + chambTag;
+            sprintf(name,"%s",nameHisto.c_str());
+            m_plots[name] -> SetTitle("");
+            m_plots[name] -> SetLineColor(system_num);
+            m_plots[name] -> GetYaxis() -> SetRangeUser(0, 1.2 * max_val);
+            m_plots[name] -> GetYaxis()->SetLabelSize(.03);
+            leg->AddEntry(m_plots[name], legends[system].c_str(),"l" );
+            m_plots[name]->Draw("same");
+            system_num++;
+          }
+          leg->Draw("same");
+          nameHisto = segment + "SegmentHits_" + chambTag + "_" + quality + "_" + to_string(system_group_number);
+          sprintf(name,"run%s/hSegmentHits/%s.png",run.c_str(),nameHisto.c_str());
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
+        }
+      }
+      system_group_number++;
+    }
 
 
     ////////////////////////// EFFICIENCY PLOTS ////////////////////////////
@@ -342,14 +428,16 @@ void printPlots_run(std::string run) {
     // ALL vs GOOD BX
     for (auto & system : systems) {
     for (auto & what : effvsWhat) { 
-      if (chambTag == "_MB2") continue; 
+      if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       std::string cat = effCats[0];
-      
+      std::string nameHisto = "hEff" + system + what + "_" + chambTag;
+      TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
+
       std::string HWCat = "hEff" + system + what + effWhichBX[0]; // All BX 
-      TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
-      std::string nameHisto = HWCat + cat + chambTag;
+      TLegend *leg = new TLegend(0.7,0.8,0.9,0.9);
+      nameHisto = HWCat + cat + "_" + chambTag;
       //cout << nameHisto << endl; 
       sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
       sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -361,8 +449,10 @@ void printPlots_run(std::string run) {
       mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
       
-      leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
-      m_effs[name]->SetTitle(( system + " " + effHWCatsTitles[what + "Combi"]).c_str());
+      // leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      leg->AddEntry(m_effs[name], (effLeg[HWCat]).c_str(),"l" );
+      // m_effs[name]->SetTitle(( system + " " + effHWCatsTitles[what + "Combi"]).c_str());
+      m_effs[name]->SetTitle((effHWCatsTitles[what + "Combi"]).c_str());
       m_effs[name]->Draw();
       gPad->Update();
       auto graph =  m_effs[name]->GetPaintedGraph(); 
@@ -371,7 +461,7 @@ void printPlots_run(std::string run) {
       gPad->Update();
 
       HWCat = "hEff" + system + what + effWhichBX[1]; // Good BX
-      nameHisto = HWCat + cat + chambTag;
+      nameHisto = HWCat + cat + "_" + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
       sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -382,36 +472,45 @@ void printPlots_run(std::string run) {
       limitInf = limit_inf[what]; limitSup = limit_sup[what];
       mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
-      leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
-      m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what + "Combi"]).c_str());
+      // leg->AddEntry(m_effs[name], (effLeg[HWCat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      leg->AddEntry(m_effs[name], (effLeg[HWCat]).c_str(),"l" );
+      // m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what + "Combi"]).c_str());
+      m_effs[name]->SetTitle((effHWCatsTitles[what + "Combi"]).c_str());
       m_effs[name]->Draw("same");
       
       TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
       TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
-      l1.Draw("same");
-      l2.Draw("same");
+      // l1.Draw("same");
+      // l2.Draw("same");
 
-      nameHisto = "hEff" + system + what + chambTag;       
+      nameHisto = "hEff" + system + what + "_" + chambTag;
       leg->Draw();
       sprintf(name,"run%s/hEff%s/%s_AllvsGood.png",run.c_str(),system.c_str(),nameHisto.c_str());
-      gPad->SaveAs(name);
-      if (fileOK) cout << nameHisto << ".png" << endl;
+      // gPad->SaveAs(name);
+      DrawPrelimLabel(myCanvas, chambTag);
+      DrawLumiLabel(myCanvas, Lumi);
+      SaveCanvas(myCanvas, name);
+      delete myCanvas;
     } 
     } // SYSTEMS
 
     // EFF PER QUALITY
     for (auto & system : systems) {
     for (auto & what : effvsWhat) { 
-      if (chambTag == "_MB2") continue; 
+      if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       TEfficiency* pEff = 0;
       
       for (auto & HWCat : effWhichBX){
       if (true) {      
-      TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
+      
+      std::string nameHisto = "hEff" + system + what + "_" + chambTag;
+      TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
+      
+      TLegend *leg = new TLegend(0.7,0.8,0.9,0.9);
       std::string cat = effCats[0];
-      std::string nameHisto = "hEff" + system + what + HWCat + cat + chambTag;
+      nameHisto = "hEff" + system + what + HWCat + cat + "_" + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
       sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -423,8 +522,10 @@ void printPlots_run(std::string run) {
       limitInf = limit_inf[what]; limitSup = limit_sup[what];
       mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
-      leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
-      m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what+HWCat]).c_str());
+      // leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      leg->AddEntry(m_effs[name], (effLeg[cat]).c_str(),"l" );
+      // m_effs[name]->SetTitle((system + " " + effHWCatsTitles[what+HWCat]).c_str());
+      m_effs[name]->SetTitle((effHWCatsTitles[what+HWCat]).c_str());
       m_effs[name]->Draw();
       gPad->Update();
       auto graph =  m_effs[name]->GetPaintedGraph(); 
@@ -433,7 +534,7 @@ void printPlots_run(std::string run) {
       gPad->Update();
 
       cat = effCats[1];
-      nameHisto = "hEff" + system + what + HWCat + cat + chambTag;
+      nameHisto = "hEff" + system + what + HWCat + cat + "_" + chambTag;
       sprintf(name,"%s",nameHisto.c_str());
       sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
       sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -444,12 +545,13 @@ void printPlots_run(std::string run) {
       limitInf = limit_inf[what]; limitSup = limit_sup[what];
       mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
       sprintf(meanStr,"%.2f", mean);
-      leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      // leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+      leg->AddEntry(m_effs[name], (effLeg[cat]).c_str(),"l" );
       m_effs[name]->Draw("same");
 
       if (system != "TM") { // Q>2 only present in AM and HW
         cat = effCats[2];
-        nameHisto = "hEff" + system + what + HWCat + cat + chambTag;
+        nameHisto = "hEff" + system + what + HWCat + cat + "_" + chambTag;
         sprintf(name,"%s",nameHisto.c_str());
         sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
         sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -460,24 +562,31 @@ void printPlots_run(std::string run) {
         limitInf = limit_inf[what]; limitSup = limit_sup[what];
         mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
-        leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        // leg->AddEntry(m_effs[name], (effLeg[cat] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        leg->AddEntry(m_effs[name], (effLeg[cat]).c_str(),"l" );
         m_effs[name]->Draw("same");
       }
-      nameHisto = "hEff" + system + what + HWCat + chambTag;
+      nameHisto = "hEff" + system + what + HWCat + "_" + chambTag;
       leg->Draw();
       TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
       TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
-      l1.Draw("same");
-      l2.Draw("same");
+      // l1.Draw("same");
+      // l2.Draw("same");
       sprintf(name,"run%s/hEff%s/%s_combined.png",run.c_str(),system.c_str(),nameHisto.c_str());
-      gPad->SaveAs(name);
-      if (fileOK) cout << nameHisto << ".png" << endl;
+      // gPad->SaveAs(name);
+      DrawPrelimLabel(myCanvas, chambTag);
+      DrawLumiLabel(myCanvas, Lumi);
+      SaveCanvas(myCanvas, name);
+      delete myCanvas;
       }
       
       if (true) {
-        TLegend *leg = new TLegend(0.7,0.7,0.9,0.9);
+        std::string nameHisto = "hEff" + system + what + "_" + chambTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
+      
+        TLegend *leg = new TLegend(0.7,0.8,0.9,0.9);
         std::string cat = "Q>2";
-        std::string nameHisto = "hEffHW" + what + HWCat + cat + chambTag;
+        nameHisto = "hEffHW" + what + HWCat + cat + "_" + chambTag;
         sprintf(name,"%s",nameHisto.c_str());
         sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
         sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -488,7 +597,8 @@ void printPlots_run(std::string run) {
         limitInf = limit_inf[what]; limitSup = limit_sup[what];
         mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
-        leg->AddEntry(m_effs[name], (effLeg["hEffHW"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        // leg->AddEntry(m_effs[name], (effLeg["hEffHW"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        leg->AddEntry(m_effs[name], (effLeg["hEffHW"]).c_str(),"l" );
       
         m_effs[name]->SetTitle(effHWCatsTitles["hEff" + what + HWCat].c_str());
         m_effs[name]->Draw();
@@ -498,11 +608,8 @@ void printPlots_run(std::string run) {
         graph->SetMaximum(1.2);
         gPad->Update();
 
-
-        
-        
         cat = "";
-        nameHisto = "hEffTM" + what + HWCat + cat + chambTag;
+        nameHisto = "hEffTM" + what + HWCat + cat + "_" + chambTag;
         sprintf(name,"%s",nameHisto.c_str());
         sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
         sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -514,19 +621,23 @@ void printPlots_run(std::string run) {
         limitInf = limit_inf[what]; limitSup = limit_sup[what];
         mean = getMeanEfficiency (m_plots[namePassed], m_plots[nameTotal], limitInf, limitSup);
         sprintf(meanStr,"%.2f", mean);
-        leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
-        //leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + mean + ")") .c_str(),"l" );
+        // leg->AddEntry(m_effs[name], (effLeg["hEffTM"] + " (" + std::string(meanStr) + ")").c_str(),"l" );
+        leg->AddEntry(m_effs[name], (effLeg["hEffTM"]).c_str(),"l" );
         m_effs[name]->Draw("same");
         
         TLine l1 = TLine(limitInf, 0, limitInf, 1.2);
         TLine l2 = TLine(limitSup, 0, limitSup, 1.2);
-        l1.Draw("same");
-        l2.Draw("same"); 
+        // l1.Draw("same");
+        // l2.Draw("same"); 
         
-        nameHisto = "hEff" + what + HWCat + chambTag;
+        nameHisto = "hEff" + what + HWCat + "_" + chambTag;
         leg->Draw();
         sprintf(name,"run%s/hEffHW/%s_HWTM.png",run.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
 
       }
 
@@ -537,12 +648,13 @@ void printPlots_run(std::string run) {
 
 
     for (auto & generalPlot : generalEffPlots) {
-      if (chambTag == "_MB2") continue; 
+      if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       for (auto & what : effvsWhat){ 
         for (auto & whichBX : effWhichBX){ 
-          std::string nameHisto = generalPlot + what + whichBX + chambTag;
+          std::string nameHisto = generalPlot + what + whichBX + "_" + chambTag;
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
           sprintf(name,"%s",nameHisto.c_str());
           sprintf(namePassed,"%s",(nameHisto+"passed").c_str());
           sprintf(nameTotal,"%s",(nameHisto+"total").c_str());
@@ -556,8 +668,11 @@ void printPlots_run(std::string run) {
           graph->SetMaximum(1.2);
           gPad->Update();
           sprintf(name,"run%s/%s/%s.png",run.c_str(),generalPlot.c_str(),nameHisto.c_str());
-          gPad->SaveAs(name);
-          if (fileOK) cout << nameHisto << ".png" << endl;
+          // gPad->SaveAs(name);
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
         }
       }
     }
@@ -565,76 +680,115 @@ void printPlots_run(std::string run) {
 
 
     for (auto & specificPlot : specific1DPlots) {
-      std::string nameHisto = specificPlot + chambTag;
+      std::string nameHisto = specificPlot + "_" + chambTag;
+      TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
       sprintf(name,"%s",nameHisto.c_str());
       m_plots[name] = (TH1F*) data1.Get(name);
+      m_plots[name]->SetTitle("");
       m_plots[name]->Draw();
       sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
       gPad->SaveAs(name);
       if (specificPlot == "hLatenciesHW") {
         gPad->SetLogy();
         sprintf(name,"run%s/%s/%s_log.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
         gPad->SetLogy(0);
       }
-      if (fileOK) cout << nameHisto << ".png" << endl;
     }
     for (auto & specificPlot : specific2DPlots) {
-      std::string nameHisto = specificPlot + chambTag;
+      std::string nameHisto = specificPlot + "_" + chambTag;
+      TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
       sprintf(name,"%s",nameHisto.c_str());
       m_plots2[name] = (TH2F*) data1.Get(name);
+      m_plots2[name]->SetTitle("");
+      if (specificPlot == "h2DHwQualSegNHits" || specificPlot == "h2DEmuQualSegNHits" || specificPlot == "h2DTMQualSegNHits"){
+        m_plots2[name]->GetXaxis()->SetNdivisions(5);
+        m_plots2[name]->GetYaxis()->SetLabelSize(.05);
+      } else {
+        m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
+      }
+      m_plots2[name]->GetZaxis()->SetLabelSize(.03);
       m_plots2[name]->Draw("colz");
       sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-      gPad->SaveAs(name);
-      if (fileOK) cout << nameHisto << ".png" << endl;
+      // gPad->SaveAs(name);
+      DrawPrelimLabel(myCanvas, chambTag);
+      DrawLumiLabel(myCanvas, Lumi);
+      SaveCanvas(myCanvas, name);
+      delete myCanvas;
     }
     for (int j = 0; j<labelTags.size(); j++) {
       auto labelTag = labelTags.at(j);
     //for (const auto & labelTag : labelTags) {
 
       for (auto & specificPlot : moreSpecific1DPlots) {
-        std::string nameHisto = specificPlot + chambTag + "_" + labelTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
+        m_plots[name]->SetTitle("");
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-       // if (specificPlot == "hChi2FW_" || specificPlot == "hChi2Emul") gPad->SetLogy();
-        gPad->SaveAs(name);
-         if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       
       for (auto & specificPlot : moreSpecific2DPlots) {
-        std::string nameHisto = specificPlot + chambTag + "_" + labelTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
+        m_plots2[name]->SetTitle("");
+        m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+        m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
         m_plots2[name]->Draw("colz");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       for (auto & specificPlot : moreSpecific1DPlotsSegs) {
-        std::string nameHisto = specificPlot + chambTag + "_" + labelTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
+        m_plots[name]->SetTitle("");
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-       // if (specificPlot == "hChi2FW_" || specificPlot == "hChi2Emul") gPad->SetLogy();
-        gPad->SaveAs(name);
-         if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       
       for (auto & specificPlot : moreSpecific2DPlotsSegs) {
-        std::string nameHisto = specificPlot + chambTag + "_" + labelTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
+        m_plots2[name]-> SetTitle("");
+        m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+        m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
         m_plots2[name]->Draw("colz");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       if (labelTag == "All" || labelTag == "Correlated") continue;
       for (int k = 0; k<slTags.size(); k++) {
@@ -642,51 +796,75 @@ void printPlots_run(std::string run) {
     //  for (auto  slTag : slTags) {
         for (auto & specificPlot : moreSpecific1DPlots) {
           if (specificPlot == "hPsi" || specificPlot == "hTime" || specificPlot == "hPos") continue;
-          std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
+          std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag + "_" + slTag;
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
           sprintf(name,"%s",nameHisto.c_str());
           m_plots[name] = (TH1F*) data1.Get(name);
+          m_plots[name]->SetTitle("");
           m_plots[name]->Draw();
           m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetRMS(1));
           m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetMean(1));
           sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-          gPad->SaveAs(name);
-          if (fileOK) cout << nameHisto << ".png" << endl;
+          // gPad->SaveAs(name);
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
         }
       
         for (auto & specificPlot : moreSpecific2DPlots) {
           if (specificPlot == "hPsi2D" || specificPlot == "hTime2D" || specificPlot == "hPos2D") continue;
           //if (specificPlot == "hPsi2DTM" ||specificPlot == "hPos2DTM" || specificPlot == "hPhi2DTM" ||specificPlot == "hPhiB2DTM" ) continue;
-          std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
+          std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag + "_" + slTag;
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
+          m_plots2[name]->SetTitle("");
+          m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+          m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
           m_plots2[name]->Draw("colz");
           sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-          gPad->SaveAs(name);
-          if (fileOK) cout << nameHisto << ".png" << endl;
+          // gPad->SaveAs(name);
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
         }
         for (auto & specificPlot : moreSpecific1DPlotsSegs) {
           if (specificPlot == "hPsi" || specificPlot == "hTime" || specificPlot == "hPos") continue;
-          std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
+          std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag + "_" + slTag;
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
           sprintf(name,"%s",nameHisto.c_str());
           m_plots[name] = (TH1F*) data1.Get(name);
+          m_plots[name]->SetTitle("");
           m_plots[name]->Draw();
           m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetRMS(1));
           m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(0)]->SetBinContent(3+1+k, m_plots[name]->GetMean(1));
           sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-          gPad->SaveAs(name);
-          if (fileOK) cout << nameHisto << ".png" << endl;
+          // gPad->SaveAs(name);
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
         }
       
         for (auto & specificPlot : moreSpecific2DPlotsSegs) {
           if (specificPlot == "hPsi2D" || specificPlot == "hTime2D" || specificPlot == "hPos2D") continue;
           //if (specificPlot == "hPsi2DTM" ||specificPlot == "hPos2DTM" || specificPlot == "hPhi2DTM" ||specificPlot == "hPhiB2DTM" ) continue;
-          std::string nameHisto = specificPlot + chambTag + "_" + labelTag + "_" + slTag;
+          std::string nameHisto = specificPlot + "_" + chambTag + "_" + labelTag + "_" + slTag;
+          TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
           sprintf(name,"%s",nameHisto.c_str());
           m_plots2[name] = (TH2F*) data1.Get(name);
+          m_plots2[name]->SetTitle("");
+          m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+          m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
           m_plots2[name]->Draw("colz");
           sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-          gPad->SaveAs(name);
-          if (fileOK) cout << nameHisto << ".png" << endl;
+          // gPad->SaveAs(name);
+          DrawPrelimLabel(myCanvas, chambTag);
+          DrawLumiLabel(myCanvas, Lumi);
+          SaveCanvas(myCanvas, name);
+          delete myCanvas;
         }
       } // sl
     } // label
@@ -694,49 +872,73 @@ void printPlots_run(std::string run) {
     for (int j = 0; j<quTags.size(); j++) {
       auto quTag = quTags.at(j);
       for (auto & specificPlot : moreSpecific1DPlots) {
-        std::string nameHisto = specificPlot + chambTag + "_" + quTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + quTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
+        m_plots[name]->SetTitle("");
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       
       for (auto & specificPlot : moreSpecific2DPlots) {
-        std::string nameHisto = specificPlot + chambTag + "_" + quTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + quTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
+        m_plots2[name]->SetTitle("");
+        m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+        m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
         m_plots2[name]->Draw("colz");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
     }
     for (int j = 0; j<quTagsSegs.size(); j++) {
       auto quTag = quTagsSegs.at(j);
       for (auto & specificPlot : moreSpecific1DPlotsSegs) {
-        std::string nameHisto = specificPlot + chambTag + "_" + quTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + quTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots[name] = (TH1F*) data1.Get(name);
+        m_plots[name]->SetTitle("");
         m_plots[name]->Draw();
         m_plots_res[specificPlot + "_res_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetRMS(1));
         m_plots_mean[specificPlot + "_mean_" + chambTag + "_" + categories.at(1)]->SetBinContent(j+1, m_plots[name]->GetMean(1));
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       
       for (auto & specificPlot : moreSpecific2DPlotsSegs) {
-        std::string nameHisto = specificPlot + chambTag + "_" + quTag;
+        std::string nameHisto = specificPlot + "_" + chambTag + "_" + quTag;
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         sprintf(name,"%s",nameHisto.c_str());
         m_plots2[name] = (TH2F*) data1.Get(name);
+        m_plots2[name]->SetTitle("");
+        m_plots2[name]->GetZaxis()->SetLabelSize(.03);
+        m_plots2[name]->GetYaxis()->SetTitleOffset(1.6);
         m_plots2[name]->Draw("colz");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specificPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
     } //qu
   } // chamber
@@ -748,33 +950,53 @@ void printPlots_run(std::string run) {
     for (auto & specific1DPlot : moreSpecific1DPlots) {
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "_res_" + chambTag + "_" + categories.at(i);
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         m_plots_res[nameHisto]->Draw();
+        m_plots_res[nameHisto]->SetTitle("");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "_mean_" + chambTag + "_" + categories.at(i);
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         m_plots_mean[nameHisto]->Draw();
+        m_plots_mean[nameHisto]->SetTitle("");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
     }
     for (auto & specific1DPlot : moreSpecific1DPlotsSegs) {
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "_res_" + chambTag + "_" + categories.at(i);
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         m_plots_res[nameHisto]->Draw();
+        m_plots_res[nameHisto]->SetTitle("");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        //gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
       for (int i = 0; i<2; i++){
         std::string nameHisto = specific1DPlot + "_mean_" + chambTag + "_" + categories.at(i);
+        TCanvas* myCanvas = CreateCanvas(nameHisto, false, false);
         m_plots_mean[nameHisto]->Draw();
+        m_plots_mean[nameHisto]->SetTitle("");
         sprintf(name,"run%s/%s/%s.png",run.c_str(),specific1DPlot.c_str(),nameHisto.c_str());
-        gPad->SaveAs(name);
-        if (fileOK) cout << nameHisto << ".png" << endl;
+        // gPad->SaveAs(name);
+        DrawPrelimLabel(myCanvas, chambTag);
+        DrawLumiLabel(myCanvas, Lumi);
+        SaveCanvas(myCanvas, name);
+        delete myCanvas;
       }
     }
   }

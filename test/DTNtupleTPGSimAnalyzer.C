@@ -100,9 +100,6 @@ void DTNtupleTPGSimAnalyzer::Loop()
     
     entryNumber = jentry; 
     //cout << "Filling histograms " << endl;
-    if (abs(jentry - 6383) <= 0){
-        std::cout << event_eventNumber << std::endl;
-    }
     fill();
     //cout << " -> Finished filling histograms" << endl;
   }
@@ -110,7 +107,7 @@ void DTNtupleTPGSimAnalyzer::Loop()
   std::cout << std::endl; 
   
   endJob();
-  
+  return;
 }
 
 void DTNtupleTPGSimAnalyzer::book()
@@ -137,10 +134,10 @@ void DTNtupleTPGSimAnalyzer::book()
   int nbinPsiph2SegFW = 101; double minPsiph2SegFW = 0.01 * (0.5 + nbinPsiph2SegFW / 2); 
   int nbinTimeph2SegFW = 101; double minTimeph2SegFW = 1 * (0.5 + nbinTimeph2SegFW / 2); 
   
-  int nbinPhiTM = 1001; double minPhiTM = 1600;  
-  int nbinPhiFW = 1001; double minPhiFW = 30000; 
-  int nbinPhiBTM = 1001; double minPhiBTM = 600;  
-  int nbinPhiBFW = 1001; double minPhiBFW = 2500; 
+  int nbinPhiTM = 201; double minPhiTM = 0.4;  
+  int nbinPhiFW = 201; double minPhiFW = 0.4; 
+  int nbinPhiBTM = 201; double minPhiBTM = 1.;  
+  int nbinPhiBFW = 201; double minPhiBFW = 1.; 
   
   m_plots["hFWSeg" ] = new TH1F("hFWSeg",
     "Ph2 - Segment time; Ph2 - Segment time (ns); Entries",
@@ -199,15 +196,15 @@ void DTNtupleTPGSimAnalyzer::book()
   std::map <std::string, float > minXaxis, maxXaxis, nBinsX;
   std::map <std::string, std::string > titleXaxis, qualCategory, BXtitle, unitsXaxis;
   
-  minXaxis["vsSegX"] = -250.5; maxXaxis["vsSegX"] = 250.5; nBinsX["vsSegX"] = 50.; titleXaxis["vsSegX"] = "Seg Position"; unitsXaxis["vsSegX"] = "(cm)";
-  minXaxis["vsph2SegX"] = -250.5; maxXaxis["vsph2SegX"] = 250.5; nBinsX["vsph2SegX"] = 50.; titleXaxis["vsph2SegX"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegX"] = "(cm)";
-  minXaxis["vsSegT0"] = -25.5; maxXaxis["vsSegT0"] = 25.5; nBinsX["vsSegT0"] = 51.; titleXaxis["vsSegT0"] = "Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
-  minXaxis["vsph2SegT0"] = -25.5; maxXaxis["vsph2SegT0"] = 25.5; nBinsX["vsph2SegT0"] = 51.; titleXaxis["vsph2SegT0"] = "Ph2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
+  minXaxis["vsSegX"] = -250.5; maxXaxis["vsSegX"] = 250.5; nBinsX["vsSegX"] = 50.; titleXaxis["vsSegX"] = "Phase-1 Segment Position"; unitsXaxis["vsSegX"] = "(cm)";
+  minXaxis["vsph2SegX"] = -250.5; maxXaxis["vsph2SegX"] = 250.5; nBinsX["vsph2SegX"] = 50.; titleXaxis["vsph2SegX"] = "Phase-2 Segment Position"; unitsXaxis["vsph2SegX"] = "(cm)";
+  minXaxis["vsSegT0"] = -25.5; maxXaxis["vsSegT0"] = 25.5; nBinsX["vsSegT0"] = 51.; titleXaxis["vsSegT0"] = "Phase-1 Segment t0"; unitsXaxis["vsSegT0"] = "(ns)";
+  minXaxis["vsph2SegT0"] = -25.5; maxXaxis["vsph2SegT0"] = 25.5; nBinsX["vsph2SegT0"] = 51.; titleXaxis["vsph2SegT0"] = "Phase-2 Segment t0"; unitsXaxis["vsph2SegT0"] = "(ns)";
  
-  minXaxis["vsSegXLim"] = -250.5; maxXaxis["vsSegXLim"] = 250.5; nBinsX["vsSegXLim"] = 50.; titleXaxis["vsSegXLim"] = "Seg PositionLim"; unitsXaxis["vsSegXLim"] = "(cm)";
-  minXaxis["vsph2SegXLim"] = -250.5; maxXaxis["vsph2SegXLim"] = 250.5; nBinsX["vsph2SegXLim"] = 50.; titleXaxis["vsph2SegXLim"] = "Ph2 Segment Position"; unitsXaxis["vsph2SegXLim"] = "(cm)";
-  minXaxis["vsSegT0Lim"] = -25.5; maxXaxis["vsSegT0Lim"] = 25.5; nBinsX["vsSegT0Lim"] = 51.; titleXaxis["vsSegT0Lim"] = "Segment t0"; unitsXaxis["vsSegT0Lim"] = "(ns)";
-  minXaxis["vsph2SegT0Lim"] = -25.5; maxXaxis["vsph2SegT0Lim"] = 25.5; nBinsX["vsph2SegT0Lim"] = 51.; titleXaxis["vsph2SegT0Lim"] = "Ph2 Segment t0Lim"; unitsXaxis["vsph2SegT0Lim"] = "(ns)";
+  minXaxis["vsSegXLim"] = -250.5; maxXaxis["vsSegXLim"] = 250.5; nBinsX["vsSegXLim"] = 50.; titleXaxis["vsSegXLim"] = "Phase-1 Segment Position"; unitsXaxis["vsSegXLim"] = "(cm)";
+  minXaxis["vsph2SegXLim"] = -250.5; maxXaxis["vsph2SegXLim"] = 250.5; nBinsX["vsph2SegXLim"] = 50.; titleXaxis["vsph2SegXLim"] = "Phase-2 Segment Position"; unitsXaxis["vsph2SegXLim"] = "(cm)";
+  minXaxis["vsSegT0Lim"] = -25.5; maxXaxis["vsSegT0Lim"] = 25.5; nBinsX["vsSegT0Lim"] = 51.; titleXaxis["vsSegT0Lim"] = "Phase-1 Segment t0"; unitsXaxis["vsSegT0Lim"] = "(ns)";
+  minXaxis["vsph2SegT0Lim"] = -25.5; maxXaxis["vsph2SegT0Lim"] = 25.5; nBinsX["vsph2SegT0Lim"] = 51.; titleXaxis["vsph2SegT0Lim"] = "Phase-2 Segment t0"; unitsXaxis["vsph2SegT0Lim"] = "(ns)";
   
   qualCategory[""] = "Every Quality";  qualCategory["Q>2"] = "Quality>3h";   qualCategory["Corr"] = "Correlated Only"; 
   BXtitle[""] = "All BX"; BXtitle["GoodBX"] = "Good BX"; 
@@ -248,7 +245,7 @@ void DTNtupleTPGSimAnalyzer::book()
     9,0.5,9.5,21,-10.5,10.5); 
     
     m_plots["hBXTM"+chambTag] = new TH1F(("hBXTM_" +chambTag).c_str(),
-      "Distribution of BX Twinmux; BX Twinmux; Entries",
+      "Distribution of BX Phase-1 Primitive; BX Phase-1 Primitive; Entries",
     21,-10.5,10.5); 
     
     m_plots["hLatenciesHW"+chambTag] = new TH1F(("hLatenciesHW_" +chambTag).c_str(),
@@ -367,27 +364,50 @@ void DTNtupleTPGSimAnalyzer::book()
     for (unsigned int i = 0; i < tags.size(); i++){
       m_plots["hPrimsph2Segs" + chambTag]->GetXaxis()->SetBinLabel(i+1, ph2tags[i].c_str());
     }
-    m_plots2["h2DHwQualSegNHits"+chambTag]=new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs HWQual; Hits seg; HWQual",7,2.5,9.5,9,0.5,9.5);
-    m_plots2["h2DEmuQualSegNHits"+chambTag]=new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs EmuQual; Hits seg; Emulator Quality",7,2.5,9.5,9,0.5,9.5);
-    m_plots2["h2DTMQualSegNHits"+chambTag]=new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"NHitsSeg vs TMQual; Hits seg; TwinMux Quality",7,2.5,9.5,9,0.5,9.5);
-    m_plots2["h2DHwQualph2SegNHits"+chambTag]=new TH2F(("h2DHwQualph2SegNHits_" + chambTag).c_str(),"NHitsph2Seg vs HWQual; Hits seg; HWQual",7,2.5,9.5,9,0.5,9.5);
-    m_plots2["h2DEmuQualph2SegNHits"+chambTag]=new TH2F(("h2DEmuQualph2SegNHits_" + chambTag).c_str(),"NHitsph2Seg vs EmuQual; Hits seg; Emulator Quality",7,2.5,9.5,9,0.5,9.5);
-    m_plots2["h2DTMQualph2SegNHits"+chambTag]=new TH2F(("h2DTMQualph2SegNHits_" + chambTag).c_str(),"NHitsph2Seg vs TMQual; Hits seg; TwinMux Quality",7,2.5,9.5,9,0.5,9.5);
+    m_plots2["h2DHwQualSegNHits" + chambTag] = new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DEmuQualSegNHits" + chambTag] = new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DTMQualSegNHits" + chambTag] = new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DHwQualph2SegNHits" + chambTag] = new TH2F(("h2DHwQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DEmuQualph2SegNHits" + chambTag] = new TH2F(("h2DEmuQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DTMQualph2SegNHits" + chambTag] = new TH2F(("h2DTMQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
+    
+    std::vector <std::string> qual_seg = {"h2DHwQualSegNHits", "h2DEmuQualSegNHits", "h2DTMQualSegNHits", "h2DHwQualph2SegNHits", "h2DEmuQualph2SegNHits", "h2DTMQualph2SegNHits"};
+    std::vector <std::string> quality_groups = {"3/4", "4/4", "6/8", "7/8", "8/8"};
+    
+    for (auto &st: qual_seg){
+        for (unsigned int i = 0; i < quality_groups.size(); i++){
+            m_plots2[st + chambTag] -> GetYaxis() -> SetBinLabel(i + 1, quality_groups[i].c_str());
+        }
+    }
+    
+    m_plots["hHwLowQualSegNHits" + chambTag] = new TH1F(("hHwLowQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hEmuLowQualSegNHits" + chambTag] = new TH1F(("hEmuLowQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hTMLowQualSegNHits" + chambTag] = new TH1F(("hTMLowQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hHwLowQualph2SegNHits" + chambTag] = new TH1F(("hHwLowQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hEmuLowQualph2SegNHits" + chambTag] = new TH1F(("hEmuLowQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hTMLowQualph2SegNHits" + chambTag] = new TH1F(("hTMLowQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
+    
+    m_plots["hHwHighQualSegNHits" + chambTag] = new TH1F(("hHwHighQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hEmuHighQualSegNHits" + chambTag] = new TH1F(("hEmuHighQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hTMHighQualSegNHits" + chambTag] = new TH1F(("hTMHighQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hHwHighQualph2SegNHits" + chambTag] = new TH1F(("hHwHighQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hEmuHighQualph2SegNHits" + chambTag] = new TH1F(("hEmuHighQualph2SegNHits_" + chambTag).c_str(),"; PNo. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
+    m_plots["hTMHighQualph2SegNHits" + chambTag] = new TH1F(("hTMHighQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Events", 6, 2.5, 8.5);
     
     for (const auto & labelTag : labelTags) {
       m_plots["hBX" + chambTag + labelTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag).c_str(),
-        "Distribution of BX; BX; Entries",
+        "Distribution of BX; Phase-2 Primitive BX; Entries",
       21,-10.5,10.5); 
       //201,3199.5,3400.5); 
       m_plots["hBXDif" + chambTag + labelTag] = new TH1F(("hBXDif_" + chambTag + "_" + labelTag).c_str(),
-        "BX difference ; BX difference; Entries",
+        "BX difference ; Phase-2 Primitive BX difference; Entries",
         //41,-220.5,-179.5); 
       7128,-3564,3564); 
       m_plots["hBXEmul" + chambTag + labelTag] = new TH1F(("hBXEmul_" + chambTag + "_" + labelTag).c_str(),
-        "Distribution of BX; BX; Entries",
+        "Distribution of BX; Phase-2 Emulator BX; Entries",
       21,-10.5,10.5); 
       m_plots["hBXDifEmul" + chambTag + labelTag] = new TH1F(("hBXDifEmul_" + chambTag + "_" + labelTag).c_str(),
-        "BX difference ; BX difference; Entries",
+        "BX difference ; Phase-2 Emulator BX difference; Entries",
         //41,-220.5,-179.5); 
       7000,-3564,3564); 
       m_plots["hBXfromT0" + chambTag + labelTag] = new TH1F(("hBXfromT0_" + chambTag + "_" + labelTag).c_str(),
@@ -395,117 +415,117 @@ void DTNtupleTPGSimAnalyzer::book()
       7128,-3564,3564); 
       //201,3199.5,3400.5); 
       m_plots["hChi2Emul" +  chambTag + labelTag] = new TH1F(("hChi2Emul_" + chambTag + "_" + labelTag).c_str(),
-        "Distribution of #chi^2; #chi^2; Entries",
+        "Distribution of #chi^2; Phase-2 Primitive #chi^2; Entries",
       10000,-0.5,99999.5); 
       m_plots["hChi2FW" +  chambTag + labelTag] = new TH1F(("hChi2FW_" + chambTag + "_" + labelTag).c_str(),
-        "Distribution of #chi^2; #chi^2; Entries",
+        "Distribution of #chi^2; Phase-2 Primitive #chi^2; Entries",
       10000,-0.5,99999.5); 
       m_plots["hPsiHW" + chambTag + labelTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
+        "Phase-2 Primitive #Psi Distribution; Phase-2 Primitive #Psi ( #circ); Entries",
       160,-80,80); 
       m_plots["hPsiEmul" + chambTag + labelTag] = new TH1F(("hPsiEmul_"+ chambTag + "_" + labelTag).c_str(),
-        "Emulator #Psi Distribution; Emulator #Psi ( #circ); Entries",
+        "Phase-2 Emulator #Psi Distribution; Phase-2 Emulator #Psi ( #circ); Entries",
       160,-80,80); 
       m_plots2["hPsi2D" + chambTag + labelTag] = new TH2F(("hPsi2D_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Emulator #Psi; Firmware #Psi ( #circ); Emulator #Psi ( #circ)",
+        "Phase-2 Primitive vs Phase-2 Emulator #Psi; Phase-2 Primitive #Psi ( #circ); Phase-2 Emulator #Psi ( #circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2D"+ chambTag + labelTag] = new TH2F(("hTime2D_" + chambTag + "_"+ labelTag).c_str(),
-        "Firmware vs Emulator Time; Firmware time (ns); Emulator time (ns)",
+        "Phase-2 Primitive vs Phase-2 Emulator Time; Phase-2 Primitive time (ns); Phase-2 Emulator time (ns)",
       400,-200,200,400,-200,200); 
       m_plots2["hPos2D"+ chambTag + labelTag] = new TH2F(("hPos2D_" + chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Emulator Position; Firmware position (cm); Emulator position (cm)",
+        "Phase-2 Primitive vs Phase-2 Emulator Position; Phase-2 Primitive Position (cm); Phase-2 Emulator Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots["hPsi"+ chambTag + labelTag] = new TH1F(("hPsi_"+ chambTag + "_" +labelTag).c_str(),
-        "Firmware - Emulator #Psi; Firmware - Emulator #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator #Psi; Phase-2 Primitive - Phase-2 Emulator #Psi (#circ); Entries",
       nbinPsiEmuFW,-minPsiEmuFW,minPsiEmuFW); 
       m_plots["hTime"+ chambTag + labelTag] = new TH1F(("hTime_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Emulator time; Firmware - Emulator Time (ns); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator time; Phase-2 Primitive - Phase-2 Emulator Time (ns); Entries",
       nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
       m_plots["hPos"+ chambTag + labelTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator Position; Phase-2 Primitive - Phase-2 Emulator Position (cm); Entries",
       nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
       
       m_plots2["hPsi2DSeg" + chambTag + labelTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-1 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Segment #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2DSeg"+ chambTag + labelTag] = new TH2F(("hTime2DSeg_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Segment time; Firmware time (ns); Segment time (ns)",
+        "Phase-2 Primitive vs Phase-1 Segment time; Phase-2 Primitive time (ns); Phase-1 Segment time (ns)",
       400,-200,200,200,-100,100); 
       m_plots2["hPos2DSeg"+ chambTag + labelTag] = new TH2F(("hPos2DSeg_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Segment position; Firmware position (cm); Segment position (cm)",
+        "Phase-2 Primitive vs Phase-1 Segment Position; Phase-2 Primitive Position (cm); Phase-1 Segment Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots2["hPsi2Dph2Seg" + chambTag + labelTag] = new TH2F(("hPsi2Dph2Seg_" + chambTag + "_" + labelTag).c_str(),
-        "Firmware vs ph2Segment #Psi; Firmware #Psi (#circ); ph2Segment #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-2 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-2 Segment #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2Dph2Seg"+ chambTag + labelTag] = new TH2F(("hTime2Dph2Seg_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs ph2Segment time; Firmware time (ns); ph2Segment time (ns)",
+        "Phase-2 Primitive vs Phase-2 Segment time; Phase-2 Primitive time (ns); Phase-2 Segment time (ns)",
       400,-200,200,200,-100,100); 
       m_plots2["hPos2Dph2Seg"+ chambTag + labelTag] = new TH2F(("hPos2Dph2Seg_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs ph2Segment position; Firmware position (cm); ph2Segment position (cm)",
+        "Phase-2 Primitive vs Phase-2 Segment Position; Phase-2 Primitive Position (cm); Phase-2 Segment Position (cm)",
       600,-300,300,600,-300,300); 
       
       m_plots2["hPos2DTM"+ chambTag + labelTag] = new TH2F(("hPos2DTM_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Twinmux position; Firmware position (cm); Twinmux position (cm)",
+        "Phase-2 Primitive vs Phase-1 Primitive Position; Phase-2 Primitive Position (cm); Phase-1 Primitive Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots2["hPsi2DTM" + chambTag + labelTag] = new TH2F(("hPsi2DTM_" + chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Twinmux #Psi; Firmware #Psi (#circ); Twinmux #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-1 Primitive #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Primitive #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hPhi2DTM"+ chambTag + labelTag] = new TH2F(("hPhi2DTM_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Twinmux phi; Firmware phi; Twinmux phi",
+        "Phase-2 Primitive vs Phase-1 Primitive phi; Phase-2 Primitive phi (rad); Phase-1 Primitive phi (rad)",
       nbinPhiFW,-minPhiFW,minPhiFW,nbinPhiTM,-minPhiTM,minPhiTM); 
       m_plots2["hPhiB2DTM"+ chambTag + labelTag] = new TH2F(("hPhiB2DTM_"+ chambTag + "_" + labelTag).c_str(),
-        "Firmware vs Twinmux phiB; Firmware phiB; Twinmux phiB",
+        "Phase-2 Primitive vs Phase-1 Primitive phiB; Phase-2 Primitive phiB (rad); Phase-1 Primitive phiB (rad)",
       nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
       m_plots["hPsiSeg"+ chambTag + labelTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-1 Segment #Psi; Phase-2 Primitive - Phase-1 Segment #Psi (#circ); Entries",
       nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
       m_plots["hTimeSeg"+ chambTag + labelTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment time; Firmware - Segment time (ns); Entries",
+        "Phase-2 Primitive - Phase-1 Segment time; Phase-2 Primitive - Phase-1 Segment time (ns); Entries",
       nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
       m_plots["hPosSeg"+ chambTag + labelTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment position; Firmware - Segment position (cm); Entries",
+        "Phase-2 Primitive - Phase-1 Segment Position; Phase-2 Primitive - Phase-1 Segment Position (cm); Entries",
       nbinPosSegFW,-minPosSegFW,minPosSegFW); 
       m_plots2["hTimeSegvsPos"+ chambTag + labelTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment Position; Phase-1 Segment Position (cm); Phase-2 Primitive - Phase-1 Segment time (ns)",
       600,-300,300,200,-100,100); 
       m_plots2["hTimeSegvsPsi"+ chambTag + labelTag] = new TH2F(("hTimeSegvsPsi_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment time vs Segment #Psi; Segment #Psi (#circ); Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment #Psi; Phase-1 Segment #Psi (#circ); Phase-2 Primitive - Phase-1 Segment time (ns)",
       160,-80,80,200,-100,100); 
       m_plots2["hTimeSegvsZ"+ chambTag + labelTag] = new TH2F(("hTimeSegvsSegZ_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - Segment time vs Segment z; Segment z; Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment z; Phase-1 Segment z; Phase-2 Primitive - Phase-1 Segment time (ns)",
       200,-200,200,50,-50,0); 
       
       m_plots["hPsiph2Seg"+ chambTag + labelTag] = new TH1F(("hPsiph2Seg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment #Psi; Firmware - ph2Segment #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-2 Segment #Psi; Phase-2 Primitive - Phase-2 Segment #Psi (#circ); Entries",
       nbinPsiph2SegFW,-minPsiph2SegFW,minPsiph2SegFW); 
       m_plots["hTimeph2Seg"+ chambTag + labelTag] = new TH1F(("hTimeph2Seg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment time; Firmware - ph2Segment time (ns); Entries",
+        "Phase-2 Primitive - Phase-2 Segment time; Phase-2 Primitive - Phase-2 Segment time (ns); Entries",
       nbinTimeph2SegFW,-minTimeph2SegFW,minTimeph2SegFW); 
       m_plots["hPosph2Seg"+ chambTag + labelTag] = new TH1F(("hPosph2Seg_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment position; Firmware - ph2Segment position (cm); Entries",
+        "Phase-2 Primitive - Phase-2 Segment Position; Phase-2 Primitive - Phase-2 Segment Position (cm); Entries",
       nbinPosph2SegFW,-minPosph2SegFW,minPosph2SegFW); 
       m_plots2["hTimeph2SegvsPos"+ chambTag + labelTag] = new TH2F(("hTimeph2SegvsPos_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment position; ph2Segment position (cm); Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment Position; Phase-2 Segment Position (cm); Phase-2 Primitive - Phase-2 Segment time (ns)",
       600,-300,300,200,-100,100); 
       m_plots2["hTimeph2SegvsPsi"+ chambTag + labelTag] = new TH2F(("hTimeph2SegvsPsi_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment #Psi; ph2Segment #Psi (#circ); Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment #Psi; Phase-2 Segment #Psi (#circ); Phase-2 Primitive - Phase-2 Segment time (ns)",
       160,-80,80,200,-100,100); 
       m_plots2["hTimeph2SegvsZ"+ chambTag + labelTag] = new TH2F(("hTimeph2Segvsph2SegZ_"+ chambTag + "_"+labelTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment z; ph2Segment z; Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment z; Phase-2 Segment z; Phase-2 Primitive - Phase-2 Segment time (ns)",
       200,-200,200,50,-50,0); 
       if (labelTag == "All" || labelTag == "Correlated") continue;
       for (const auto & slTag : slTags) {
         m_plots2["hPhi2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPhi2DTM_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Twinmux phi; Firmware phi; Twinmux phi",
+          "Phase-2 Primitive vs Phase-1 Primitive phi; Phase-2 Primitive phi (rad); Phase-1 Primitive phi (rad)",
         nbinPhiFW,-minPhiFW,minPhiFW,nbinPhiTM,-minPhiTM,minPhiTM); 
         m_plots2["hPhiB2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPhiB2DTM_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Twinmux phiB; Firmware phiB; Twinmux phiB",
+          "Phase-2 Primitive vs Phase-1 Primitive phiB; Phase-2 Primitive phiB (rad); Phase-1 Primitive phiB (rad)",
         nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
         m_plots2["hPos2DTM"+ chambTag + labelTag + slTag] = new TH2F(("hPos2DTM_"+ chambTag + "_" + labelTag + "_" + slTag ).c_str(),
-          "Firmware vs Twinmux position; Firmware position (cm); Twinmux position (cm)",
+          "Phase-2 Primitive vs Phase-1 Primitive Position; Phase-2 Primitive Position (cm); Phase-1 Primitive Position (cm)",
         600,-300,300,600,-300,300); 
         m_plots2["hPsi2DTM" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DTM_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Twinmux #Psi; Firmware #Psi (#circ); Twinmux #Psi (#circ)",
+          "Phase-2 Primitive vs Phase-1 Primitive #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Primitive #Psi (#circ)",
         160,-80,80,160,-80,80); 
         m_plots["hBX" + chambTag + labelTag + slTag] = new TH1F(("hBX_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
           "Distribution of BX; BX; Entries",
@@ -531,83 +551,83 @@ void DTNtupleTPGSimAnalyzer::book()
           "Distribution of #chi^2; #chi^2; Entries",
         10000,-0.5,99999.5); 
         m_plots["hPsiHW" + chambTag + labelTag + slTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + labelTag+ "_" + slTag).c_str(),
-          "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
+          "Phase-2 Primitive #Psi Distribution; Phase-2 Primitive #Psi ( #circ); Entries",
         160,-80,80); 
         m_plots["hPsiEmul" + chambTag + labelTag + slTag] = new TH1F(("hPsiEmul_"+ chambTag + "_" + labelTag+ "_" + slTag).c_str(),
-          "Emulator #Psi Distribution; Emulator #Psi ( #circ); Entries",
+          "Phase-2 Emulator #Psi Distribution; Phase-2 Emulator #Psi ( #circ); Entries",
         160,-80,80); 
         m_plots2["hPsi2D" + chambTag + labelTag + slTag] = new TH2F(("hPsi2D_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Emulator #Psi; Firmware #Psi ( #circ); Emulator #Psi ( #circ)",
+          "Phase-2 Primitive vs Phase-2 Emulator #Psi; Phase-2 Primitive #Psi ( #circ); Phase-2 Emulator #Psi ( #circ)",
         160,-80,80,160,-80,80); 
         m_plots2["hTime2D"+ chambTag + labelTag + slTag] = new TH2F(("hTime2D_" + chambTag + "_"+ labelTag + "_" + slTag).c_str(),
-          "Firmware vs Emulator Time; Firmware time (ns); Emulator time (ns)",
+          "Phase-2 Primitive vs Phase-2 Emulator Time; Phase-2 Primitive time (ns); Phase-2 Emulator time (ns)",
         200,-100,100,200,-100,100); 
         m_plots2["hPos2D"+ chambTag + labelTag + slTag] = new TH2F(("hPos2D_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Emulator Position; Firmware position (cm); Emulator position (cm)",
+          "Phase-2 Primitive vs Phase-2 Emulator Position; Phase-2 Primitive Position (cm); Phase-2 Emulator Position (cm)",
         300,0,300,300,0,300); 
         m_plots["hPsi"+ chambTag + labelTag + slTag] = new TH1F(("hPsi_"+ chambTag + "_" +labelTag + "_" + slTag).c_str(),
-          "Firmware - Emulator #Psi; Firmware - Emulator #Psi (#circ); Entries",
+          "Phase-2 Primitive - Phase-2 Emulator #Psi; Phase-2 Primitive - Phase-2 Emulator #Psi (#circ); Entries",
         nbinPsiEmuFW,-minPsiEmuFW,minPsiEmuFW); 
         m_plots["hTime"+ chambTag + labelTag + slTag] = new TH1F(("hTime_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Emulator time; Firmware - Emulator Time (ns); Entries",
+          "Phase-2 Primitive - Phase-2 Emulator time; Phase-2 Primitive - Phase-2 Emulator Time (ns); Entries",
         nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
         m_plots["hPos"+ chambTag + labelTag + slTag] = new TH1F(("hPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
+          "Phase-2 Primitive - Phase-2 Emulator Position; Phase-2 Primitive - Phase-2 Emulator Position (cm); Entries",
         nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
         m_plots2["hPsi2DSeg" + chambTag + labelTag + slTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
+          "Phase-2 Primitive vs Phase-1 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Segment #Psi (#circ)",
         160,-80,80,160,-80,80); 
         m_plots2["hTime2DSeg"+ chambTag + labelTag + slTag] = new TH2F(("hTime2DSeg_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Segment time; Firmware time (ns); Segment time (ns)",
+          "Phase-2 Primitive vs Phase-1 Segment time; Phase-2 Primitive time (ns); Phase-1 Segment time (ns)",
         400,-200,200,200,-100,100); 
         m_plots2["hPos2DSeg"+ chambTag + labelTag + slTag] = new TH2F(("hPos2DSeg_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs Segment position; Firmware position (cm); Segment position (cm)",
+          "Phase-2 Primitive vs Phase-1 Segment Position; Phase-2 Primitive Position (cm); Phase-1 Segment Position (cm)",
         600,-300,300,600,-300,300); 
         m_plots["hPsiSeg"+ chambTag + labelTag + slTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
+          "Phase-2 Primitive - Phase-1 Segment #Psi; Phase-2 Primitive - Phase-1 Segment #Psi (#circ); Entries",
         nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
         m_plots["hTimeSeg"+ chambTag + labelTag + slTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment time; Firmware - Segment time (ns); Entries",
+          "Phase-2 Primitive - Phase-1 Segment time; Phase-2 Primitive - Phase-1 Segment time (ns); Entries",
         nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
         m_plots["hPosSeg"+ chambTag + labelTag + slTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment position; Firmware - Segment position (cm); Entries",
+          "Phase-2 Primitive - Phase-1 Segment Position; Phase-2 Primitive - Phase-1 Segment Position (cm); Entries",
         nbinPosSegFW,-minPosSegFW,minPosSegFW); 
         m_plots2["hTimeSegvsPos"+ chambTag + labelTag + slTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
+          "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment Position; Phase-1 Segment Position (cm); Phase-2 Primitive - Phase-1 Segment time (ns)",
         600,-300,300,200,-100,100); 
         m_plots2["hTimeSegvsPsi"+ chambTag + labelTag + slTag] = new TH2F(("hTimeSegvsPsi_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment time vs Segment #Psi; Segment #Psi (#circ); Firmware - Segment time (ns)",
+          "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment #Psi; Phase-1 Segment #Psi (#circ); Phase-2 Primitive - Phase-1 Segment time (ns)",
         120,-60,60,200,-100,100); 
         m_plots2["hTimeSegvsZ"+ chambTag + labelTag + slTag] = new TH2F(("hTimeSegvsSegZ_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - Segment time vs Segment z; Segment z; Firmware - Segment time (ns)",
+          "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment z; Phase-1 Segment z; Phase-2 Primitive - Phase-1 Segment time (ns)",
         200,-200,200,50,-50,0); 
         
         m_plots2["hPsi2Dph2Seg" + chambTag + labelTag + slTag] = new TH2F(("hPsi2Dph2Seg_" + chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs ph2Segment #Psi; Firmware #Psi (#circ); ph2Segment #Psi (#circ)",
+          "Phase-2 Primitive vs Phase-2 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-2 Segment #Psi (#circ)",
         160,-80,80,160,-80,80); 
         m_plots2["hTime2Dph2Seg"+ chambTag + labelTag + slTag] = new TH2F(("hTime2Dph2Seg_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs ph2Segment time; Firmware time (ns); ph2Segment time (ns)",
+          "Phase-2 Primitive vs Phase-2 Segment time; Phase-2 Primitive time (ns); Phase-2 Segment time (ns)",
         400,-200,200,200,-100,100); 
         m_plots2["hPos2Dph2Seg"+ chambTag + labelTag + slTag] = new TH2F(("hPos2Dph2Seg_"+ chambTag + "_" + labelTag + "_" + slTag).c_str(),
-          "Firmware vs ph2Segment position; Firmware position (cm); ph2Segment position (cm)",
+          "Phase-2 Primitive vs Phase-2 Segment Position; Phase-2 Primitive Position (cm); Phase-2 Segment Position (cm)",
         600,-300,300,600,-300,300); 
         m_plots["hPsiph2Seg"+ chambTag + labelTag + slTag] = new TH1F(("hPsiph2Seg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment #Psi; Firmware - ph2Segment #Psi (#circ); Entries",
+          "Phase-2 Primitive - Phase-2 Segment #Psi; Phase-2 Primitive - Phase-2 Segment #Psi (#circ); Entries",
         nbinPsiph2SegFW,-minPsiph2SegFW,minPsiph2SegFW); 
         m_plots["hTimeph2Seg"+ chambTag + labelTag + slTag] = new TH1F(("hTimeph2Seg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment time; Firmware - ph2Segment time (ns); Entries",
+          "Phase-2 Primitive - Phase-2 Segment time; Phase-2 Primitive - Phase-2 Segment time (ns); Entries",
         nbinTimeph2SegFW,-minTimeph2SegFW,minTimeph2SegFW); 
         m_plots["hPosph2Seg"+ chambTag + labelTag + slTag] = new TH1F(("hPosph2Seg_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment position; Firmware - ph2Segment position (cm); Entries",
+          "Phase-2 Primitive - Phase-2 Segment Position; Phase-2 Primitive - Phase-2 Segment Position (cm); Entries",
         nbinPosph2SegFW,-minPosph2SegFW,minPosph2SegFW); 
         m_plots2["hTimeph2SegvsPos"+ chambTag + labelTag + slTag] = new TH2F(("hTimeph2SegvsPos_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment time vs ph2Segment position; ph2Segment position (cm); Firmware - ph2Segment time (ns)",
+          "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment Position; Phase-2 Segment Position (cm); Phase-2 Primitive - Phase-2 Segment time (ns)",
         600,-300,300,200,-100,100); 
         m_plots2["hTimeph2SegvsPsi"+ chambTag + labelTag + slTag] = new TH2F(("hTimeph2SegvsPsi_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment time vs ph2Segment #Psi; ph2Segment #Psi (#circ); Firmware - ph2Segment time (ns)",
+          "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment #Psi; Phase-2 Segment #Psi (#circ); Phase-2 Primitive - Phase-2 Segment time (ns)",
         120,-60,60,200,-100,100); 
         m_plots2["hTimeph2SegvsZ"+ chambTag + labelTag + slTag] = new TH2F(("hTimeph2Segvsph2SegZ_"+ chambTag + "_"+labelTag + "_" + slTag).c_str(),
-          "Firmware - ph2Segment time vs ph2Segment z; ph2Segment z; Firmware - ph2Segment time (ns)",
+          "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment z; Phase-2 Segment z; Phase-2 Primitive - Phase-2 Segment time (ns)",
         200,-200,200,50,-50,0); 
       }
     }
@@ -636,103 +656,103 @@ void DTNtupleTPGSimAnalyzer::book()
         "Distribution of #chi^2; #chi^2; Entries",
       10000,-0.5,99999.5); 
       m_plots["hPsiHW" + chambTag + quTag] = new TH1F(("hPsiHW_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware #Psi Distribution; Firmware #Psi ( #circ); Entries",
+        "Phase-2 Primitive #Psi Distribution; Phase-2 Primitive #Psi ( #circ); Entries",
       160,-80,80); 
       m_plots["hPsiEmul" + chambTag + quTag] = new TH1F(("hPsiEmul_"+ chambTag + "_" + quTag).c_str(),
-        "Emulator #Psi Distribution; Emulator #Psi ( #circ); Entries",
+        "Phase-2 Emulator #Psi Distribution; Phase-2 Emulator #Psi ( #circ); Entries",
       160,-80,80); 
       m_plots2["hPsi2D" + chambTag + quTag] = new TH2F(("hPsi2D_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Emulator #Psi; Firmware #Psi ( #circ); Emulator #Psi ( #circ)",
+        "Phase-2 Primitive vs Phase-2 Emulator #Psi; Phase-2 Primitive #Psi ( #circ); Phase-2 Emulator #Psi ( #circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2D"+ chambTag + quTag] = new TH2F(("hTime2D_" + chambTag + "_"+ quTag).c_str(),
-        "Firmware vs Emulator Time; Firmware time (ns); Emulator time (ns)",
+        "Phase-2 Primitive vs Phase-2 Emulator Time; Phase-2 Primitive time (ns); Phase-2 Emulator time (ns)",
       400,-200,200,400,-200,200); 
       m_plots2["hPos2D"+ chambTag + quTag] = new TH2F(("hPos2D_" + chambTag + "_" + quTag).c_str(),
-        "Firmware vs Emulator Position; Firmware position (cm); Emulator position (cm)",
+        "Phase-2 Primitive vs Phase-2 Emulator Position; Phase-2 Primitive Position (cm); Phase-2 Emulator Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots["hPsi"+ chambTag + quTag] = new TH1F(("hPsi_"+ chambTag + "_" +quTag).c_str(),
-        "Firmware - Emulator #Psi; Firmware - Emulator #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator #Psi; Phase-2 Primitive - Phase-2 Emulator #Psi (#circ); Entries",
       nbinPsiEmuFW,-minPsiEmuFW,minPsiEmuFW); 
       m_plots["hTime"+ chambTag + quTag] = new TH1F(("hTime_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Emulator time; Firmware - Emulator Time (ns); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator time; Phase-2 Primitive - Phase-2 Emulator Time (ns); Entries",
       nbinTimeEmuFW,-minTimeEmuFW,minTimeEmuFW); 
       m_plots["hPos"+ chambTag + quTag] = new TH1F(("hPos_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Emulator position; Firmware - Emulator Position (cm); Entries",
+        "Phase-2 Primitive - Phase-2 Emulator Position; Phase-2 Primitive - Phase-2 Emulator Position (cm); Entries",
       nbinPosEmuFW,-minPosEmuFW,minPosEmuFW); 
       m_plots2["hPsi2DSeg" + chambTag + quTag] = new TH2F(("hPsi2DSeg_" + chambTag + "_" + quTag).c_str(),
-        "Firmware vs Segment #Psi; Firmware #Psi (#circ); Segment #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-1 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Segment #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2DSeg"+ chambTag + quTag] = new TH2F(("hTime2DSeg_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Segment time; Firmware time (ns); Segment time (ns)",
+        "Phase-2 Primitive vs Phase-1 Segment time; Phase-2 Primitive time (ns); Phase-1 Segment time (ns)",
       400,-200,200,200,-100,100); 
       m_plots2["hPos2DSeg"+ chambTag + quTag] = new TH2F(("hPos2DSeg_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Segment position; Firmware position (cm); Segment position (cm)",
+        "Phase-2 Primitive vs Phase-1 Segment Position; Phase-2 Primitive Position (cm); Phase-1 Segment Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots2["hPsi2Dph2Seg" + chambTag + quTag] = new TH2F(("hPsi2Dph2Seg_" + chambTag + "_" + quTag).c_str(),
-        "Firmware vs ph2Segment #Psi; Firmware #Psi (#circ); ph2Segment #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-2 Segment #Psi; Phase-2 Primitive #Psi (#circ); Phase-2 Segment #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hTime2Dph2Seg"+ chambTag + quTag] = new TH2F(("hTime2Dph2Seg_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs ph2Segment time; Firmware time (ns); ph2Segment time (ns)",
+        "Phase-2 Primitive vs Phase-2 Segment time; Phase-2 Primitive time (ns); Phase-2 Segment time (ns)",
       400,-200,200,200,-100,100); 
       m_plots2["hPos2Dph2Seg"+ chambTag + quTag] = new TH2F(("hPos2Dph2Seg_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs ph2Segment position; Firmware position (cm); ph2Segment position (cm)",
+        "Phase-2 Primitive vs Phase-2 Segment Position; Phase-2 Primitive Position (cm); Phase-2 Segment Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots2["hPos2DTM"+ chambTag + quTag] = new TH2F(("hPos2DTM_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Twinmux position; Firmware position (cm); Twinmux position (cm)",
+        "Phase-2 Primitive vs Phase-1 Primitive Position; Phase-2 Primitive Position (cm); Phase-1 Primitive Position (cm)",
       600,-300,300,600,-300,300); 
       m_plots2["hPsi2DTM" + chambTag + quTag] = new TH2F(("hPsi2DTM_" + chambTag + "_" + quTag).c_str(),
-        "Firmware vs Twinmux #Psi; Firmware #Psi (#circ); Twinmux #Psi (#circ)",
+        "Phase-2 Primitive vs Phase-1 Primitive #Psi; Phase-2 Primitive #Psi (#circ); Phase-1 Primitive #Psi (#circ)",
       160,-80,80,160,-80,80); 
       m_plots2["hPhi2DTM"+ chambTag + quTag] = new TH2F(("hPhi2DTM_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Twinmux phi; Firmware phi; Twinmux phi",
+        "Phase-2 Primitive vs Phase-1 Primitive phi; Phase-2 Primitive phi (rad); Phase-1 Primitive phi (rad)",
       nbinPhiFW,-minPhiFW,minPhiFW,nbinPhiTM,-minPhiTM,minPhiTM); 
       m_plots2["hPhiB2DTM"+ chambTag + quTag] = new TH2F(("hPhiB2DTM_"+ chambTag + "_" + quTag).c_str(),
-        "Firmware vs Twinmux phiB; Firmware phiB; Twinmux phiB",
+        "Phase-2 Primitive vs Phase-1 Primitive phiB; Phase-2 Primitive phiB (rad); Phase-1 Primitive phiB (rad)",
       nbinPhiBFW,-minPhiBFW,minPhiBFW,nbinPhiBTM,-minPhiBTM,minPhiBTM); 
       m_plots["hPsiSeg"+ chambTag + quTag] = new TH1F(("hPsiSeg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment #Psi; Firmware - Segment #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-1 Segment #Psi; Phase-2 Primitive - Phase-1 Segment #Psi (#circ); Entries",
       nbinPsiSegFW,-minPsiSegFW,minPsiSegFW); 
       m_plots["hTimeSeg"+ chambTag + quTag] = new TH1F(("hTimeSeg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment time; Firmware - Segment time (ns); Entries",
+        "Phase-2 Primitive - Phase-1 Segment time; Phase-2 Primitive - Phase-1 Segment time (ns); Entries",
       nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
       m_plots["hTimeTMSeg"+ chambTag + quTag] = new TH1F(("hTimeTMSeg_"+ chambTag + "_"+quTag).c_str(),
-        "Twinmux - Segment time; Twinmux - Segment time (ns); Entries",
+        "Phase-1 Primitive - Phase-1 Segment time; Phase-1 Primitive  - Phase-1 Segment time (ns); Entries",
       nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
       m_plots["hPosSeg"+ chambTag + quTag] = new TH1F(("hPosSeg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment position; Firmware - Segment position (cm); Entries",
+        "Phase-2 Primitive - Phase-1 Segment Position; Phase-2 Primitive - Phase-1 Segment Position (cm); Entries",
       nbinPosSegFW,-minPosSegFW,minPosSegFW); 
       m_plots2["hTimeSegvsPos"+ chambTag + quTag] = new TH2F(("hTimeSegvsPos_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment time vs Segment position; Segment position (cm); Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment Position; Phase-1 Segment Position (cm); Phase-2 Primitive - Phase-1 Segment time (ns)",
       600,-300,300,200,-100,100); 
       m_plots2["hTimeSegvsPsi"+ chambTag + quTag] = new TH2F(("hTimeSegvsPsi_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment time vs Segment #Psi; Segment #Psi (#circ); Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment #Psi; Phase-1 Segment #Psi (#circ); Phase-2 Primitive - Phase-1 Segment time (ns)",
       160,-80,80,200,-100,100); 
       m_plots2["hTimeSegvsZ"+ chambTag + quTag] = new TH2F(("hTimeSegvsSegZ_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - Segment time vs Segment z; Segment z; Firmware - Segment time (ns)",
+        "Phase-2 Primitive - Phase-1 Segment time vs Phase-1 Segment z; Phase-1 Segment z; Phase-2 Primitive - Phase-1 Segment time (ns)",
       200,-200,200,50,-50,0); 
       
       m_plots["hPsiph2Seg"+ chambTag + quTag] = new TH1F(("hPsiph2Seg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment #Psi; Firmware - ph2Segment #Psi (#circ); Entries",
+        "Phase-2 Primitive - Phase-2 Segment #Psi; Phase-2 Primitive - Phase-2 Segment #Psi (#circ); Entries",
       nbinPsiph2SegFW,-minPsiph2SegFW,minPsiph2SegFW); 
       m_plots["hTimeph2Seg"+ chambTag + quTag] = new TH1F(("hTimeph2Seg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment time; Firmware - ph2Segment time (ns); Entries",
+        "Phase-2 Primitive - Phase-2 Segment time; Phase-2 Primitive - Phase-2 Segment time (ns); Entries",
       nbinTimeph2SegFW,-minTimeph2SegFW,minTimeph2SegFW); 
       m_plots["hPosph2Seg"+ chambTag + quTag] = new TH1F(("hPosph2Seg_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment position; Firmware - ph2Segment position (cm); Entries",
+        "Phase-2 Primitive - Phase-2 Segment Position; Phase-2 Primitive - Phase-2 Segment Position (cm); Entries",
       nbinPosph2SegFW,-minPosph2SegFW,minPosph2SegFW); 
       m_plots2["hTimeph2SegvsPos"+ chambTag + quTag] = new TH2F(("hTimeph2SegvsPos_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment position; ph2Segment position (cm); Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment Position; Phase-2 Segment Position (cm); Phase-2 Primitive - Phase-2 Segment time (ns)",
       600,-300,300,200,-100,100); 
       m_plots2["hTimeph2SegvsPsi"+ chambTag + quTag] = new TH2F(("hTimeph2SegvsPsi_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment #Psi; ph2Segment #Psi (#circ); Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment #Psi; Phase-2 Segment #Psi (#circ); Phase-2 Primitive - Phase-2 Segment time (ns)",
       160,-80,80,200,-100,100); 
       m_plots2["hTimeph2SegvsZ"+ chambTag + quTag] = new TH2F(("hTimeph2Segvsph2SegZ_"+ chambTag + "_"+quTag).c_str(),
-        "Firmware - ph2Segment time vs ph2Segment z; ph2Segment z; Firmware - ph2Segment time (ns)",
+        "Phase-2 Primitive - Phase-2 Segment time vs Phase-2 Segment z; Phase-2 Segment z; Phase-2 Primitive - Phase-2 Segment time (ns)",
       200,-200,200,50,-50,0); 
     }
   }
   
-  
+  return;
 }
 
 void DTNtupleTPGSimAnalyzer::fill()
@@ -977,7 +997,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     titPrint = true; 
   }
   
-  if (debug && ph2TpgPhiEmuAm_nTrigs!=0) cout << "####################### EMULATOR PRIMITIVES ############################" << endl;  
+  if (debug && ph2TpgPhiEmuAm_nTrigs!=0) cout << "####################### Phase-2 Emulator PRIMITIVES ############################" << endl;  
   int bestTrigAM[chambTags.size()][quTags.size()];  
   int bestTimeAM[chambTags.size()][quTags.size()];  
   
@@ -1240,8 +1260,8 @@ void DTNtupleTPGSimAnalyzer::fill()
       for (auto & category : categories){
         m_plots2["hPsi2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_dirLoc_phi->at(bestTrigHW[i][j]),myDirTwin);
         m_plots2["hPos2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_posLoc_x->at(bestTrigHW[i][j]),myPosTwin);
-        m_plots2["hPhi2DTM" +chambTags.at(i)+category]->Fill(ph2TpgPhiHw_phi->at(bestTrigHW[i][j]),myPhiTwin);
-        m_plots2["hPhiB2DTM"+chambTags.at(i)+category]->Fill(ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]),myPhiBTwin);
+        m_plots2["hPhi2DTM" +chambTags.at(i)+category]->Fill((0.8 / 65536.) * ph2TpgPhiHw_phi->at(bestTrigHW[i][j]), (1. / 4096.) * myPhiTwin);
+        m_plots2["hPhiB2DTM"+chambTags.at(i)+category]->Fill((1.4 / 2048.) * ph2TpgPhiHw_phiB->at(bestTrigHW[i][j]), (1 / 512.) * myPhiBTwin);
       }        
       
       
@@ -1437,9 +1457,17 @@ void DTNtupleTPGSimAnalyzer::fill()
       //if ( true ) {
       //if (HHMB3goodBX && fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
       if (fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
-        m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigHW[indstat]);
-        m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigAM[indstat]);
-        m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg),bestQualTrigTM[indstat]);
+        m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigHW[indstat]));
+        m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigAM[indstat]));
+        m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigTM[indstat]));
+
+        auto chambTag = chambTags.at(indstat);
+        if (bestQualTrigHW[indstat] >= 6) m_plots["hHwHighQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
+        else m_plots["hHwLowQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
+        if (bestQualTrigAM[indstat] >= 6) m_plots["hEmuHighQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
+        else m_plots["hEmuLowQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
+        if (bestQualTrigTM[indstat] >= 4) m_plots["hTMHighQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
+        else m_plots["hTMLowQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
         
         if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsSegX"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
         if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsSegXCorr"+chambTags.at(indstat)+"passed"]->Fill(mySegPos);
@@ -1708,10 +1736,16 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     if(myph2SegWheel==2 && myph2SegSector==12){
       int indstat = myph2SegStation-1;
-      m_plots2["h2DHwQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg),bestQualTrigHW[indstat]);
-      m_plots2["h2DEmuQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg),bestQualTrigAM[indstat]);
-      m_plots2["h2DTMQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg),bestQualTrigTM[indstat]);
-      
+      m_plots2["h2DHwQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigHW[indstat]));
+      m_plots2["h2DEmuQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigAM[indstat]));
+      m_plots2["h2DTMQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigTM[indstat]));
+      auto chambTag = chambTags.at(indstat);
+      if (bestQualTrigHW[indstat] >= 6) m_plots["hHwHighQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
+      else m_plots["hHwLowQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
+      if (bestQualTrigAM[indstat] >= 6) m_plots["hEmuHighQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
+      else m_plots["hEmuLowQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
+      if (bestQualTrigTM[indstat] >= 4) m_plots["hTMHighQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
+      else m_plots["hTMLowQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
       
       if (IbestQualTrigHW[indstat]!=-1) m_plots["hEffHWvsph2SegX"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
       if (bestQualTrigHW[indstat]>=6) m_plots["hEffHWvsph2SegXCorr"+chambTags.at(indstat)+"passed"]->Fill(myph2SegPos);
@@ -2067,7 +2101,7 @@ void DTNtupleTPGSimAnalyzer::DisplayPh2Prims () {
   
   f2 << "-1 -1 -1 -1 -1 -1 -1" << endl; 
   f2.close();
-  
+  return;
 }  
 
 void DTNtupleTPGSimAnalyzer::DisplayPh1Prims () {
@@ -2101,7 +2135,7 @@ void DTNtupleTPGSimAnalyzer::DisplayPh1Prims () {
   f2 << "-1 -1 -1 -1" << endl; 
   f2.close();
   
-  
+  return;
 }
 
 void DTNtupleTPGSimAnalyzer::DisplayPh1Segs () {
