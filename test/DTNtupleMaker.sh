@@ -69,7 +69,7 @@ else
   cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
   else 
   echo "Running the ntuple production with the datfiles..."
-  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py runOnDat=True  inputFolderCentral=/eos/cms/store/t0streamer/Minidaq/A/ nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
+  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py runOnDat=True  inputFolderCentral=/eos/cms/store/t0streamer/Minidaq/A/ nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_run337786_t0_run337772_v1.db t0File=$ph1_calib_folder/t0_run337772.db
   fi
 fi
 
