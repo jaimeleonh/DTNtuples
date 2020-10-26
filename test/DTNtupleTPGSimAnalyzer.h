@@ -52,6 +52,13 @@ private:
     if (quality == 9) return 5;
     return -1; 
   }
+  int get_tm_quality_group(int quality){
+    if (quality == 2 || quality == 3) return 2;
+    if (quality == 4) return 3;
+    if (quality == 5) return 4;
+    if (quality == 6) return 5;
+    return -1; 
+  }
   TFile m_outFile;
   
   std::map<std::string, TH1*> m_plots;
