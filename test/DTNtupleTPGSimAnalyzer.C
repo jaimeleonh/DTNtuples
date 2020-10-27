@@ -906,10 +906,10 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hBXNextOrbit" + chambTags.at(myStationHW-1)]->Fill(eventoBX);
     }
     
-    while (myt0HW > 0) { 
-      myt0HW = myt0HW - 3564*25; 
-      myBXHW = myBXHW - 3564   ; 
-    }
+    // while (myt0HW > 0) { 
+    //  myt0HW = myt0HW - 3564*25; 
+    //  myBXHW = myBXHW - 3564   ; 
+    //}
     
     m_plots["ht0" + chambTags.at(myStationHW-1)]->Fill(myt0HW);
     
@@ -1041,10 +1041,10 @@ void DTNtupleTPGSimAnalyzer::fill()
       myt0AM = myt0AM - eventoBX*25;
       myBXAM = myBXAM - eventoBX   ;
     }
-    while (myt0AM > 0) {
-      myt0AM = myt0AM - 3564*25; 
-      myBXAM = myBXAM - 3564   ; 
-    }
+    // while (myt0AM > 0) {
+    //  myt0AM = myt0AM - 3564*25; 
+    //  myBXAM = myBXAM - 3564   ; 
+    // }
     
     primitivesAM[myStationAM-1].push_back(primitive({myStationAM, mySectorAM, myWheelAM, myQualityAM, mySLAM, myPhiAM, myPhiBAM, myPosAM, myDirAM, myChi2AM, myBXAM, myt0AM}));
     
@@ -1123,10 +1123,10 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (bestTrigHW[i][j] != -1 && bestTrigAM[i][j] != -1){
         int myt0HW = ph2TpgPhiHw_t0->at(bestTrigHW[i][j]); //myt0HW = myt0HW - eventoBX*25 + 3564*25;	
         if (correctL1A) myt0HW = myt0HW - eventoBX*25;
-        while (myt0HW < 0) myt0HW += 3564*25;	
+        // while (myt0HW < 0) myt0HW += 3564*25;	
         int myt0AM = ph2TpgPhiEmuAm_t0->at(bestTrigAM[i][j]); // myt0AM = myt0AM - eventoBX*25 + 3564*25;	
         if (correctL1A) myt0AM = myt0AM - eventoBX*25;
-        while (myt0AM < 0) myt0AM += 3564*25;	
+        // while (myt0AM < 0) myt0AM += 3564*25;	
         
         std::vector <std::string> categories = {};
         categories.push_back(labelTags.at(0));
@@ -2242,7 +2242,7 @@ void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
   if (bestIPh2 > -1 ){
     
     float ph2T0 = ph2TpgPhiHw_t0->at(bestIPh2) -  (event_bunchCrossing )*25;
-    while (ph2T0 > 0) ph2T0 = ph2T0 - 25*3564;
+    // while (ph2T0 > 0) ph2T0 = ph2T0 - 25*3564;
     ph2T0 = ph2T0 + 200*25;
     m_plots["hFWSeg"]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
     if (bestQPh2 > 2 ) m_plots["hFWSegQ>2"]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
