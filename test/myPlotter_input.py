@@ -36,7 +36,7 @@ def main() :
 		    'legyhigh': 0.5,
 		    'markerColors':[r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta],
 		    'markertypedir':{},
-		    'markercolordir':{}  
+		    'markercolordir':{},
 	  	  }   
 
 
@@ -65,10 +65,11 @@ def makeResolPlot(hlist, algo, suffix, fileName, plotscaffold):
     print "Obtaining intermediate plot for algo ", algo
     wheelTag = ["Wh-2", "Wh-1", "Wh0", "Wh+1", "Wh+2"];
     res = r.TFile.Open(fileName)
-    hmatched = [res.Get(plotscaffold.format(al = algo, wh = wheelTag[iwh])) for iwh in range(5)]
 
+    hmatched = [res.Get(plotscaffold.format(al = algo, wh = wheelTag[iwh])) for iwh in range(5)]
     resplot = r.TH1F("h_{al}_{su}".format(al = algo, su = suffix), "", 20, -0.5, 19.5)
-    
+
+
     ibin = 1
     for ich in range(1,5):
     	for iwh in range(5):
@@ -91,6 +92,7 @@ def makeresplot(hlist, algo, suffix, fileName, plotscaffold):
     ibin = 1
     for ich in range(4):
         for iwh in range(1, 6):
+          #  print ich+1, iwh-3, ibin
             resplot.SetBinContent(ibin, hmatched[ich].GetBinContent(iwh) / htotal[ich].GetBinContent(iwh))
             eff = r.TEfficiency('kk','',1,-0.5,0.5)
             eff.SetTotalEvents(1, int(htotal[ich].GetBinContent(iwh)))
@@ -112,7 +114,6 @@ def makeWhateverResplot(hlist, algo, suffix, fileName, plotscaffold):
     htotal   = res.Get(plotscaffold.format(al = algo, ty = "total")) 
     hmatched.Rebin(2)
     htotal.Rebin(2)
-
 
     eff = r.TGraphAsymmErrors(hmatched, htotal)
     #eff = r.TEfficiency(hmatched, htotal)
@@ -231,8 +232,8 @@ def combineEffPlots(hlist, legends, plottingStuff, path, savescaffold):
     if len(hlist) == 0: raise RuntimeError("Empty list of plots")
     c   = r.TCanvas("c", "c", 800, 800)
     #hlist[0].GetPaintedGraph().GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
-    #hlist[0].GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
-    #hlist[0].GetPaintedGraph().GetYaxis().SetTitle(plottingStuff['yaxistitle'])
+    hlist[0].GetYaxis().SetTitleOffset(plottingStuff['yaxistitleoffset'])
+    hlist[0].GetYaxis().SetTitle(plottingStuff['yaxistitle'])
     #hlist[0].GetPaintedGraph().GetXaxis().SetTitle(plottingStuff['xaxistitle'])
 
     leg = r.TLegend(plottingStuff['legxlow'], plottingStuff['legylow'], plottingStuff['legxhigh'], plottingStuff['legyhigh'])
@@ -249,17 +250,45 @@ def combineEffPlots(hlist, legends, plottingStuff, path, savescaffold):
    
     r.gPad.Update()
     #hlist[0].GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
-    #hlist[0].GetPaintedGraph().GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
-    hlist[0].SetTitle("; " + plottingStuff['xaxistitle'] + "; Efficiency")
+    hlist[0].GetYaxis().SetRangeUser(plottingStuff['lowlimityaxis'], plottingStuff['highlimityaxis'])
+    #graph = hlist[0].GetPaintedGraph()
+    #graph.SetMinimum(plottingStuff['lowlimityaxis'])
+    #graph.SetMaximum(plottingStuff['highlimityaxis'])
+    hlist[0].SetTitle("; " + plottingStuff['xaxistitle'] + "; " + plottingStuff['yaxistitle'])
     #hlist[0].GetPaintedGraph().SetTitle("; " + plottingStuff['xaxistitle'] + "; Efficiency")
     
-    CMS_lumi.lumi_13TeV = ""
-    #CMS_lumi.extraText  = 'Simulation - No ageing'
-    CMS_lumi.extraText  = 'Simulation'
-    CMS_lumi.cmsTextSize= 0.5
-    CMS_lumi.lumi_sqrtS = ''
-    CMS_lumi.CMS_lumi(r.gPad, 0, 0, 0.07)
+    firsttex = r.TLatex()
+    firsttex.SetTextSize(0.03)
+    firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{CMS} Phase-2 Simulation")
+    firsttex.Draw("same");
 
+    secondtext = r.TLatex()
+    toDisplay = r.TString()
+    if ( 'PU' in plottingStuff ) :
+      if ('writeInPlot' in plottingStuff) :
+        toDisplay  = r.TString(plottingStuff['writeInPlot'] + ", 14 TeV, " + str(plottingStuff['PU'])  +" PU")
+      else :
+        toDisplay  = r.TString("14 TeV, " + str(plottingStuff['PU'])  +" PU")
+    else : 
+      if ('writeInPlot' in plottingStuff) :
+        toDisplay  = r.TString(plottingStuff['writeInPlot'] + ", 14 TeV")
+      else :
+        toDisplay  = r.TString("14 TeV")
+    
+    
+    
+    
+    secondtext.SetTextSize(0.035)
+    secondtext.SetTextAlign(31)
+    secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
+    secondtext.Draw("same")
+
+    #if ('writeInPlot' in plottingStuff): 
+    #  print "True"
+    #  textlist = []
+    #  textlist.append(r.TText( 0.8 , 0.85, plottingStuff['writeInPlot']))
+    #  textlist[-1].SetNDC(True)
+    #  textlist[-1].Draw("same")
 
     #c.SetLogy()
     c.SaveAs(path + savescaffold + ".png")
@@ -269,7 +298,7 @@ def combineEffPlots(hlist, legends, plottingStuff, path, savescaffold):
     return
 
 
-def combineresplots(hlist, legends, plottingStuff, path, savescaffold):
+def combineresplots(hlist, legends, plottingStuff, path, savescaffold, fil):
     chambTag = ["MB1", "MB2", "MB3", "MB4"]
     print "Combining list of plots"
     if len(hlist) == 0: raise RuntimeError("Empty list of plots")
@@ -314,13 +343,14 @@ def combineresplots(hlist, legends, plottingStuff, path, savescaffold):
 
     firsttex = r.TLatex()
     firsttex.SetTextSize(0.03)
-    firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{       CMS} Phase-2 Simulation")
+    if (plottingStuff['highlimityaxis'] > 1.01) : firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{       CMS} Phase-2 Simulation")
+    else : firsttex.DrawLatexNDC(0.11,0.91,"#scale[1.5]{CMS} Phase-2 Simulation")
     firsttex.Draw("same");
 
     secondtext = r.TLatex()
     toDisplay = r.TString()
-    if ("PU" in plottingStuff) : toDisplay  = r.TString("14 TeV, " + str(plottingStuff["PU"]) + " PU")
-    else : r.TString("14 TeV")
+    if (lookForPU(fil) != -1) : toDisplay  = r.TString("14 TeV, " + str(lookForPU(fil))  +" PU")
+    else : toDisplay  = r.TString("14 TeV")
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())
@@ -597,6 +627,8 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
     c   = r.TCanvas("c", "c", 800, 800)
     c.SetLeftMargin(0.11)
     c.SetGrid()
+    
+    if legends : leg = r.TLegend(plottingStuff['legxlow'], plottingStuff['legylow'], plottingStuff['legxhigh'], plottingStuff['legyhigh'])
   
     ilabel=1
     for ich in range(4):
@@ -608,10 +640,10 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
         hlist[iplot].SetMarkerSize(plottingStuff['markersize'])
         hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][hlist[iplot].GetName()])
         hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
-     #   leg.AddEntry(hlist[iplot], legends[iplot], "P")
+        if legends: leg.AddEntry(hlist[iplot], legends[iplot], "P")
         hlist[iplot].Draw("P,hist" + (iplot != 0) * "same")
 
-    #leg.Draw()
+    if legends: leg.Draw()
 
     textlist = []
     linelist = []
@@ -634,6 +666,8 @@ def combineResolPlots(hlist, mag, quality, legends, plottingStuff, path, savesca
     toDisplay = r.TString()
     if ("PU" in plottingStuff) : toDisplay  = r.TString("14 TeV, " + str(plottingStuff["PU"])  +" PU")
     else : toDisplay  = r.TString("14 TeV")
+    
+    toDisplay = r.TString("14 TeV, 3000 fb^{-1}, 200 PU") #typically for Phase-2
     secondtext.SetTextSize(0.035)
     secondtext.SetTextAlign(31)
     secondtext.DrawLatexNDC(0.90, 0.91, toDisplay.Data())

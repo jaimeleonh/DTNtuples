@@ -12,7 +12,6 @@ from markerColors import markerColors
 import argparse
 parser = argparse.ArgumentParser(description='Plotter options')
 parser.add_argument('-n','--ntuples', action='store_true', default = False)
-parser.add_argument('-c','--compiler', action='store_true', default = False)
 my_namespace = parser.parse_args()
 
 ################################# CHANGE BEFORE RUNNING #######################################
@@ -20,19 +19,16 @@ my_namespace = parser.parse_args()
 categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
 #files['norpc'].append('PU200_mu_bkg7p5') 
-files['norpc'].append('pu200_noage_norpc') 
-files['norpc'].append('nopu_noage_norpc') 
+#files['norpc'].append('pu200_noage_norpc') 
+#files['norpc'].append('nopu_noage_norpc') 
+files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel_woRPC')
+#files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel')
 #files['norpc'].append('PU250_nu_bkg9') 
 #files['norpc'].append('PU200_bkgHits') 
 
-#qualities = ['']
-qualities = {'norpc':[],'rpc':[], 'DM':[]}
-qualities['norpc'].append('4h')
-qualities['norpc'].append('3h')
-
 ##############################################################################################
 
-if my_namespace.compiler == True : 
+if my_namespace.ntuples == True : 
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Digis.C")
@@ -78,7 +74,6 @@ plottingStuff['highlimityaxis']['x'] = {'3h': 0.02, '4h': 0.02}
 #markerColors = [r.kBlue, r.kRed, r.kGreen, r.kOrange, r.kBlack, r.kMagenta]
 
 
-
 for cat in files :  
   for fil in files[cat] :
     if my_namespace.ntuples == True :     
@@ -94,3 +89,12 @@ for cat in files :
     c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".png")
     c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".pdf")
     c.SaveAs(plotsPath + "DigiDistr_"+ fil + ".root")
+
+    for i in range(1,5):
+        c1   = r.TCanvas("c", "c", 1200, 800)
+        plot = res.Get("hits_MB" + str(i))
+        plot.Draw("colztext")
+        c1.SaveAs(plotsPath + "digi_rate_{}_MB{}.png".format(fil, i))
+        c1.SaveAs(plotsPath + "digi_rate_{}_MB{}.pdf".format(fil, i))
+        c1.SaveAs(plotsPath + "digi_rate_{}_MB{}.root".format(fil, i))
+
