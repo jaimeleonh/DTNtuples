@@ -243,7 +243,17 @@ void DTNtupleTPGSimAnalyzer::book()
     m_plots2["hQualityVsBXAM"+chambTag] = new TH2F(("hQualityVsBXAM_" +chambTag).c_str(),
       "Distribution of Quality vs BX for Emul; Emul Primitive Quality; Emul Primitive BX - Offset",
     9,0.5,9.5,21,-10.5,10.5); 
-    
+
+    // multiplicity per event
+    m_plots["hMultiplicityHW"+chambTag] = new TH1F(("hMultiplicityHW_" +chambTag).c_str(),
+      "; Number of Phase-2 Primitives per event; Entries",
+    26,-0.5,25.5);
+
+    // BX window per event
+    m_plots["hBXWindowHW"+chambTag] = new TH1F(("hBXWindowHW_" +chambTag).c_str(),
+      "; Phase-2 Primitives BX window; Entries / 4 BXs",
+    51,-0.5,50.5); 
+
     m_plots["hBXTM"+chambTag] = new TH1F(("hBXTM_" +chambTag).c_str(),
       "Distribution of BX Phase-1 Primitive; BX Phase-1 Primitive; Entries",
     21,-10.5,10.5); 
@@ -849,7 +859,14 @@ void DTNtupleTPGSimAnalyzer::fill()
     bestQualTrigHW[indstat]=-1;IbestQualTrigHW[indstat]=-1;
     bestQualTrigBXHW[indstat]=-1;IbestQualTrigBXHW[indstat]=-1;
   }
- 
+
+  int number_of_prims[4], min_bx[4], max_bx[4];
+  for (unsigned int i = 0; i < 4; i++){
+    number_of_prims[i] = 0;
+    min_bx[i] = 9999;
+    max_bx[i] = -9999;
+  }
+
   //cout << "Filling HW prims";  
   for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW) {
     
@@ -885,7 +902,6 @@ void DTNtupleTPGSimAnalyzer::fill()
     //m_plots2["hQualityVsLatenciesHW"+chambTags.at(indstat)]->Fill(myQualityHW,myArrivalBXHW - myBXHW); 
    
     
-    
     if(myQualityHW>bestQualTrigHW[indstat]){
       bestQualTrigHW[indstat]=myQualityHW;
       IbestQualTrigHW[indstat]=iTrigHW ;
@@ -910,6 +926,15 @@ void DTNtupleTPGSimAnalyzer::fill()
     //  myt0HW = myt0HW - 3564*25; 
     //  myBXHW = myBXHW - 3564   ; 
     //}
+   
+    number_of_prims[indstat]++; 
+    
+    if (myBXHW < min_bx[indstat]){
+        min_bx[indstat] = myBXHW;
+    }
+    if (myBXHW > max_bx[indstat]){
+        max_bx[indstat] = myBXHW;
+    }
     
     m_plots["ht0" + chambTags.at(myStationHW-1)]->Fill(myt0HW);
     
@@ -987,6 +1012,10 @@ void DTNtupleTPGSimAnalyzer::fill()
       m_plots["hChi2FW"+chambTags.at(myStationHW-1)+category]->Fill(1.E6*myChi2HW / (1024. * 100) );
     } 
   } // end HW
+  for (unsigned int i = 0; i < 4; i++){
+    if (number_of_prims[i] > 0) m_plots["hMultiplicityHW"+ chambTags.at(i)]->Fill(number_of_prims[i]);
+    if (max_bx[i] > -9999) m_plots["hBXWindowHW"+ chambTags.at(i)]->Fill(max_bx[i] - min_bx[i]);
+  }
   //cout << " -> Finished" << endl;  
 
   //cout << "Filling AM prims";  
