@@ -11,7 +11,7 @@ process = cms.Process("DTNTUPLES",eras.Phase2C9)
 options = VarParsing.VarParsing()
 
 options.register('globalTag',
-                 '106X_upgrade2023_realistic_v3', #default value
+                 '110X_mcRun4_realistic_v3', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Global Tag")
@@ -96,7 +96,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEvents))
 
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 #process.GlobalTag.globaltag = cms.string(options.globalTag)
 from Configuration.AlCa.GlobalTag import GlobalTag

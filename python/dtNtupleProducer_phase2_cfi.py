@@ -40,5 +40,6 @@ dtNtupleProducer = cms.EDAnalyzer("DTNtupleProducer",
                                       doT0Correction = cms.bool(True),
                                       tTrigLabel = cms.string(''),
                                       debug = cms.untracked.bool(False),
+                                      t0Label = cms.string('')
                                   )
 )
