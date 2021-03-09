@@ -375,10 +375,10 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      m_seg4D_posLoc_x_SL3.push_back(xPosLocSL[1]);
 	      m_seg4D_posLoc_x_midPlane.push_back(xPosLocMidPlane);
 
-	      const GeomDet * geomDet = m_config->m_trackingGeometry->idToDet(segment4D->geographicalId());
-	      auto posGlb = geomDet->toGlobal(pos);
-	      auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
-          auto midPlanePosGlb = geomDet->toGlobal(LocalPoint(xPosLocMidPlane, 0, zPosLocMidPlane)); 
+             const GeomDet * geomDet = m_config->m_trackingGeometry->idToDet(segment4D->geographicalId());
+             auto posGlb = geomDet->toGlobal(pos);
+             auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
+             auto midPlanePosGlb = geomDet->toGlobal(LocalPoint(xPosLocMidPlane, 0, zPosLocMidPlane)); 
 
           //std::cout << station << " ";
           //std::cout << posGlb.phi() << " "; 
