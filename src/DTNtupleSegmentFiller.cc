@@ -375,24 +375,19 @@ void DTNtupleSegmentFiller::fill(const edm::Event & ev)
 	      m_seg4D_posLoc_x_SL3.push_back(xPosLocSL[1]);
 	      m_seg4D_posLoc_x_midPlane.push_back(xPosLocMidPlane);
 
-             const GeomDet * geomDet = m_config->m_trackingGeometry->idToDet(segment4D->geographicalId());
-             auto posGlb = geomDet->toGlobal(pos);
-             auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
-             auto midPlanePosGlb = geomDet->toGlobal(LocalPoint(xPosLocMidPlane, 0, zPosLocMidPlane));
+              const GeomDet * geomDet = m_config->m_trackingGeometry->idToDet(segment4D->geographicalId());
+              auto posGlb = geomDet->toGlobal(pos);
+              auto dirGlb = geomDet->toGlobal(dir); // CB do values have sense?
+              auto midPlanePosGlb = geomDet->toGlobal(LocalPoint(xPosLocMidPlane, 0, zPosLocMidPlane));
 
-          //std::cout << station << " ";
-          //std::cout << posGlb.phi() << " "; 
-          //std::cout << phiGlobSL[0] << " "; 
-          //std::cout << phiGlobSL[1] << " ";
-          //std::cout << midPlanePosGlb.phi() << std::endl;
-	      m_seg4D_posGlb_phi.push_back(posGlb.phi());
-          m_seg4D_posGlb_phi_SL1.push_back(phiGlobSL[0]);
-          m_seg4D_posGlb_phi_SL3.push_back(phiGlobSL[1]);
-          m_seg4D_posGlb_phi_midPlane.push_back(midPlanePosGlb.phi());
-	      m_seg4D_posGlb_eta.push_back(posGlb.eta());
+              m_seg4D_posGlb_phi.push_back(posGlb.phi());
+              m_seg4D_posGlb_phi_SL1.push_back(phiGlobSL[0]);
+              m_seg4D_posGlb_phi_SL3.push_back(phiGlobSL[1]);
+              m_seg4D_posGlb_phi_midPlane.push_back(midPlanePosGlb.phi());
+              m_seg4D_posGlb_eta.push_back(posGlb.eta());
 
-	      m_seg4D_dirGlb_phi.push_back(dirGlb.phi());
-	      m_seg4D_dirGlb_eta.push_back(dirGlb.eta());
+              m_seg4D_dirGlb_phi.push_back(dirGlb.phi());
+              m_seg4D_dirGlb_eta.push_back(dirGlb.eta());
 	      
 	      if(hasPhi) 
 		fillPhi(segment4D->phiSegment(), geomDet);
