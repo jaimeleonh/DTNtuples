@@ -94,6 +94,7 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    seg_posGlb_phi = 0;
    seg_posGlb_phi_SL1 = 0;
    seg_posGlb_phi_SL3 = 0;
+   seg_posGlb_phi_midPlane = 0;
    seg_posGlb_eta = 0;
    seg_dirGlb_phi = 0;
    seg_dirGlb_eta = 0;
@@ -322,6 +323,7 @@ void DTNtupleBaseAnalyzer::Init(TTree *tree)
    fChain->SetBranchAddress("seg_posGlb_phi", &seg_posGlb_phi, &b_seg_posGlb_phi);
    fChain->SetBranchAddress("seg_posGlb_phi_SL1", &seg_posGlb_phi_SL1, &b_seg_posGlb_phi_SL1);
    fChain->SetBranchAddress("seg_posGlb_phi_SL3", &seg_posGlb_phi_SL3, &b_seg_posGlb_phi_SL3);
+   fChain->SetBranchAddress("seg_posGlb_phi_midPlane", &seg_posGlb_phi_midPlane, &b_seg_posGlb_phi_midPlane);
    fChain->SetBranchAddress("seg_posGlb_eta", &seg_posGlb_eta, &b_seg_posGlb_eta);
    fChain->SetBranchAddress("seg_dirGlb_phi", &seg_dirGlb_phi, &b_seg_dirGlb_phi);
    fChain->SetBranchAddress("seg_dirGlb_eta", &seg_dirGlb_eta, &b_seg_dirGlb_eta);

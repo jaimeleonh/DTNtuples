@@ -43,8 +43,11 @@ protected:
 private:
   
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
-  void printMPs(int iTrig);
+  void printMPs(int);
+  void printSeg(int);
   void printHits();
+  int getPh1Hits(int wh, int se, int st);
+  int getPh2Hits(int wh, int se, int st);
   void printPh2Hits();
  
   TString quality_; 

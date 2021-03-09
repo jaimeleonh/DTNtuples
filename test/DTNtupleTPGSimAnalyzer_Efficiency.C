@@ -70,8 +70,8 @@ void DTNtupleTPGSimAnalyzer::Loop()
 
       //cout << jentry << endl; 
       if(jentry % 100 == 0)
- std::cout << "[DTNtupleTPGSimAnalyzer::Loop] processed : "
-      << jentry << " entries\r" << std::flush;
+          std::cout << "[DTNtupleTPGSimAnalyzer::Loop] processed : "
+          << jentry << " entries\r" << std::flush;
       fill();
     }
 
@@ -147,6 +147,12 @@ void DTNtupleTPGSimAnalyzer::book()
       m_plots["Eff_" + chamb + "_" + algo + "_" + total] = new TH1D(("hEff_" + chamb + "_" + algo + "_" + total).c_str(),
                                                 ("Efficiency for " + chamb + " " + algo + "; Sector; Efficiency").c_str(),
                                                 5, -2.5, +2.5);
+      m_plots["SegEff_" + chamb + "_" + algo + "_" + total] = new TH1D(("hSegEff_" + chamb + "_" + algo + "_" + total).c_str(),
+                                                ("Segment efficiency for " + chamb + "; Sector; Efficiency").c_str(),
+                                                5, -2.5, +2.5);
+      m_plots["EffNoBX_" + chamb + "_" + algo + "_" + total] = new TH1D(("hEffNoBX_" + chamb + "_" + algo + "_" + total).c_str(),
+                                                ("Efficiency for " + chamb + " " + algo + "; Sector; Efficiency").c_str(),
+                                                5, -2.5, +2.5);
       m_plots["EffEta_" + chamb + "_" + algo + "_" + total] = new TH1D(("hEffEta_" + chamb + "_" + algo + "_" + total).c_str(),
                                                 ("Efficiency vs Eta for " + chamb + " " + algo + "; #eta; Efficiency").c_str(),
                                                 100, -1.5, +1.5);
@@ -176,7 +182,8 @@ void DTNtupleTPGSimAnalyzer::fill()
 //  printHits();
 //  cout << "--------------------------------Hits de Ph2: ----------------------------" <<endl;
 //  printPh2Hits();
-
+  
+  // bool print = true;
   for (std::size_t iGenPart = 0; iGenPart < gen_nGenParts; ++iGenPart)
   {
     if (std::abs(gen_pdgId->at(iGenPart)) != 13 || gen_pt->at(iGenPart) < m_minMuPt) continue;
@@ -223,7 +230,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     bool qualityLegacy = false;
     
     if (quality_ == "nothreehits"){
-      minQuality = 3;
+      minQuality = 2;
     } 
     else if (quality_ == "index0")
       maxIndex = 0;
@@ -246,7 +253,9 @@ void DTNtupleTPGSimAnalyzer::fill()
     else if (quality_ == "correlated")
       qualityCorrelated = true;  
     else if (quality_ == "legacy")
-      qualityLegacy = true; 
+      qualityLegacy = true;
+    else if (quality_ == "Q9" ) 
+      minQuality = 8;
     else if (quality_ == "All" ) 
       minQuality = -999;
     else {
@@ -338,8 +347,10 @@ void DTNtupleTPGSimAnalyzer::fill()
 
       // ==================== VARIABLES FOR THE ANALYTICAL METHOD ALGORITHM
       Int_t    bestTPAM = -1;
+      Int_t    bestTPNoBXAM = -1;
       Int_t    AMRPCflag= -1;
       Double_t bestSegTrigAMDPhi = 1000;
+      Double_t bestSegTrigAMDPhiNoBX = 1000;
       Double_t bestAMDPhi = 0;
       Int_t    besttrigAMBX = 0;
       for (std::size_t iTrigAM = 0; iTrigAM < ph2TpgPhiEmuAm_nTrigs; ++iTrigAM)
@@ -357,10 +368,28 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t finalAMDPhi   = seg_posGlb_phi->at(iSeg) - trigGlbPhi;
           Double_t segTrigAMDPhi = abs(acos(cos(finalAMDPhi)));
 
+          // if (abs(segWh) == 2 and abs(segSt) == 1 and print) {
+            // print = false;
+            // cout << event_eventNumber << endl;
+            // for (std::size_t iTrigAM = 0; iTrigAM < ph2TpgPhiEmuAm_nTrigs; ++iTrigAM) {
+              // cout << ph2TpgPhiEmuAm_wheel->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_sector->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_station->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_quality->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_BX->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_t0->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_posLoc_x->at(iTrigAM) << " ";
+              // cout << ph2TpgPhiEmuAm_dirLoc_phi->at(iTrigAM) << endl;
+            // }
+            // printPh2Hits();
+          // }
+
           m_plots["hPrimPsiAM"] -> Fill( ph2TpgPhiEmuAm_dirLoc_phi->at(iTrigAM) );
           m_plots["hDeltaPhiAM"] -> Fill( segTrigAMDPhi );
           m_plots2["hBXvsPrimPsiAM"] -> Fill ( trigAMBX - 20 , atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()));
-	 
+          if (segNHits == 8)
+            m_plots["SegEff_" + chambTag + "_AM_matched"] -> Fill(segWh);
+          m_plots["SegEff_" + chambTag + "_AM_total"] -> Fill(segWh);
           m_plots2["hSegmentPsiVSDeltaT0AM"]->Fill(  atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) , ph2TpgPhiEmuAm_t0->at(iTrigAM) - 20*25 - seg_phi_t0->at(iSeg) );
           if (ph2TpgPhiEmuAm_index->at(iTrigAM) > maxIndex ) continue;  	  
 	      if (ph2TpgPhiEmuAm_quality->at(iTrigAM) < minQuality ) continue;  	  
@@ -369,8 +398,8 @@ void DTNtupleTPGSimAnalyzer::fill()
           if (qualityMatched && ( (ph2TpgPhiEmuAm_quality->at(iTrigAM) < 3 && ph2TpgPhiEmuAm_rpcFlag->at(iTrigAM)==0 ) || ( ph2TpgPhiEmuAm_quality->at(iTrigAM) ==-1 ) ) ) continue;
           if (qualityMatchedORSegs && ( ( (trigAMqual < 3 && trigAMrpc==0 ) && trigAMqual > -1) || ( trigAMqual ==-1 && trigAMrpc!=2 ) )) continue;
           if (qualityMatchedORSegsClus && ( ( (trigAMqual < 3 && trigAMrpc==0 ) && trigAMqual > -1) )) continue;
-          if (qualityCorrelated && (trigAMqual < 6 || trigAMqual==7)) continue;
-          if (qualityLegacy && (trigAMqual < 3 || trigAMqual==5)) continue;
+          if (qualityCorrelated && (trigAMqual < 6)) continue;
+          if (qualityLegacy && (trigAMqual < 3)) continue;
 
           //if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (bestSegTrigAMDPhi > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
           if ((segTrigAMDPhi < m_maxSegTrigDPhi) && (trigAMBX == 20) && (bestSegTrigAMDPhi > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
@@ -381,9 +410,14 @@ void DTNtupleTPGSimAnalyzer::fill()
             bestAMDPhi        = TVector2::Phi_mpi_pi(finalAMDPhi);
             AMRPCflag         = ph2TpgPhiEmuAm_rpcFlag->at(iTrigAM);
           }
+          if ((segTrigAMDPhi< m_maxSegTrigDPhi )                 && (bestSegTrigAMDPhiNoBX > segTrigAMDPhi) && (ph2TpgPhiEmuAm_quality->at(iTrigAM) >= minQuality))
+          {
+            bestTPNoBXAM          = iTrigAM;
+            bestSegTrigAMDPhiNoBX = segTrigAMDPhi;
+          }
         }
       }
-
+      // cout << bestTPAM << " " << bestTPNoBXAM << endl;
       if (bestTPAM > -1 && seg_phi_t0->at(iSeg) > -500)
       {
          //cout << thisEntry << " " << 1 << " "<< segWh << " " << segSec << " " << segSt << " " << seg_phi_nHits->at(iSeg) << " " << getPh1Hits(segWh,segSec,segSt) << " " << getPh2Hits(segWh,segSec,segSt) <<endl;
@@ -402,9 +436,15 @@ void DTNtupleTPGSimAnalyzer::fill()
         //cout << "Inefficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) <<endl;
         //cout << "Inefficient event " <<  thisEntry << " in " << whTag << " " << secTag << " " << chambTag << " Segment hits: " << seg_phi_nHits->at(iSeg) << " Segment Position: " << seg_posLoc_x->at(iSeg) << " Primitive iTrig " << bestTPAM << " out of " <<  ph2TpgPhiEmuAm_nTrigs  <<endl;
       }
+      if (bestTPNoBXAM > -1 && seg_phi_t0->at(iSeg) > -500)
+      {
+        m_plots["EffNoBX_" + chambTag + "_AM_matched"]->Fill(segWh);
+      }
+      
       if (seg_phi_t0->at(iSeg) > -500)
       {
         m_plots["Eff_" + chambTag + "_AM_total"]->Fill(segWh);
+        m_plots["EffNoBX_" + chambTag + "_AM_total"]->Fill(segWh);
         m_plots["EffEta_" + chambTag + "_AM_total"]->Fill(gen_eta->at(iGenPart));
         m_plots["hEffvsSlopeAM" + chambTag + whTag + "total"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
         m_plots["hEffvsSlopeAMtotal"] -> Fill(atan ( (seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) * 360 / (2*TMath::Pi()) );
@@ -477,7 +517,13 @@ void DTNtupleTPGSimAnalyzer::printHits ()
 void DTNtupleTPGSimAnalyzer::printPh2Hits () 
 {
   for (unsigned int i = 0; i < ph2Digi_nDigis; i++){
-    cout << "Wh: " << ph2Digi_wheel->at(i) << " Se:" << ph2Digi_sector->at(i) << " St:" << ph2Digi_station->at(i) << " Sl:" << ph2Digi_superLayer->at(i) << " La:" << ph2Digi_layer->at(i) << " Wi:" << ph2Digi_wire->at(i) << " Time: " << ph2Digi_time->at(i) << endl;      
+    cout << ph2Digi_wheel->at(i) << " ";
+    cout << ph2Digi_sector->at(i) << " ";
+    cout << ph2Digi_station->at(i) << " ";
+    cout << ph2Digi_superLayer->at(i) << " ";
+    cout << ph2Digi_layer->at(i) << " " ;
+    cout << ph2Digi_wire->at(i) << " ";
+    cout << ph2Digi_time->at(i) << endl;      
   }
 }
 

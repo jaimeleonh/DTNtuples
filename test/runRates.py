@@ -25,7 +25,9 @@ files = {'norpc':[], 'rpc':[], 'DM':[]}
 #files['norpc'].append('mu_pu200_noage_norpc')
 #files['norpc'].append('mu_PU200_withRPC_noAgeing_grouping2')
 #files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel')
-files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel_woRPC')
+#files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel_woRPC')
+files['norpc'].append('nu_PU250_noRPC_noAgeing_bkg9E34_debug')
+files['norpc'].append('nu_PU250_noRPC_noAgeing_bkg9E34_20210223')
 #files['norpc'].append('nu_pu250_noage_norpc')
 #files['norpc'].append('nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000')
 #files['rpc'].append('nu_pu250_noage_withrpc')
@@ -76,6 +78,9 @@ plottingStuff = { 'lowlimityaxis' : 0,
    	          } 
 #plottingStuff['ranges'] = {"rates":[60E6,10E6,10E6,10E6,10E6,10E6,50E6,10E6], "bandwidths":[60E8,10E8,10E8,10E8,10E8,10E8,50E8,10E8] }
 plottingStuff['ranges']['nu_pu250_noage_norpc'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
+plottingStuff['ranges']['nu_PU250_noRPC_noAgeing_bkg9E34_newestAnalyzer'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
+plottingStuff['ranges']['nu_PU250_noRPC_noAgeing_bkg9E34_debug'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
+plottingStuff['ranges']['nu_PU250_noRPC_noAgeing_bkg9E34_20210223'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = {"rates":[15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_noage_withrpc'] = { "rates":[15E5,15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8,1E8] }
 plottingStuff['ranges']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = { "rates":[15E5,15E5,15E5,15E5,15E5,15E5,15E5], "bandwidths":[1E8,1E8,1E8,1E8,1E8,1E8,1E8] }
@@ -91,6 +96,9 @@ plottingStuff['ranges']['DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel
 
 plottingStuff['highLimitYAxis_perSector']['default'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_norpc'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_PU250_noRPC_noAgeing_bkg9E34_newestAnalyzer'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_PU250_noRPC_noAgeing_bkg9E34_debug'] = 200E6;  
+plottingStuff['highLimitYAxis_perSector']['nu_PU250_noRPC_noAgeing_bkg9E34_20210223'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_noage_withrpc'] = 200E6;  
 plottingStuff['highLimitYAxis_perSector']['nu_pu250_age_withrpc_youngseg_muonage_norpcage_fail_3000'] = 200E6;  
@@ -120,6 +128,9 @@ plottingStuffRat = { 'lowlimityaxis' : {},
    	           }   
 plottingStuffRat['lowlimityaxis']['default'] = [0,0,0,0,0]
 plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['nu_PU250_noRPC_noAgeing_bkg9E34_newestAnalyzer'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['nu_PU250_noRPC_noAgeing_bkg9E34_debug'] = [0,0,0,0,0]
+plottingStuffRat['lowlimityaxis']['nu_PU250_noRPC_noAgeing_bkg9E34_20210223'] = [0,0,0,0,0]
 #plottingStuffRat['lowlimityaxis']['nu_pu250_noage_norpc'] = [0.4,0.4,0.4,0.4,0.4]
 plottingStuffRat['lowlimityaxis']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = [0,0,0,0,0]
 #plottingStuffRat['lowlimityaxis']['nu_pu250_age_norpc_youngseg_muonage_norpcage_fail_3000'] = [0.4,0.4,0.4,0.4,0.4]

@@ -24,8 +24,8 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_minMuPt = 20;
   m_maxMuPt = 9999;
 
-  m_maxMuSegDPhi = 0.2;
-  m_maxMuSegDEta = 0.3;
+  m_maxMuSegDPhi = 0.1;
+  m_maxMuSegDEta = 0.15;
 
   m_minSegHits = 4;
   m_minZSegHits = 4;
@@ -387,12 +387,19 @@ void DTNtupleTPGSimAnalyzer::fill()
         if (segWh  == trigHBWh && segSec == trigHBSec &&  segSt  == trigHBSt){
           Double_t mySegPhi;
           if (ph2TpgPhiEmuHb_superLayer->at(iTrigHB)==1) {
-	    mySegPhi = seg_posGlb_phi_SL1->at(iSeg);
+	        //mySegPhi = seg_posGlb_phi_SL1->at(iSeg);
+	        mySegPhi = seg_posGlb_phi->at(iSeg);  // FIXME
           } else if (ph2TpgPhiEmuHb_superLayer->at(iTrigHB)==3) {
-	    mySegPhi = seg_posGlb_phi_SL3->at(iSeg);
+	        //mySegPhi = seg_posGlb_phi_SL3->at(iSeg);
+	        mySegPhi = seg_posGlb_phi->at(iSeg);  // FIXME
 	  } else {
 	    mySegPhi = seg_posGlb_phi->at(iSeg); 
 	  }
+
+
+	  mySegPhi = seg_posGlb_phi->at(iSeg);  // FIXME
+
+
       Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuHb_phi->at(iTrigHB),trigHBSec);
       if (segWh==-2 && segSt == 1) m_plots["Phi_HB"+secTag]->Fill(trigGlbPhi);
 	  //Double_t finalHBDPhi   = acos(cos(mySegPhi - trigGlbPhi));
@@ -464,9 +471,11 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  // PhiB
           Double_t segPhi;
           if (ph2TpgPhiEmuHb_superLayer->at(indexHB.at(i))==1) {
-	    segPhi = seg_posGlb_phi_SL1->at(iSeg);
+	    //segPhi = seg_posGlb_phi_SL1->at(iSeg);
+	    segPhi = seg_posGlb_phi->at(iSeg);  // FIXME
           } else if (ph2TpgPhiEmuHb_superLayer->at(indexHB.at(i))==3) {
-	    segPhi = seg_posGlb_phi_SL3->at(iSeg);
+	    //segPhi = seg_posGlb_phi_SL3->at(iSeg);
+	    segPhi = seg_posGlb_phi->at(iSeg);  // FIXME
 	  } else {
 	    segPhi = seg_posGlb_phi->at(iSeg); 
 	  }
@@ -539,6 +548,9 @@ void DTNtupleTPGSimAnalyzer::fill()
         Int_t trigAMSec = ph2TpgPhiEmuAm_sector->at(iTrigAM);
         Int_t trigAMSt  = ph2TpgPhiEmuAm_station->at(iTrigAM);
         Int_t trigAMBX  = ph2TpgPhiEmuAm_BX->at(iTrigAM);
+        Int_t trigAMrpc  = ph2TpgPhiEmuAm_rpcFlag->at(iTrigAM);
+        //if (trigAMrpc == 3) continue;
+        //if (trigAMrpc == 3 || trigAMrpc == 2) continue;
 
         if (segWh  == trigAMWh && segSec == trigAMSec &&  segSt  == trigAMSt){
           Double_t trigGlbPhi    = trigPhiInRad(ph2TpgPhiEmuAm_phi->at(iTrigAM),trigAMSec);
@@ -546,12 +558,17 @@ void DTNtupleTPGSimAnalyzer::fill()
           Double_t mySegPhi;
          // if (false) {
           if (ph2TpgPhiEmuAm_superLayer->at(iTrigAM)==1) {
-	    mySegPhi = seg_posGlb_phi_SL1->at(iSeg);
+              mySegPhi = seg_posGlb_phi_SL1->at(iSeg);
+              //mySegPhi = seg_posGlb_phi->at(iSeg);  // FIXME
           } else if (ph2TpgPhiEmuAm_superLayer->at(iTrigAM)==3) {
-	    mySegPhi = seg_posGlb_phi_SL3->at(iSeg);
-	  } else {
-	    mySegPhi = seg_posGlb_phi->at(iSeg); 
-	  }
+	          mySegPhi = seg_posGlb_phi_SL3->at(iSeg);
+              //mySegPhi = seg_posGlb_phi->at(iSeg);  // FIXME
+	      } else {
+	          mySegPhi = seg_posGlb_phi_midPlane->at(iSeg); 
+	          //mySegPhi = seg_posGlb_phi->at(iSeg); 
+    	  }
+	  
+          
           //Double_t finalAMDPhi   = acos(cos(mySegPhi - trigGlbPhi));
           Double_t finalAMDPhi   = mySegPhi - trigGlbPhi;
           //Double_t segTrigAMDPhi = abs(finalAMDPhi);
@@ -636,15 +653,18 @@ void DTNtupleTPGSimAnalyzer::fill()
 	  m_plots["PhiRes_P2_AM" + corr + chambTag]->Fill( DPhiAM.at(i) );
 	  
 	  // PhiB
-          Double_t segPhi;
-          if (ph2TpgPhiEmuAm_superLayer->at(indexAM.at(i))==1) {
-	    segPhi = seg_posGlb_phi_SL1->at(iSeg);
-          } else if (ph2TpgPhiEmuAm_superLayer->at(indexAM.at(i))==3) {
-	    segPhi = seg_posGlb_phi_SL3->at(iSeg);
+      Double_t segPhi;
+      if (ph2TpgPhiEmuAm_superLayer->at(indexAM.at(i))==1) {
+	      segPhi = seg_posGlb_phi_SL1->at(iSeg);
+	      // segPhi = seg_posGlb_phi->at(iSeg); 
+      } else if (ph2TpgPhiEmuAm_superLayer->at(indexAM.at(i))==3) {
+	      segPhi = seg_posGlb_phi_SL3->at(iSeg);
+	      // segPhi = seg_posGlb_phi->at(iSeg); 
 	  } else {
-	    segPhi = seg_posGlb_phi->at(iSeg); 
+	      segPhi = seg_posGlb_phi_midPlane->at(iSeg); 
+	      // segPhi = seg_posGlb_phi->at(iSeg); 
 	  }
-          double segPsi = atan ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg) );
+      double segPsi = atan ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg) );
 	  double segPhiB = atan(tan(segPsi - (segPhi - TMath::Pi() / 6 * (segSec - 1))));
 	  double DPhiBAM = -999; 
 	  if (fabs(segPhiB - 1.4*ph2TpgPhiEmuAm_phiB->at(indexAM.at(i)) / 2048. ) < 0.1) {

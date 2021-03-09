@@ -177,19 +177,19 @@ void DTNtupleTPGSimAnalyzer::endJob()
       for (unsigned int k = 0; k<whTags.size(); k++){
         auto wheelTag = whTags.at(k); 
         m_plots["hits" + wheelTag + secTag + chambTag]->Scale((1. / (double) numberOfEntries));
-	int channels = 0; 
+	    int channels = 0; 
         for (const auto & slTag : slTags){
           for (const auto & layerTag : layerTags){
             m_plots["hits" + wheelTag + secTag + chambTag + slTag + layerTag]->Scale((1. / (double) numberOfEntries));
-	    for (int bin = 100; bin>0; bin--){
+	        for (int bin = 100; bin>0; bin--){
               if ( m_plots["hits" + wheelTag + secTag + chambTag + slTag + layerTag]->GetBinContent(bin) !=0) {
                 channels += bin;
-		break;
-	      }	
-	    } 
+		        break;
+	          }	
+	        } 
           }
         }
-	m_plots2["hits" + chambTag]->SetBinContent( j+1, k+1, m_plots2["hits" + chambTag]->GetBinContent(j+1, k+1) * 1E6 / (1000*channels));
+	    m_plots2["hits" + chambTag]->SetBinContent( j+1, k+1, m_plots2["hits" + chambTag]->GetBinContent(j+1, k+1) * 1E6 / (1000*channels));
       } // for wh
     } // for sec
   } // for chamb

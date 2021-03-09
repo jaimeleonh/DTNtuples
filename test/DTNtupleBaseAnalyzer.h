@@ -85,6 +85,7 @@ public :
    vector<float>   *seg_posLoc_x_SL3;
    vector<float>   *seg_posLoc_x_midPlane;
    vector<float>   *seg_posGlb_phi;
+   vector<float>   *seg_posGlb_phi_midPlane;
    vector<float>   *seg_posGlb_phi_SL1;
    vector<float>   *seg_posGlb_phi_SL3;
    vector<float>   *seg_posGlb_eta;
@@ -319,6 +320,7 @@ public :
    TBranch        *b_seg_posGlb_phi;   //!
    TBranch        *b_seg_posGlb_phi_SL1;   //!
    TBranch        *b_seg_posGlb_phi_SL3;   //!
+   TBranch        *b_seg_posGlb_phi_midPlane;   //!
    TBranch        *b_seg_posGlb_eta;   //!
    TBranch        *b_seg_dirGlb_phi;   //!
    TBranch        *b_seg_dirGlb_eta;   //!

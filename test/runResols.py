@@ -23,8 +23,12 @@ categories = ['norpc', 'rpc']
 files = {'norpc':[], 'rpc':[], 'DM':[]}
 #files['norpc'].append('3h4h') 
 #files['norpc'].append('nopu_noage_norpc') 
-files['norpc'].append('mu_pu200') 
-files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel_woRPC')
+#files['norpc'].append('mu_pu200') 
+#files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel_woRPC')
+files['norpc'].append('mu_PU200_noRPC_noAgeing_111X_1_0')
+#files['norpc'].append('mu_PU200_noRPC_noAgeing_20210223')
+files['norpc'].append('mu_PU200_noRPC_noAgeing_20210308')
+#files['norpc'].append('mu_pu200_newest_analyzer')
 #files['norpc'].append('mu_PU200_withRPC_noAgeing')
 #files['norpc'].append('DTDPGNtuple_11_1_0_patch2_Phase2_Simulation_8muInBarrel')
 #files['norpc'].append('mu_PU200_noRPC_noAgeing_3h4h')
@@ -39,6 +43,8 @@ qualities['norpc'].append('Legacy')
 #qualities['norpc'].append('3h')
 
 ##############################################################################################
+
+print "GOT IN!"
 
 if my_namespace.ntuples == True: 
     print ("Starting ntuplizer for every sample in input")
@@ -153,6 +159,7 @@ for cat in files :
                 plottingStuff['markercolordir']["h_" + "AM" + "_" + fil+qual] = markerColors[num]
                 num+=1
                 effplot.makeResolPlot(listofplots, "AM", fil+qual, plotsPath + fil + '/' +  'outPlots.root', plotscaffold)
+                print legends[fil]
                 mylegends.append(legends[fil]) 
 
             print "\nCombining and saving\n"

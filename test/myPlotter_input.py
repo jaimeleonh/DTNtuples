@@ -323,8 +323,10 @@ def combineresplots(hlist, legends, plottingStuff, path, savescaffold, fil):
    
     for iplot in range(len(hlist)):
         hlist[iplot].SetMarkerSize(plottingStuff['markersize'])
-        hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][hlist[iplot].GetName()])
-        hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
+        # hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][hlist[iplot].GetName()])
+        # hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][hlist[iplot].GetName()])
+        hlist[iplot].SetMarkerStyle(plottingStuff['markertypedir'][iplot])
+        hlist[iplot].SetMarkerColor(plottingStuff['markercolordir'][iplot])
         leg.AddEntry(hlist[iplot], legends[iplot], "P")
         hlist[iplot].Draw("P,hist" + (iplot != 0) * "same")
 
