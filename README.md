@@ -14,7 +14,7 @@ cd CMSSW_11_1_0_pre6/src/
 cmsenv
 git cms-merge-topic -u dtp2-tpg-am:AM_111X_dev # AM emulator
 git clone https://github.com/dtp2-tpg-am/L1Trigger-DTPhase2Trigger.git L1Trigger/DTTriggerPhase2/data
-git clone https://github.com/jaimeleonh/DTNtuples.git -b ntupleProduction_11_1_X DTDPGAnalysis/DTNtuples
+git clone https://github.com/jaimeleonh/DTNtuples.git -b ntupleProduction_11_2_X DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
 
