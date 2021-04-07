@@ -24,8 +24,8 @@ DTNtupleTPGSimAnalyzer::DTNtupleTPGSimAnalyzer(const TString & inFileName,
   m_minMuPt = 0;
   m_maxMuPt = 20;
 
-  m_maxMuSegDPhi = 0.2;
-  m_maxMuSegDEta = 0.3;
+  m_maxMuSegDPhi = 0.1;
+  m_maxMuSegDEta = 0.15;
 
   m_minSegHits = 4;
 
