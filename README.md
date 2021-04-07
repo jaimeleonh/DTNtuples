@@ -7,12 +7,10 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 ### Installation:
 ```
-cmsrel CMSSW_10_6_5_patch1
-cd CMSSW_10_6_5_patch1/src/
+cmsrel CMSSW_10_2_3
+cd CMSSW_10_2_3/src/
 cmsenv
-#git cms-merge-topic battibass:phase2UnpackerFromOscar_10_6_X # phase-2 primitives data format and phase-2 unpacker
-git cms-merge-topic -u pozzobon:DTHough_NP_20190619_106X_noL1T # MTT-CHT emulator
-git cms-merge-topic -u dtp2-tpg-am:AM_106X_dev # AM emulator
+git cms-merge-topic -u dtp2-tpg-am/AM_11_2_1_int # AM emulator version used for ntuple production
 git clone https://github.com/jaimeleonh/DTNtuples.git -b unifiedPerf DTDPGAnalysis/DTNtuples
 scramv1 b -j 5
 ```
