@@ -47,12 +47,12 @@ gStyle->SetOptFit(111111);
   std::vector<std::string> secTags   = { "Sec1", "Sec2", "Sec3", "Sec4", "Sec5", "Sec6", "Sec7", "Sec8","Sec9","Sec10","Sec11","Sec12","Sec13","Sec14"};
   //std::vector<std::string> magnitudes = { "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
   std::vector<std::string> magnitudes = { "TimeRes", "PhiRes","PhiBRes", "TanPsiRes", "xRes"};
-  std::vector<std::string> algos      = { "AM", "HB" };
+  std::vector<std::string> algos      = { "AM"};
   //std::vector<std::string> qualTags   = { "3h","4h"};
   //std::vector<std::string> qualTags   = { "Correlated"};
   //std::vector<std::string> qualTags   = { "All"};
   std::vector<std::string> qualTags   = { "All","Correlated","Legacy"};
-  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q9","Q8","Q6"};
+  //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q8","Q7","Q6"};
 
 
   std::string outputPath = "/eos/home-j/jleonhol/ntuplesResults/";
