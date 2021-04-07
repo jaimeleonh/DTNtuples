@@ -115,8 +115,8 @@ if options.ageingInput != "" :
 process.source = cms.Source("PoolSource",
                             
         fileNames = cms.untracked.vstring(),
-        secondaryFileNames = cms.untracked.vstring()
-
+        secondaryFileNames = cms.untracked.vstring(),
+        skipEvents=cms.untracked.uint32(0)
 )
 
 files = subprocess.check_output(["ls", options.inputFolder])
@@ -147,7 +147,8 @@ process.CalibratedDigis.scenario = 0
 process.dtTriggerPhase2PrimitiveDigis.scenario = 0
 process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
 process.dtTriggerPhase2AmPrimitiveDigis.useRPC = options.useRPC
-process.dtTriggerPhase2AmPrimitiveDigis.max_quality_to_overwrite_t0 = 10
+process.dtTriggerPhase2AmPrimitiveDigis.max_quality_to_overwrite_t0 = 9
+#process.dtTriggerPhase2AmPrimitiveDigis.cmssw_for_global = True
 
 
 #process.load('L1Trigger.DTHoughTPG.DTTPG_cfi')
