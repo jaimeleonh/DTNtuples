@@ -1,7 +1,7 @@
 legends = {
   'All'                                                          : 'Every quality',
   'correlated'                                                   : 'Correlated Only',
-  'Q9'                                                           : 'Q9 only',
+  'Q8'                                                           : 'Q8 only',
   'legacy'                                                       : 'Legacy qualities',
   'index0'                                                       : 'Only Index 0',
   'index01'                                                      : 'Only Index 01',

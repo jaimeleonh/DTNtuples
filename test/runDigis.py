@@ -32,8 +32,8 @@ if my_namespace.ntuples == True :
     print ("Starting ntuplizer for every sample in input")
     time.sleep(2)
     r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Digis.C")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
-    gSystem.Load("/afs/cern.ch/user/j/jleonhol/newResol/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Digis_C.so")
+    gSystem.Load(os.getcwd() + "/DTNtupleBaseAnalyzer_C.so")
+    gSystem.Load(os.getcwd() + "/DTNtupleTPGSimAnalyzer_Digis_C.so")
     from ROOT import DTNtupleTPGSimAnalyzer
 else : 
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")

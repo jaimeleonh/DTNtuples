@@ -55,24 +55,24 @@ files['norpc'].append('mu_PU200_noRPC_noAgeing_20210315')
 '''
 Possible efficiency categories:
     - 'All' -> Every quality
-    - 'correlated' -> Qualities 6,8 and 9
-    - '9' -> Quality 9 only
-    - 'legacy' -> Qualities 3,4,6,7,8 and 9
-    - 'nothreehits -> Quality > 2
+    - 'correlated' -> Qualities 6, 7 and 6
+    - '8' -> Quality 8 only
+    - 'legacy' -> Qualities 3, 4, 6, 7 and 8
+    - 'nothreehits -> Quality > 1
         - 'index0' -> Only index 0
         - 'index01' -> Only indexes 0 and 1
     - 'index012' -> Only indexes 0, 1 and 2
     - 'index0123' -> Only indexes 0, 1, 2 and 3
 
     With useRPC = True :
-    - 'withmatchedthreehits' -> Quality > 2 + quality <= 2 matched with an RPC cluster or segment
+    - 'withmatchedthreehits' -> Quality > 1 + quality <= 1 matched with an RPC cluster or segment
     - 'qualityORSegs' -> Every DT quality + RPC segments
     - 'qualityORSegsClus' -> Every DT quality + RPC segments and clusters
-    - 'qualityMatchedORSegs' -> Quality > 2 + quality <= 2 matched with an RPC cluster or segment + RPC segments
-    - 'qualityMatchedORSegsClus' -> Quality > 2 + quality <= 2 matched with an RPC cluster or segment + RPC segments and clusters
+    - 'qualityMatchedORSegs' -> Quality > 1 + quality <= 1 matched with an RPC cluster or segment + RPC segments
+    - 'qualityMatchedORSegsClus' -> Quality > 1 + quality <= 1 matched with an RPC cluster or segment + RPC segments and clusters
 '''
 
-possibleQualities = ['All','correlated', 'Q9', 'legacy', 'index0', 'index01', 'index012', 'index0123', 'nothreehits', 'withmatchedthreehits' ,'qualityORSegs','qualityORSegsClus','qualityMatchedORSegs','qualityMatchedORSegsClus']
+possibleQualities = ['All','correlated', 'Q8', 'legacy', 'index0', 'index01', 'index012', 'index0123', 'nothreehits', 'withmatchedthreehits' ,'qualityORSegs','qualityORSegsClus','qualityMatchedORSegs','qualityMatchedORSegsClus']
 
 
 
@@ -81,7 +81,8 @@ possibleQualities = ['All','correlated', 'Q9', 'legacy', 'index0', 'index01', 'i
 qualities = {'norpc':[],'rpc':[], 'DM':[]}
 #qualities['norpc'] = ['All','nothreehits','correlated','legacy']
 # qualities['norpc'] = ['All']
-qualities['norpc'] = ['All','correlated', 'Q9', 'nothreehits']
+qualities['norpc'] = ['All','correlated', 'Q8', 'nothreehits']
+#qualities['norpc'] = ['Q8', 'nothreehits']
 #qualities['norpc'] = ['All','nothreehits']
 #qualities['norpc'] = ['legacy']
 #qualities['rpc'] = ['qualityMatchedORSegs','qualityMatchedORSegsClus']
@@ -97,8 +98,8 @@ if my_namespace.ntuples == True :
   time.sleep(2)
   r.gInterpreter.ProcessLine(".x loadTPGSimAnalysis_Effs.C")
 if my_namespace.ntuples == True :
-  r.gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleBaseAnalyzer_C.so")
-  r.gSystem.Load("/afs/cern.ch/user/j/jleonhol/calcEffs/CMSSW_10_6_0/src/DTDPGAnalysis/DTNtuples/test/./DTNtupleTPGSimAnalyzer_Efficiency_C.so")
+  r.gSystem.Load(os.getcwd() + "/DTNtupleBaseAnalyzer_C.so")
+  r.gSystem.Load(os.getcwd() + "/DTNtupleTPGSimAnalyzer_Efficiency_C.so")
   from ROOT import DTNtupleTPGSimAnalyzer
 else :
   print("Not making ntuples. If you want to make them, restart with 'yes' as first argument ")
