@@ -56,7 +56,8 @@ void printPlots_run(std::string run) {
   
   int a = 0;
 
-  std::vector<std::string> chambTags = { "MB2","MB3", "MB4"};
+  std::vector<std::string> chambTags = {"MB1", "MB2","MB3", "MB4"};
+  //std::vector<std::string> chambTags = { "MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
   std::vector<std::string> quTagsSegs = {"3h","4h","Q6","Q8","Q9","bestQ"};
@@ -291,7 +292,7 @@ void printPlots_run(std::string run) {
   effHWCatsTitles["vsph2SegX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
   effHWCatsTitles["vsph2SegXGoodBX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
   effHWCatsTitles["vsph2SegXCombi"] = "; Phase-2 Segment Position (cm); Efficiency"; 
-  effHWCatsTitles["vsph2SegT0"] = "; Phase-2 Segment Position (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   effHWCatsTitles["vsph2SegT0GoodBX"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   effHWCatsTitles["vsph2SegT0Combi"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   
@@ -304,7 +305,7 @@ void printPlots_run(std::string run) {
   effHWCatsTitles["vsph2SegXLim"] = "; Phase-2 Segment Position (cm); Efficiency"; 
   effHWCatsTitles["vsph2SegXLimGoodBX"] = "; Phase-2 Segment Position (cm); Efficiency"; 
   effHWCatsTitles["vsph2SegXLimCombi"] = "; Phase-2 Segment Position (cm); Efficiency"; 
-  effHWCatsTitles["vsph2SegT0Lim"] = "; Phase-2 Segment Position (ns); Efficiency"; 
+  effHWCatsTitles["vsph2SegT0Lim"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   effHWCatsTitles["vsph2SegT0LimGoodBX"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   effHWCatsTitles["vsph2SegT0LimCombi"] = "; Phase-2 Segment t0 (ns); Efficiency"; 
   
@@ -451,7 +452,7 @@ void printPlots_run(std::string run) {
     // ALL vs GOOD BX
     for (auto & system : systems) {
     for (auto & what : effvsWhat) { 
-      if (chambTag == "MB2") continue; 
+      //if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       std::string cat = effCats[0];
@@ -520,7 +521,7 @@ void printPlots_run(std::string run) {
     // EFF PER QUALITY
     for (auto & system : systems) {
     for (auto & what : effvsWhat) { 
-      if (chambTag == "MB2") continue; 
+      //if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       TEfficiency* pEff = 0;
@@ -671,7 +672,7 @@ void printPlots_run(std::string run) {
 
 
     for (auto & generalPlot : generalEffPlots) {
-      if (chambTag == "MB2") continue; 
+      //if (chambTag == "MB2") continue; 
       char namePassed[128]; 
       char nameTotal[128]; 
       for (auto & what : effvsWhat){ 
