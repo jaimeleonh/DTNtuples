@@ -1320,7 +1320,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       counterHW[i][j] = 0; 
       counterAM[i][j] = 0; 
     }
-    if (i == 0) continue; //FIXME when MB1 starts working
+    //if (i == 0) continue; //FIXME when MB1 starts working
     for (auto & primitiveHW : primitivesHW[i]) {
       counterHW[i][0]++; 
       if (qualityGroup (primitiveHW.quality) > 1){
@@ -1476,7 +1476,8 @@ void DTNtupleTPGSimAnalyzer::fill()
     float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
     //cout <<"Wh:" << mySegWheel << " Se:" << mySegSector << " St:" << mySegStation << " Hits:" << seg_phi_nHits ->at(iSeg) << endl;
     
-    if (mySegSector == 12 && mySegWheel == 2 && seg_phi_nHits->at(iSeg) == 8){ m_plots["hPrimsSegs" + chambTags.at(mySegStation/2 -1)] -> Fill(2);
+    //if (mySegSector == 12 && mySegWheel == 2 && seg_phi_nHits->at(iSeg) == 8){ m_plots["hPrimsSegs" + chambTags.at(mySegStation/2 -1)] -> Fill(2);
+    if (mySegSector == 12 && mySegWheel == 2 && seg_phi_nHits->at(iSeg) == 8){ m_plots["hPrimsSegs" + chambTags.at(mySegStation -1)] -> Fill(2);
       entro = true; 
       if (debug) cout <<"Segment in Wh:" << mySegWheel << " Se:" << mySegSector << " St:" << mySegStation << " Hits:" << seg_phi_nHits ->at(iSeg) << endl;
     }
@@ -1765,6 +1766,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     if(myph2SegWheel==2 && myph2SegSector==12){
       int indstat = myph2SegStation-1;
+      if (fabs(myph2SegPsi) > 30 || ph2Seg_phi_nHits->at(iph2Seg) < 4 ) continue;
       m_plots2["h2DHwQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigHW[indstat]));
       m_plots2["h2DEmuQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigAM[indstat]));
       m_plots2["h2DTMQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigTM[indstat]));

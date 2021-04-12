@@ -4,7 +4,8 @@
 
 #source configForSliceTestAnalysis.sh
 # if running on 2019 runs, modify next line
-export DTSAMPLEDIR=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1
+#export DTSAMPLEDIR=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1
+export DTSAMPLEDIR=/eos/cms/store/data/Commissioning2021/MiniDaq/RAW/v1
 cd ./calib/
 
 let firstThreeTP=$1/1000
@@ -12,9 +13,11 @@ let lastThreeTP=$1%1000
 
 if (( $lastThreeTP < 100 )) 
 then
-repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/0$lastThreeTP
+#repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/0$lastThreeTP
+repackedDirTP=/eos/cms/store/data/Commissioning2021/MiniDaq/RAW/v1/000/$firstThreeTP/0$lastThreeTP
 else
-repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/$lastThreeTP
+#repackedDirTP=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThreeTP/$lastThreeTP
+repackedDirTP=/eos/cms/store/data/Commissioning2021/MiniDaq/RAW/v1/000/$firstThreeTP/$lastThreeTP
 fi
 
 calibFile=t0i_run$1.txt
@@ -50,14 +53,17 @@ let lastThree=$2%1000
 
 if (( $lastThree < 100 )) 
 then
-repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/0$lastThree
+#repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/0$lastThree
+repackedDir=/eos/cms/store/data/Commissioning2021/MiniDaq/RAW/v1/000/$firstThree/0$lastThree
 else
-repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/$lastThree
+#repackedDir=/eos/cms/store/data/Commissioning2020/MiniDaq/RAW/v1/000/$firstThree/$lastThree
+repackedDir=/eos/cms/store/data/Commissioning2021/MiniDaq/RAW/v1/000/$firstThree/$lastThree
 fi
 
 echo $repackedDir
 
-ph1_calib_folder=/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2020_data/calib/phase1
+#ph1_calib_folder=/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2020_data/calib/phase1
+ph1_calib_folder=/eos/cms/store/group/dpg_dt/comm_dt/commissioning_2021_data/calib/phase1
 
 if [ -f "$ntupleFile" ]
 then 
@@ -66,7 +72,10 @@ else
   if [ -d "$repackedDir" ]
   then
   echo "Running the ntuple production with the rootfile..."
-  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
+  #cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_Run335018_MB3_techtrig_phase1_v1.db t0File=$ph1_calib_folder/t0_run335017_MB3_techtrig_phase1.db
+  #new phase1 calibration 2021
+  cmsRun dtDpgNtuples_slicetest_prueba_cfg.py nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/339929_cosmics_ttrig_corrected.db  
+  
   else 
   echo "Running the ntuple production with the datfiles..."
   cmsRun dtDpgNtuples_slicetest_prueba_cfg.py runOnDat=True  inputFolderCentral=/eos/cms/store/t0streamer/Minidaq/A/ nEvents=1000000 runNumber=$2 tTrigFilePh2=./calib/Run$2-ttrig_timebox_v1/TimeBoxes/results/ttrig_timeboxes_Run$2_v1.db t0FilePh2=./calib/t0_run$1.db tTrigFile=$ph1_calib_folder/ttrig_timeboxes_run337786_t0_run337772_v1.db t0File=$ph1_calib_folder/t0_run337772.db
