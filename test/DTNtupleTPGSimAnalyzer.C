@@ -888,10 +888,10 @@ void DTNtupleTPGSimAnalyzer::fill()
     // REMOVE SL PRIMS IF COR PRIMS IS FOUND 
     if (myQualityHW <= 4){
       if (iTrigHW + 1 <  ph2TpgPhiHw_nTrigs) {
-        if (myQualityHW <= 4 && ((ph2TpgPhiHw_quality->at(iTrigHW+1)>=6 && ph2TpgPhiHw_quality->at(iTrigHW+1)!=7 ))) continue;
+        if (myQualityHW <= 4 && ((ph2TpgPhiHw_quality->at(iTrigHW+1)>=6 ))) continue;
       }
       if (iTrigHW + 2 <  ph2TpgPhiHw_nTrigs) {
-        if (myQualityHW <= 4 && ((ph2TpgPhiHw_quality->at(iTrigHW+2)>=6 && ph2TpgPhiHw_quality->at(iTrigHW+2)!=7 ))) continue;
+        if (myQualityHW <= 4 && ((ph2TpgPhiHw_quality->at(iTrigHW+2)>=6 ))) continue;
       }
     }	
    
@@ -907,7 +907,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       IbestQualTrigHW[indstat]=iTrigHW ;
     }
     
-    if (myQualityHW >=6 && myQualityHW != 7) {
+    if (myQualityHW >=6 ) {
       //  if (!printeado && debug) {cout << "----------------------------------------" << endl; printeado = true;}
       if (debug) cout << "Correlated HW con quality " << myQualityHW << endl;
     }
@@ -996,7 +996,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     std::vector <std::string> categories = {};
     categories.push_back(labelTags.at(0));
-    if (myQualityHW == 6 || myQualityHW == 8 || myQualityHW == 9){	
+    if (myQualityHW == 6 || myQualityHW == 7 || myQualityHW == 8){	
       categories.push_back(labelTags.at(1));
     } else {
       categories.push_back(labelTags.at(2));
@@ -1085,7 +1085,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       IbestQualTrigBXAM[indstat]=iTrigAM ;
     }
     
-    if (myQualityAM >=6 && myQualityAM != 7) {
+    if (myQualityAM >=6 ) {
       if (debug) cout << "Correlated AM con quality " << myQualityAM << endl;
     }
     
@@ -1124,7 +1124,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     std::vector <std::string> categories = {};
     categories.push_back(labelTags.at(0));
-    if (myQualityAM == 6 || myQualityAM == 8 || myQualityAM == 9){	
+    if (myQualityAM == 6 || myQualityAM == 7 || myQualityAM == 8){	
       categories.push_back(labelTags.at(1));
     } else {
       categories.push_back(labelTags.at(2));
@@ -2050,11 +2050,11 @@ Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
 Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
 {
   
-  if (quality == 1 || quality == 2 || quality == 5) return 0; 
-  if (quality == 3 || quality == 4 || quality == 7) return 1; 
+  if (quality == 1 || quality == 2) return 0; 
+  if (quality == 3 || quality == 4) return 1; 
   if (quality == 6) return 2; 
-  if (quality == 8) return 3; 
-  if (quality == 9) return 4; 
+  if (quality == 7) return 3; 
+  if (quality == 8) return 4; 
   return -1;
 }
 
