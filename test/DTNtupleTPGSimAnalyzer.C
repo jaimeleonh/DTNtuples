@@ -2050,8 +2050,8 @@ Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
 Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
 {
   
-  if (quality == 1) return 0; 
-  if (quality == 3) return 1; 
+  if (quality == 1 || quality == 2) return 0; 
+  if (quality == 3 || quality == 4) return 1; 
   if (quality == 6) return 2; 
   if (quality == 7) return 3; 
   if (quality == 8) return 4; 
