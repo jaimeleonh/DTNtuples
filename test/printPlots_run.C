@@ -59,8 +59,8 @@ void printPlots_run(std::string run) {
   std::vector<std::string> chambTags = {"MB1", "MB2","MB3", "MB4"};
   //std::vector<std::string> chambTags = { "MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
-  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9"};
-  std::vector<std::string> quTagsSegs = {"3h","4h","Q6","Q8","Q9","bestQ"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q7","Q8"};
+  std::vector<std::string> quTagsSegs = {"3h","4h","Q6","Q7","Q8","bestQ"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
   std::vector<std::string> labelTagsPlots = {"All", "Correlated", "Uncorrelated", "UncorrelatedSL1", "UncorrelatedSL3"};
   
