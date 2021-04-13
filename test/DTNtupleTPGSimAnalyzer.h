@@ -37,7 +37,6 @@ protected:
 private:
   
   Double_t trigPhiInRad(Double_t trigPhi, Int_t sector);
-  Int_t qualityGroup(Int_t quality);
   void DisplayPh2Hits () ;  
   void DisplayPh2Prims () ;  
   void DisplayPh1Prims () ;  
@@ -45,11 +44,11 @@ private:
   void DisplayEventNumbers () ;  
   void getTheStupidPlots () ; 
   int get_quality_group(int quality){
-    if (quality == 1 || quality == 2) return 1;
-    if (quality == 3 || quality == 4) return 2;
-    if (quality == 6) return 3;
+    if (quality == 1 || quality == 2) return 0;
+    if (quality == 3 || quality == 4) return 1;
+    if (quality == 6) return 2;
+    if (quality == 7) return 3;
     if (quality == 8) return 4;
-    if (quality == 9) return 5;
     return -1; 
   }
   int get_tm_quality_group(int quality){
