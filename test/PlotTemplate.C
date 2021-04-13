@@ -55,7 +55,7 @@ void DrawLumiLabel(TCanvas* c, TString Lumi = "35.9")
   tex.SetTextSize(0.0315);
   tex.SetTextAlign(31);
   //sil  TString toDisplay = "14 TeV, 3000 fb^{-1}, 200 PU";//typically for Phase-2
-  TString toDisplay = "Cosmic Data (2020)";//typically for Phase-2
+  TString toDisplay = "Cosmic Data (2021)";//typically for Phase-2
   //TString toDisplay = Lumi + " fb^{-1} (13 TeV)";//typically for Phase-1
   tex.DrawLatexNDC(0.90,0.91,toDisplay.Data());
   tex.Draw("same");
