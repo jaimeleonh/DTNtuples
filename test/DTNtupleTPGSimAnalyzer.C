@@ -376,10 +376,10 @@ void DTNtupleTPGSimAnalyzer::book()
     }
     m_plots2["h2DHwQualSegNHits" + chambTag] = new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,-0.5,4.5);
     m_plots2["h2DEmuQualSegNHits" + chambTag] = new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,-0.5,4.5);
-    m_plots2["h2DTMQualSegNHits" + chambTag] = new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,1.5,6.5);
+    m_plots2["h2DTMQualSegNHits" + chambTag] = new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
     m_plots2["h2DHwQualph2SegNHits" + chambTag] = new TH2F(("h2DHwQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,-0.5,4.5);
     m_plots2["h2DEmuQualph2SegNHits" + chambTag] = new TH2F(("h2DEmuQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,-0.5,4.5);
-    m_plots2["h2DTMQualph2SegNHits" + chambTag] = new TH2F(("h2DTMQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,1.5,6.5);
+    m_plots2["h2DTMQualph2SegNHits" + chambTag] = new TH2F(("h2DTMQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
     
     std::vector <std::string> qual_seg = {"h2DHwQualSegNHits", "h2DEmuQualSegNHits", "h2DTMQualSegNHits", "h2DHwQualph2SegNHits", "h2DEmuQualph2SegNHits", "h2DTMQualph2SegNHits"};
     std::vector <std::string> quality_groups = {"3/4", "4/4", "6/8", "7/8", "8/8"};
