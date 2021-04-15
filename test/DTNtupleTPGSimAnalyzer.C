@@ -117,9 +117,9 @@ void DTNtupleTPGSimAnalyzer::book()
   std::vector<std::string> chambTags = {"MB1","MB2","MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
-  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9","bestQ"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q7","Q8","bestQ"};
   //std::vector<std::string> quTags = {"Q1","Q2","Q3","Q4","Q5","Q6","Q7","Q8","Q9"};
-  std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
+  std::vector<std::string> labelTags = {"All","Correlated","Uncorrelated"};
   std::vector<std::string> obdtTags = {"MB1_phi1", "MB1_phi2", "MB2_phi1", "MB2_phi2", "MB3_phi1b", "MB3_phi2b", "MB4_phi1b", "MB4_phi2b","MB4_phi3b", "MB4_phi4b" };
 
   int nbinPosEmuFW = 101; double minPosEmuFW = 0.005 * (0.5 + nbinPosEmuFW / 2); 
@@ -374,11 +374,11 @@ void DTNtupleTPGSimAnalyzer::book()
     for (unsigned int i = 0; i < tags.size(); i++){
       m_plots["hPrimsph2Segs" + chambTag]->GetXaxis()->SetBinLabel(i+1, ph2tags[i].c_str());
     }
-    m_plots2["h2DHwQualSegNHits" + chambTag] = new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
-    m_plots2["h2DEmuQualSegNHits" + chambTag] = new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DHwQualSegNHits" + chambTag] = new TH2F(("h2DHwQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,-0.5,4.5);
+    m_plots2["h2DEmuQualSegNHits" + chambTag] = new TH2F(("h2DEmuQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,-0.5,4.5);
     m_plots2["h2DTMQualSegNHits" + chambTag] = new TH2F(("h2DTMQualSegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-1 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
-    m_plots2["h2DHwQualph2SegNHits" + chambTag] = new TH2F(("h2DHwQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
-    m_plots2["h2DEmuQualph2SegNHits" + chambTag] = new TH2F(("h2DEmuQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,0.5,5.5);
+    m_plots2["h2DHwQualph2SegNHits" + chambTag] = new TH2F(("h2DHwQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Primitive Quality",5,3.5,8.5,5,-0.5,4.5);
+    m_plots2["h2DEmuQualph2SegNHits" + chambTag] = new TH2F(("h2DEmuQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-2 Emulator Quality",5,3.5,8.5,5,-0.5,4.5);
     m_plots2["h2DTMQualph2SegNHits" + chambTag] = new TH2F(("h2DTMQualph2SegNHits_" + chambTag).c_str(),"; No. of associated hits to the Phase-2 Segment; Phase-1 Primitive Quality",5,3.5,8.5,5,0.5,5.5);
     
     std::vector <std::string> qual_seg = {"h2DHwQualSegNHits", "h2DEmuQualSegNHits", "h2DTMQualSegNHits", "h2DHwQualph2SegNHits", "h2DEmuQualph2SegNHits", "h2DTMQualph2SegNHits"};
@@ -773,7 +773,7 @@ void DTNtupleTPGSimAnalyzer::fill()
   
   std::vector<std::string> chambTags = {"MB1", "MB2", "MB3","MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
-  std::vector<std::string> quTags = {"3h","4h","Q6","Q8","Q9","bestQ"};
+  std::vector<std::string> quTags = {"3h","4h","Q6","Q7","Q8","bestQ"};
   std::vector<std::string> labelTags = {"All", "Correlated", "Uncorrelated"};
   int eventoBX = event_bunchCrossing; //848 
   int offset[4];
@@ -958,12 +958,12 @@ void DTNtupleTPGSimAnalyzer::fill()
     primitivesHW[myStationHW-1].push_back(primitive({myStationHW, mySectorHW, myWheelHW, myQualityHW, mySLHW, myPhiHW, myPhiBHW, myPosHW, myDirHW, myChi2HW, myBXHW, myt0HW}));
     
     m_plots["hBXDif"]->Fill(myBXHW);
-    if (myQualityHW >= 9){ m_plots["hPrimsSegs" + chambTags.at(myStationHW-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
+    if (myQualityHW >= 8){ m_plots["hPrimsSegs" + chambTags.at(myStationHW-1)] -> Fill(0); } // cout << "Habemus primitiva" << endl;  }
     
     m_plots["hdift0" + chambTags.at(myStationHW-1)]->Fill(myt0HW - offset[myStationHW -1]*25);
-    if (abs(myt0HW - offset[myStationHW-1]*25) < bestTimeHW[myStationHW-1][qualityGroup(myQualityHW)]){
-      bestTrigHW[myStationHW-1][qualityGroup(myQualityHW)] = iTrigHW; 
-      bestTimeHW[myStationHW-1][qualityGroup(myQualityHW)] = abs(myt0HW - offset[myStationHW -1]*25);
+    if (abs(myt0HW - offset[myStationHW-1]*25) < bestTimeHW[myStationHW-1][get_quality_group(myQualityHW)]){
+      bestTrigHW[myStationHW-1][get_quality_group(myQualityHW)] = iTrigHW; 
+      bestTimeHW[myStationHW-1][get_quality_group(myQualityHW)] = abs(myt0HW - offset[myStationHW -1]*25);
     }
     
     
@@ -1002,7 +1002,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       categories.push_back(labelTags.at(2));
       categories.push_back(labelTags.at(2)+slTags.at(mySLHW/2));
     }
-    categories.push_back(quTags.at(qualityGroup(myQualityHW)));
+    categories.push_back(quTags.at(get_quality_group(myQualityHW)));
 
     for (auto & category : categories){
       m_plots["hPsiHW"+chambTags.at(myStationHW-1)+category]->Fill(myDirHW);
@@ -1091,9 +1091,9 @@ void DTNtupleTPGSimAnalyzer::fill()
     
     if (myQualityAM >= 8){ m_plots["hPrimsSegs" + chambTags.at(myStationAM-1)] -> Fill(1); } // cout << "Habemus primitiva" << endl;  }
     
-    if (abs(myt0AM - offset[myStationAM - 1]*25) < bestTimeAM[myStationAM-1][qualityGroup(myQualityAM)]){
-      bestTrigAM[myStationAM-1][qualityGroup(myQualityAM)] = iTrigAM; 
-      bestTimeAM[myStationAM-1][qualityGroup(myQualityAM)] = abs(myt0AM - offset[myStationAM - 1]*25);
+    if (abs(myt0AM - offset[myStationAM - 1]*25) < bestTimeAM[myStationAM-1][get_quality_group(myQualityAM)]){
+      bestTrigAM[myStationAM-1][get_quality_group(myQualityAM)] = iTrigAM; 
+      bestTimeAM[myStationAM-1][get_quality_group(myQualityAM)] = abs(myt0AM - offset[myStationAM - 1]*25);
     }
     
     
@@ -1130,7 +1130,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       categories.push_back(labelTags.at(2));
       categories.push_back(labelTags.at(2)+slTags.at(mySLAM/2));
     }
-    categories.push_back(quTags.at(qualityGroup(myQualityAM)));
+    categories.push_back(quTags.at(get_quality_group(myQualityAM)));
 
     for (auto & category : categories){
       m_plots["hPsiEmul"+chambTags.at(myStationAM-1)+category]->Fill(myDirAM);
@@ -1323,7 +1323,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     //if (i == 0) continue; //FIXME when MB1 starts working
     for (auto & primitiveHW : primitivesHW[i]) {
       counterHW[i][0]++; 
-      if (qualityGroup (primitiveHW.quality) > 1){
+      if (get_quality_group (primitiveHW.quality) > 1){
         counterHW[i][1]++;
         corHW = true; 
         m_plots2["hPrimTypeVsPos"+ chambTags.at(i)]->Fill(primitiveHW.position,0.);
@@ -1339,7 +1339,7 @@ void DTNtupleTPGSimAnalyzer::fill()
     }
     for (auto & primitiveAM : primitivesAM[i]) {
       counterAM[i][0]++;
-      if (qualityGroup (primitiveAM.quality) > 1){ 
+      if (get_quality_group (primitiveAM.quality) > 1){ 
         counterAM[i][1]++;
         corAM = true; 
         } else {
@@ -1489,7 +1489,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (fabs(mySegPsi) < 30 && seg_phi_nHits->at(iSeg) >= 4 ) {
         m_plots2["h2DHwQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigHW[indstat]));
         m_plots2["h2DEmuQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigAM[indstat]));
-        m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_quality_group(bestQualTrigTM[indstat]));
+        m_plots2["h2DTMQualSegNHits"+chambTags.at(indstat)]->Fill(seg_phi_nHits->at(iSeg), get_tm_quality_group(bestQualTrigTM[indstat]));
 
         auto chambTag = chambTags.at(indstat);
         if (bestQualTrigHW[indstat] >= 6) m_plots["hHwHighQualSegNHits" + chambTag]->Fill(seg_phi_nHits->at(iSeg));
@@ -1769,7 +1769,7 @@ void DTNtupleTPGSimAnalyzer::fill()
       if (fabs(myph2SegPsi) > 30 || ph2Seg_phi_nHits->at(iph2Seg) < 4 ) continue;
       m_plots2["h2DHwQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigHW[indstat]));
       m_plots2["h2DEmuQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigAM[indstat]));
-      m_plots2["h2DTMQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_quality_group(bestQualTrigTM[indstat]));
+      m_plots2["h2DTMQualph2SegNHits"+chambTags.at(indstat)]->Fill(ph2Seg_phi_nHits->at(iph2Seg), get_tm_quality_group(bestQualTrigTM[indstat]));
       auto chambTag = chambTags.at(indstat);
       if (bestQualTrigHW[indstat] >= 6) m_plots["hHwHighQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
       else m_plots["hHwLowQualph2SegNHits" + chambTag]->Fill(ph2Seg_phi_nHits->at(iph2Seg));
@@ -2047,16 +2047,6 @@ Double_t DTNtupleTPGSimAnalyzer::trigPhiInRad(Double_t trigPhi, Int_t sector)
   
 }
 
-Int_t DTNtupleTPGSimAnalyzer::qualityGroup(Int_t quality)
-{
-  
-  if (quality == 1 || quality == 2) return 0; 
-  if (quality == 3 || quality == 4) return 1; 
-  if (quality == 6) return 2; 
-  if (quality == 7) return 3; 
-  if (quality == 8) return 4; 
-  return -1;
-}
 
 void DTNtupleTPGSimAnalyzer::DisplayEventNumbers () {
   
