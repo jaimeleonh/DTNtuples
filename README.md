@@ -7,7 +7,7 @@ In the present days this code is evolving fast, hence the installation recipe ma
 
 ### Installation:
 ```
-cmsrel CMSSW_10_2_3
+cmsrel CMSSW_10_3_0
 cd CMSSW_10_2_3/src/
 cmsenv
 git cms-merge-topic -u dtp2-tpg-am/AM_11_2_1_int # AM emulator version used for ntuple production
