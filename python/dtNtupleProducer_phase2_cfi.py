@@ -41,5 +41,7 @@ dtNtupleProducer = cms.EDAnalyzer("DTNtupleProducer",
                                       tTrigLabel = cms.string(''),
                                       debug = cms.untracked.bool(False),
                                       t0Label = cms.string('')
-                                  )
+                                  ),
+
+                                  useExtDataformat = cms.untracked.bool(True)
 )

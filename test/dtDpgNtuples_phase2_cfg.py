@@ -163,6 +163,11 @@ process.rpcRecHits.rpcDigiLabel = "simMuonRPCDigis"
 
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_phase2_cfi')
 
+process.dtNtupleProducer.useExtDataformat = cms.untracked.bool(True)
+
+process.dtTriggerPhase2AmPrimitiveDigis.useBX_correlation = True
+process.dtTriggerPhase2AmPrimitiveDigis.allow_confirmation = False
+
 process.p = cms.Path(process.rpcRecHits
                      + process.dt1DRecHits
                      + process.dt4DSegments

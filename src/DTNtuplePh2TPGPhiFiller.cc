@@ -36,8 +36,11 @@ DTNtuplePh2TPGPhiFiller::DTNtuplePh2TPGPhiFiller(edm::ConsumesCollector && colle
       iTag = m_config->m_inputTags["ph2TPGPhiEmuAmTag"];
     }
 
-  if (iTag.label() != "none") m_dtTriggerToken = collector.consumes<L1Phase2MuDTPhContainer>(iTag);
-
+  if (iTag.label() != "none") {
+    if (!m_config->m_boolParams["useExtDataformat"]) m_dtTriggerToken = collector.consumes<L1Phase2MuDTPhContainer>(iTag);
+    else m_dtTriggerTokenExt = collector.consumes<L1Phase2MuDTExtPhContainer>(iTag);
+    
+  }
 }
 
 DTNtuplePh2TPGPhiFiller::~DTNtuplePh2TPGPhiFiller() 
@@ -62,6 +65,9 @@ void DTNtuplePh2TPGPhiFiller::initialize()
 
   m_tree->Branch((m_label + "_phi").c_str(),  &m_lt_phi);
   m_tree->Branch((m_label + "_phiB").c_str(), &m_lt_phiB);
+  
+  m_tree->Branch((m_label + "_phiCMSSW").c_str(),  &m_lt_phiCMSSW);
+  m_tree->Branch((m_label + "_phiBCMSSW").c_str(), &m_lt_phiBCMSSW);
 
   m_tree->Branch((m_label + "_posLoc_x").c_str(),  &m_lt_posLoc_x);
   m_tree->Branch((m_label + "_dirLoc_phi").c_str(), &m_lt_dirLoc_phi);
@@ -70,6 +76,10 @@ void DTNtuplePh2TPGPhiFiller::initialize()
   m_tree->Branch((m_label + "_t0").c_str(),    &m_lt_t0);
 
   m_tree->Branch((m_label + "_index").c_str(),    &m_lt_index);
+  
+  m_tree->Branch((m_label + "_pathWireId").c_str(),    &m_lt_pathWireId);
+  m_tree->Branch((m_label + "_pathTDC").c_str(),    &m_lt_pathTDC);
+  m_tree->Branch((m_label + "_pathLat").c_str(),    &m_lt_pathLat);
   
 }
 
@@ -91,6 +101,9 @@ void DTNtuplePh2TPGPhiFiller::clear()
   m_lt_phi.clear();
   m_lt_phiB.clear();
 
+  m_lt_phiCMSSW.clear();
+  m_lt_phiBCMSSW.clear();
+
   m_lt_posLoc_x.clear();
   m_lt_dirLoc_phi.clear();
 
@@ -98,6 +111,10 @@ void DTNtuplePh2TPGPhiFiller::clear()
   m_lt_t0.clear();
 
   m_lt_index.clear();
+  
+  m_lt_pathWireId.clear();
+  m_lt_pathTDC.clear();
+  m_lt_pathLat.clear();
 
 }
 
@@ -105,8 +122,9 @@ void DTNtuplePh2TPGPhiFiller::fill(const edm::Event & ev)
 {
 
   clear();
-
-  auto trigColl = conditionalGet<L1Phase2MuDTPhContainer>(ev, m_dtTriggerToken,"L1Phase2MuDTPhContainer");
+  
+  // if (!m_config->m_boolParams["useExtDataformat"]) auto trigColl = conditionalGet<L1Phase2MuDTPhContainer>(ev, m_dtTriggerToken,"L1Phase2MuDTPhContainer");
+  auto trigColl = conditionalGet<L1Phase2MuDTExtPhContainer>(ev, m_dtTriggerTokenExt, "L1Phase2MuDTExtPhContainer");
 
   if (trigColl.isValid()) 
     {      
@@ -126,13 +144,32 @@ void DTNtuplePh2TPGPhiFiller::fill(const edm::Event & ev)
 
 	  m_lt_phi.push_back(trig.phi());
 	  m_lt_phiB.push_back(trig.phiBend());
+   
+    if (m_config->m_boolParams["useExtDataformat"]) {
+      m_lt_phiCMSSW.push_back(trig.phiCMSSW());
+	    m_lt_phiBCMSSW.push_back(trig.phiBendCMSSW());
+      
+      std::vector<short> pathWireId;
+      std::vector<short> pathTDC;
+      std::vector<short> pathLat;
+      
+      for (int i = 0; i < 8; i++){
+        pathWireId.push_back(trig.pathWireId(i));
+        pathTDC.push_back(trig.pathTDC(i));
+        pathLat.push_back(trig.pathLat(i));
+      }
+
+      m_lt_pathWireId.push_back(pathWireId);
+      m_lt_pathTDC.push_back(pathTDC);
+      m_lt_pathLat.push_back(pathLat);
+    }
 	  
 	  m_lt_posLoc_x.push_back(m_tag == TriggerTag::HB ? 
 				  m_config->m_trigGeomUtils->trigPosCHT(&trig) :
-				  m_config->m_trigGeomUtils->trigPosAM(&trig)  );
+				  m_config->m_trigGeomUtils->trigPosAM(&trig));
 	  m_lt_dirLoc_phi.push_back(m_tag == TriggerTag::HB ? 
-				    m_config->m_trigGeomUtils->trigDirCHT(&trig) :
-				    m_config->m_trigGeomUtils->trigDirAM(&trig)  );
+				  m_config->m_trigGeomUtils->trigDirCHT(&trig) :
+				  m_config->m_trigGeomUtils->trigDirAM(&trig));
 
 	  m_lt_bx.push_back(trig.bxNum());
 	  m_lt_t0.push_back(trig.t0());

@@ -47,6 +47,8 @@ DTNtupleConfig::DTNtupleConfig(const edm::ParameterSet & config)
   m_inputTags["ph2TPGPhiEmuHbTag"] = config.getUntrackedParameter<edm::InputTag>("ph2TPGPhiEmuHbTag", none);
   m_inputTags["ph2TPGPhiEmuAmTag"] = config.getUntrackedParameter<edm::InputTag>("ph2TPGPhiEmuAmTag", none);
 
+  m_boolParams["useExtDataformat"] = config.getUntrackedParameter<bool>("useExtDataformat", true);
+
   m_dtSync = DTTTrigSyncFactory::get()->create(config.getUntrackedParameter<std::string>("tTrigMode"),
 					       config.getUntrackedParameter<edm::ParameterSet>("tTrigModeConfig"));
 

@@ -45,6 +45,9 @@ class DTNtupleConfig
   /// Map containing different input tags
   std::map<std::string, edm::InputTag> m_inputTags;
 
+  /// Map containing different boolean parameters
+  std::map<std::string, bool> m_boolParams;
+
   /// The class to handle DT trigger time pedestals
   std::unique_ptr<DTTTrigBaseSync> m_dtSync; // CB find a way to handle this with a smart pointer
 
