@@ -14,7 +14,7 @@ options.register('globalTag',
                  "Global Tag")
 
 options.register('nEvents',
-                 -1, #default value
+                 10000, #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.int,
                  "Maximum number of processed events")
@@ -59,17 +59,17 @@ process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEven
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
-process.GlobalTag.globaltag = cms.string(options.globalTag)
+process.GlobalTag.globaltag = "80X_dataRun2_2016SeptRepro_v7"
+#process.GlobalTag.globaltag = cms.string(options.globalTag)
 
 process.source = cms.Source("PoolSource",
-                            
-        fileNames = cms.untracked.vstring(),
+        fileNames = cms.untracked.vstring('file:////eos/cms/store/user/folguera/P2L1TUpgrade/Mu_FlatPt2to100-pythia8-gun_file.root'),
         secondaryFileNames = cms.untracked.vstring()
 
 )
 
-files = subprocess.check_output(["ls", options.inputFolder])
-process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split()]
+#files = subprocess.check_output(["ls", options.inputFolder])
+#process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split()]
 
 if options.secondaryInputFolder != "" :
     files = subprocess.check_output(["ls", options.secondaryInputFolder])
@@ -80,15 +80,31 @@ process.TFileService = cms.Service('TFileService',
     )
 
 process.load('Configuration/StandardSequences/GeometryRecoDB_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+#process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_collision_cfi')
 
+process.dtNtupleProducer.useExtDataformat = cms.untracked.bool(True)
+
+process.load("L1Trigger.DTTriggerPhase2.CalibratedDigis_cfi") 
+process.load("L1Trigger.DTTriggerPhase2.dtTriggerPhase2PrimitiveDigis_cfi")
+
+process.CalibratedDigis.dtDigiTag = "muonDTDigis"
+process.CalibratedDigis.scenario = 1
+process.dtTriggerPhase2PrimitiveDigis.scenario = 1
+process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.clone()
+process.dtTriggerPhase2AmPrimitiveDigis.useBX_correlation = True
+process.dtTriggerPhase2AmPrimitiveDigis.allow_confirmation = False
+
 process.p = cms.Path(process.muonDTDigis 
                      + process.bmtfDigis
                      + process.twinMuxStage2Digis
                      + process.scalersRawToDigi
+                     + process.CalibratedDigis
+                     + process.dtTriggerPhase2AmPrimitiveDigis
                      + process.dtNtupleProducer)
 
 if options.runOnMC :
