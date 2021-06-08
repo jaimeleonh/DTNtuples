@@ -8,25 +8,25 @@ import sys
 options = VarParsing.VarParsing()
 
 options.register('globalTag',
-                 '110X_mcRun4_realistic_v3', #default value
+                 '111X_mcRun3_2023_realistic_v7', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Global Tag")
 
 options.register('nEvents',
-                 -1, #default value
+                 200, #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.int,
                  "Maximum number of processed events")
 
 options.register('inputFolder',
-                 '/eos/cms/store/group/dpg_dt/comm_dt/L1T_TDR/', #default value
+                 '/eos/cms/store/group/dpg_muon/rossin/Phase2/ParticleGun_thermalNeutrons_33BX_200_PU/step2/', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "EOS folder with input files")
 
 options.register('secondaryInputFolder',
-                 '', #default value
+                 '/eos/cms/store/group/dpg_muon/rossin/Phase2/ParticleGun_thermalNeutrons_33BX_200_PU/', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "EOS folder with input files for secondary files")
@@ -68,7 +68,7 @@ options.register('applyRandomBkg',
                  "If True applies random background to phase-2 digis and emulator")
 
 options.register('ntupleName',
-                 './DTDPGNtuple_11_1_0_patch2_Phase2_Simulation.root', #default value
+                 './DTDPGNtuple_11_1_8_Phase2_Simulation.root', #default value
                  VarParsing.VarParsing.multiplicity.singleton,
                  VarParsing.VarParsing.varType.string,
                  "Folder and name ame for output ntuple")
@@ -104,11 +104,11 @@ process.source = cms.Source("PoolSource",
 )
 
 files = subprocess.check_output(["ls", options.inputFolder])
-process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split()]
+process.source.fileNames = ["file://" + options.inputFolder + "/" + f for f in files.split() if ".root" in f]
 
 if options.secondaryInputFolder != "" :
     files = subprocess.check_output(["ls", options.secondaryInputFolder])
-    process.source.secondaryFileNames = ["file://" + options.secondaryInputFolder + "/" + f for f in files.split()]
+    process.source.secondaryFileNames = ["file://" + options.secondaryInputFolder + "/" + f for f in files.split() if ".root" in f]
 
 process.TFileService = cms.Service('TFileService',
         fileName = cms.string(options.ntupleName)
