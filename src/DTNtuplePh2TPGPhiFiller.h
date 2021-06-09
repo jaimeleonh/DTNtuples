@@ -105,7 +105,7 @@ class DTNtuplePh2TPGPhiFiller : public DTNtupleBaseFiller
                                  // ... // CB to be defined
 
   std::vector<std::vector<short>> m_lt_pathWireId;
-  std::vector<std::vector<short>> m_lt_pathTDC;
+  std::vector<std::vector<int>> m_lt_pathTDC;
   std::vector<std::vector<short>> m_lt_pathLat;
 };
   

@@ -57,13 +57,15 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(options.nEvents))
 
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+#process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.GlobalTag.globaltag = "80X_dataRun2_2016SeptRepro_v7"
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 #process.GlobalTag.globaltag = cms.string(options.globalTag)
 
 process.source = cms.Source("PoolSource",
-        fileNames = cms.untracked.vstring('file:////eos/cms/store/user/folguera/P2L1TUpgrade/Mu_FlatPt2to100-pythia8-gun_file.root'),
+        fileNames = cms.untracked.vstring('file:////eos/cms/store/user/folguera/P2L1TUpgrade/digis_segments_Run2016BSingleMuonRAW-RECO_camilo.root'),
         secondaryFileNames = cms.untracked.vstring()
 
 )
@@ -79,10 +81,11 @@ process.TFileService = cms.Service('TFileService',
         fileName = cms.string(options.ntupleName)
     )
 
-process.load('Configuration/StandardSequences/GeometryRecoDB_cff')
-#process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
-#process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
-process.load("Configuration.StandardSequences.MagneticField_cff")
+#process.load('Configuration/StandardSequences/GeometryRecoDB_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2026D49_cff')
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+#process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 process.load('DTDPGAnalysis.DTNtuples.dtNtupleProducer_collision_cfi')
@@ -99,11 +102,11 @@ process.dtTriggerPhase2AmPrimitiveDigis = process.dtTriggerPhase2PrimitiveDigis.
 process.dtTriggerPhase2AmPrimitiveDigis.useBX_correlation = True
 process.dtTriggerPhase2AmPrimitiveDigis.allow_confirmation = False
 
-process.p = cms.Path(process.muonDTDigis 
-                     + process.bmtfDigis
-                     + process.twinMuxStage2Digis
-                     + process.scalersRawToDigi
-                     + process.CalibratedDigis
+process.p = cms.Path(#process.muonDTDigis 
+                     #+ process.bmtfDigis
+                     #+ process.twinMuxStage2Digis
+                     #+ process.scalersRawToDigi
+                     process.CalibratedDigis
                      + process.dtTriggerPhase2AmPrimitiveDigis
                      + process.dtNtupleProducer)
 

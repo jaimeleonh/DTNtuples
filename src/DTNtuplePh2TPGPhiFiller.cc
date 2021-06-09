@@ -150,9 +150,9 @@ void DTNtuplePh2TPGPhiFiller::fill(const edm::Event & ev)
 	    m_lt_phiBCMSSW.push_back(trig.phiBendCMSSW());
       
       std::vector<short> pathWireId;
-      std::vector<short> pathTDC;
+      std::vector<int> pathTDC;
       std::vector<short> pathLat;
-      
+
       for (int i = 0; i < 8; i++){
         pathWireId.push_back(trig.pathWireId(i));
         pathTDC.push_back(trig.pathTDC(i));
