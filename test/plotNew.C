@@ -49,22 +49,21 @@ gStyle->SetOptFit(111111);
   //std::vector<std::string> qualTags   = { "All","Correlated"};
   //std::vector<std::string> qualTags   = { "Correlated", "Uncorrelated","3h","4h","All", "Legacy","Q9","Q8","Q6"};
 
-  TFile *inFile = TFile::Open(("./results_run335119.root" ));
+  TFile *inFile = TFile::Open(("./results_run342221.root" ));
+  //TFile *inFile = TFile::Open(("./results_run335119.root" ));
   //TFile *inFile = TFile::Open(("./results_run335005.root" ));
  
   TFile outPlots( "./outPlots.root","RECREATE");
   
-       std::string namePlotAll    = "hFWSeg";
-       std::string namePlotQ     = "hFWSegQ>2";
-       std::string namePlotTM     = "hTMSeg";
+  for (auto & chambTag: chambTags) {
+       std::string namePlotAll    = "hFWSeg_" + chambTag;
+       std::string namePlotQ     = "hFWSegQ>2_" + chambTag;
+       std::string namePlotTM     = "hTMSeg_" + chambTag;
  
        TH1F *hResAll = (TH1F*)inFile->Get(namePlotAll.c_str());
        TH1F *hResQ  = (TH1F*)inFile->Get(namePlotQ.c_str());
        TH1F *hResTM  = (TH1F*)inFile->Get(namePlotTM.c_str());
        
-
-
-      
        hResTM->Write(); 
 
 
@@ -74,8 +73,8 @@ gStyle->SetOptFit(111111);
       // hResSlope4h1->Draw();
 
 
-       TH1F* hResSth = new TH1F ("Plot", "Plot", 101,-50.5, 50.5);
-       int binDespl = 23;
+       TH1F* hResSth = new TH1F (("Plot_" + chambTag).c_str(), "Plot", 101,-50.5, 50.5);
+       int binDespl = 0;
 
        for (int i = 0; i < 101; i++) {
          if (i + binDespl > 100) continue; 
@@ -83,8 +82,8 @@ gStyle->SetOptFit(111111);
        }
        hResSth->Write(); 
        
-       TH1F* hResSth2 = new TH1F ("Plot2", "Plot2", 101,-50.5, 50.5);
-       binDespl = 23;
+       TH1F* hResSth2 = new TH1F (("Plot2_"  + chambTag).c_str(), "Plot2", 101,-50.5, 50.5);
+       binDespl = 0;
 
        for (int i = 0; i < 101; i++) {
          if (i + binDespl > 100) continue; 
@@ -94,7 +93,7 @@ gStyle->SetOptFit(111111);
        
        
        TH2F*  hResSlope;
-       hResSlope=(TH2F*)hResSth->Clone();
+       hResSlope = (TH2F*)hResSth->Clone();
 
 
        RooRealVar x("x","", -5. , 5.);
@@ -150,7 +149,8 @@ gStyle->SetOptFit(111111);
        gPad->SetName("plot");
        gPad->SaveAs("plot.png");
        gPad->Write();
-       outPlots.Close();
+  }
+  outPlots.Close();
 
 
   }

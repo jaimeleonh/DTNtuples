@@ -114,7 +114,7 @@ void DTNtupleTPGSimAnalyzer::book()
 {  
   m_outFile.cd();
   
-  std::vector<std::string> chambTags = {"MB1","MB2","MB3", "MB4"};
+  std::vector<std::string> chambTags = {"MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> slTags = { "SL1", "SL3"};
   //std::vector<std::string> chambTags = { "MB1", "MB2", "MB3", "MB4"};
   std::vector<std::string> quTags = {"3h","4h","Q6","Q7","Q8","bestQ"};
@@ -139,15 +139,6 @@ void DTNtupleTPGSimAnalyzer::book()
   int nbinPhiBTM = 201; double minPhiBTM = 1.;  
   int nbinPhiBFW = 201; double minPhiBFW = 1.; 
   
-  m_plots["hFWSeg" ] = new TH1F("hFWSeg",
-    "Ph2 - Segment time; Ph2 - Segment time (ns); Entries",
-  nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
-  m_plots["hFWSegQ>2" ] = new TH1F("hFWSegQ>2",
-    "Ph2 (Q>2) - Segment time; Ph2 (Q>2) - Segment time (ns); Entries",
-  nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
-  m_plots["hTMSeg" ] = new TH1F("hTMSeg",
-    "TM - Segment time; TM - Segment time (ns); Entries",
-  nbinTimeSegFW,-minTimeSegFW,minTimeSegFW); 
   //return;
   m_effs["hEffCorAM"] = new TEfficiency("hEffCorAM",
     "Primitive percentage that appear in AM",
@@ -225,6 +216,15 @@ void DTNtupleTPGSimAnalyzer::book()
         } 
       } 
     } 
+    m_plots["hFWSeg_" + chambTag] = new TH1F(("hFWSeg_" + chambTag).c_str(),
+        "Ph2 - Segment time; Ph2 - Segment time (ns); Entries",
+        nbinTimeSegFW, -minTimeSegFW, minTimeSegFW); 
+    m_plots["hFWSegQ>2_" + chambTag] = new TH1F(("hFWSegQ>2_" + chambTag).c_str(),
+        "Ph2 (Q>2) - Segment time; Ph2 (Q>2) - Segment time (ns); Entries",
+        nbinTimeSegFW, -minTimeSegFW, minTimeSegFW); 
+    m_plots["hTMSeg_" + chambTag] = new TH1F(("hTMSeg_" + chambTag).c_str(),
+        "TM - Segment time; TM - Segment time (ns); Entries",
+        nbinTimeSegFW, -minTimeSegFW, minTimeSegFW); 
 
     //QUALITY DISTRIBUTIONS
     m_plots["hQualityHW"+chambTag] = new TH1F(("hQualityHW_" +chambTag).c_str(),
@@ -2186,90 +2186,91 @@ void DTNtupleTPGSimAnalyzer::DisplayPh1Segs () {
 }
 
 void DTNtupleTPGSimAnalyzer::getTheStupidPlots() {
-  int bestISeg = -1;
-  short bestQSeg = 0;
-  int bestIPh2 = -1;
-  short bestQPh2 = 0;
-  int bestITM = -1;
-  short bestQTM = 0;
-  
-  for (std::size_t iSeg = 0; iSeg <  seg_nSegments; ++iSeg) {
-    float mySegt0 = seg_phi_t0->at(iSeg);
-    short mySegStation = seg_station->at(iSeg);
-    short mySegWheel = seg_wheel->at(iSeg);
-    short mySegSector = seg_sector->at(iSeg);
-    float mySegPos = seg_posLoc_x->at(iSeg);
-    float mySegPosSL1 = seg_posLoc_x_SL1->at(iSeg);
-    float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
-    float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
-    float mySegZ = seg_posLoc_y->at(iSeg);
-    short mySegHasZ = seg_hasZed->at(iSeg);
-    float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
+
+  for (int i = 1; i <= 4; i++) {
+    int bestISeg = -1;
+    short bestQSeg = 0;
+    int bestIPh2 = -1;
+    short bestQPh2 = 0;
+    int bestITM = -1;
+    short bestQTM = 0;
+     
+    for (std::size_t iSeg = 0; iSeg <  seg_nSegments; ++iSeg) {
+      float mySegt0 = seg_phi_t0->at(iSeg);
+      short mySegStation = seg_station->at(iSeg);
+      short mySegWheel = seg_wheel->at(iSeg);
+      short mySegSector = seg_sector->at(iSeg);
+      float mySegPos = seg_posLoc_x->at(iSeg);
+      float mySegPosSL1 = seg_posLoc_x_SL1->at(iSeg);
+      float mySegPosSL3 = seg_posLoc_x_SL3->at(iSeg);
+      float mySegPosMid = seg_posLoc_x_midPlane->at(iSeg);
+      float mySegZ = seg_posLoc_y->at(iSeg);
+      short mySegHasZ = seg_hasZed->at(iSeg);
+      float mySegPsi = 360*TMath::ATan ( ( seg_dirLoc_x->at(iSeg) / seg_dirLoc_z->at(iSeg)) ) / (2*TMath::Pi());
+      if ( mySegStation != i || mySegWheel != 2 || mySegSector != 12 ) continue; 
+      if (fabs(mySegPsi) > 30 || seg_phi_nHits->at(iSeg) < 4 || fabs(mySegt0)>50 ) continue;
+      
+      if ( seg_phi_nHits->at(iSeg) > bestQSeg ) { 
+        bestISeg = iSeg;    
+        bestQSeg = seg_phi_nHits->at(iSeg);    
+      }
+    }
     
-    if ( mySegStation != 4 || mySegWheel != 2 || mySegSector != 12 ) continue; 
-    if (fabs(mySegPsi) > 30 || seg_phi_nHits->at(iSeg) < 4 || fabs(mySegt0)>50 ) continue;
+    if (bestISeg < 0) return;
     
-    if ( seg_phi_nHits->at(iSeg) > bestQSeg ) { 
-      bestISeg = iSeg;    
-      bestQSeg = seg_phi_nHits->at(iSeg);    
+    for (std::size_t iTwin = 0; iTwin <  ltTwinMuxOut_nTrigs; ++iTwin) {
+      short myStationTwin = ltTwinMuxOut_station->at(iTwin);
+      short mySectorTwin = ltTwinMuxOut_sector->at(iTwin);
+      short myWheelTwin = ltTwinMuxOut_wheel->at(iTwin);
+      short myQualityTwin = ltTwinMuxOut_quality->at(iTwin);
+      int myPhiTwin = ltTwinMuxOut_phi->at(iTwin);
+      int myPhiBTwin =   ltTwinMuxOut_phiB->at(iTwin);
+      float myPosTwin =  ltTwinMuxOut_posLoc_x->at(iTwin);
+      float myDirTwin =  ltTwinMuxOut_dirLoc_phi->at(iTwin);
+      
+      if ( myStationTwin != i || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
+      if ( myQualityTwin > bestQTM ) { 
+        bestITM = iTwin;    
+        bestQTM = myQualityTwin;    
+      }
+    }
+    
+    if (bestITM > -1 ){
+      m_plots["hTMSeg_MB" + std::to_string(i)]->Fill(   ltTwinMuxOut_BX->at( bestITM  )*25  -   seg_phi_t0->at(bestISeg)  - 50);
+    }
+    
+    for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
+    {
+      short myStationHW = ph2TpgPhiHw_station->at(iTrigHW);
+      short mySectorHW = ph2TpgPhiHw_sector->at(iTrigHW);
+      short myWheelHW = ph2TpgPhiHw_wheel->at(iTrigHW);
+      short myQualityHW = ph2TpgPhiHw_quality->at(iTrigHW);
+      short mySLHW = ph2TpgPhiHw_superLayer->at(iTrigHW);
+      int myChiHW =  ph2TpgPhiHw_chi2->at(iTrigHW);
+      int myPhiHW = ph2TpgPhiHw_phi->at(iTrigHW);
+      int myPhiBHW =   ph2TpgPhiHw_phiB->at(iTrigHW);
+      float myPosHW =  ph2TpgPhiHw_posLoc_x->at(iTrigHW);
+      float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(iTrigHW);
+      int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW); 
+      int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
+      int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
+      
+      if ( myStationHW != i || myWheelHW != 2 || mySectorHW != 12 ) continue; 
+      if ( myQualityHW > bestQPh2 ) { 
+        bestIPh2 = iTrigHW;    
+        bestQPh2 = myQualityHW;    
+      }
+    }
+    if (bestIPh2 > -1 ){
+      
+      float ph2T0 = ph2TpgPhiHw_t0->at(bestIPh2);
+      //float ph2T0 = ph2TpgPhiHw_t0->at(bestIPh2) -  (event_bunchCrossing )*25;
+      // while (ph2T0 > 0) ph2T0 = ph2T0 - 25*3564;
+      //ph2T0 = ph2T0 + 200*25;
+      m_plots["hFWSeg_MB" + std::to_string(i)]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
+      if (bestQPh2 > 2 ) m_plots["hFWSegQ>2_MB" + std::to_string(i)]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
     }
   }
-  
-  if (bestISeg < 0) return;
-  
-  for (std::size_t iTwin = 0; iTwin <  ltTwinMuxOut_nTrigs; ++iTwin) {
-    short myStationTwin = ltTwinMuxOut_station->at(iTwin);
-    short mySectorTwin = ltTwinMuxOut_sector->at(iTwin);
-    short myWheelTwin = ltTwinMuxOut_wheel->at(iTwin);
-    short myQualityTwin = ltTwinMuxOut_quality->at(iTwin);
-    int myPhiTwin = ltTwinMuxOut_phi->at(iTwin);
-    int myPhiBTwin =   ltTwinMuxOut_phiB->at(iTwin);
-    float myPosTwin =  ltTwinMuxOut_posLoc_x->at(iTwin);
-    float myDirTwin =  ltTwinMuxOut_dirLoc_phi->at(iTwin);
-    
-    if ( myStationTwin != 4 || myWheelTwin != 2 || mySectorTwin != 12 ) continue; 
-    if ( myQualityTwin > bestQTM ) { 
-      bestITM = iTwin;    
-      bestQTM = myQualityTwin;    
-    }
-  }
-  
-  if (bestITM > -1 ){
-    m_plots["hTMSeg"]->Fill(   ltTwinMuxOut_BX->at( bestITM  )*25  -   seg_phi_t0->at(bestISeg) );
-  }
-  
-  for (std::size_t iTrigHW = 0; iTrigHW < ph2TpgPhiHw_nTrigs; ++iTrigHW)
-  {
-    short myStationHW = ph2TpgPhiHw_station->at(iTrigHW);
-    short mySectorHW = ph2TpgPhiHw_sector->at(iTrigHW);
-    short myWheelHW = ph2TpgPhiHw_wheel->at(iTrigHW);
-    short myQualityHW = ph2TpgPhiHw_quality->at(iTrigHW);
-    short mySLHW = ph2TpgPhiHw_superLayer->at(iTrigHW);
-    int myChiHW =  ph2TpgPhiHw_chi2->at(iTrigHW);
-    int myPhiHW = ph2TpgPhiHw_phi->at(iTrigHW);
-    int myPhiBHW =   ph2TpgPhiHw_phiB->at(iTrigHW);
-    float myPosHW =  ph2TpgPhiHw_posLoc_x->at(iTrigHW);
-    float myDirHW =  ph2TpgPhiHw_dirLoc_phi->at(iTrigHW);
-    int myChi2HW = ph2TpgPhiHw_chi2->at(iTrigHW); 
-    int myBXHW = ph2TpgPhiHw_BX->at(iTrigHW); //eventoBX = myBXHW; 
-    int myt0HW = ph2TpgPhiHw_t0->at(iTrigHW);
-    
-    if ( myStationHW != 4 || myWheelHW != 2 || mySectorHW != 12 ) continue; 
-    if ( myQualityHW > bestQPh2 ) { 
-      bestIPh2 = iTrigHW;    
-      bestQPh2 = myQualityHW;    
-    }
-  }
-  if (bestIPh2 > -1 ){
-    
-    float ph2T0 = ph2TpgPhiHw_t0->at(bestIPh2) -  (event_bunchCrossing )*25;
-    // while (ph2T0 > 0) ph2T0 = ph2T0 - 25*3564;
-    ph2T0 = ph2T0 + 200*25;
-    m_plots["hFWSeg"]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
-    if (bestQPh2 > 2 ) m_plots["hFWSegQ>2"]->Fill(   ph2T0 - seg_phi_t0->at(bestISeg) );
-  }
-  
-  
   return;  
   
 }

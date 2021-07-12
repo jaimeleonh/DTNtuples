@@ -13,7 +13,7 @@ void UseTemplateDeltaTime()
 
   gStyle->SetOptStat(000000);
 
-  TString PlotName = "DeltaTime";
+  TString PlotName = "DeltaTime.pdf";
   bool LogY = false;
   bool DisplayGrid = false;
   TString Lumi = "35.9";
